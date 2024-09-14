@@ -91,23 +91,24 @@ El proyecto está preparado para ser ejecutado en contenedores Docker con **Mari
 
 ## Estructura del Proyecto
 
-.
-├── app
-│   ├── config
-│   │   ├── database.py
-│   │   └── __init__.py
-│   ├── jwt_manager.py
-│   ├── main.py
-│   ├── models
-│   │   ├── __init__.py
-│   │   └── movie.py
-│   └── requirements.txt
-├── docker-compose.yml
-├── Dockerfile
-├── LICENSE
-├── movies.json
-└── README.md
-
+    ```bash
+    .
+    ├── app
+    │   ├── config
+    │   │   ├── database.py
+    │   │   └── __init__.py
+    │   ├── jwt_manager.py
+    │   ├── main.py
+    │   ├── models
+    │   │   ├── __init__.py
+    │   │   └── movie.py
+    │   └── requirements.txt
+    ├── docker-compose.yml
+    ├── Dockerfile
+    ├── LICENSE
+    ├── movies.json
+    └── README.md
+    ```
 
 ## Licencia
 
