@@ -17,7 +17,7 @@ movies = [
         "overview": "En un exuberante planeta llamado Pandora viven los Na'vi, seres que...",
         "year": 2009,
         "rating": 7.8,
-        "category": "Acción"
+        "category": "Action"
     },
     {
         "id": 2,
@@ -33,7 +33,7 @@ movies = [
         "overview": "Cualquier cosa puedo ir aca y los Na'vi, seres que...",
         "year": 2021,
         "rating": 9.8,
-        "category": "Ficcion"
+        "category": "Fiction"
     }
 ]
 load_dotenv()
@@ -61,16 +61,15 @@ class User(BaseModel):
 
 class Movie(BaseModel):
     id: Optional[int] = None
-    title: str = Field(min_length=5, max_length=15)
-    overview: str = Field(min_length=15, max_length=50)
+    title: str = Field(min_length=5, max_length=20)
+    overview: str = Field(min_length=15, max_length=250)
     year: int = Field(le=2024)
     rating: float = Field(ge= 1, le=10.0)
-    category: str = Field(min_length=5, max_length=15)
+    category: str = Field(min_length=5, max_length=20)
 
-    class Config:
+    class Config:   
         json_schema_extra = {
             "example" : {
-                "id": 1,
                 "title": "Mi Pelicula",
                 "overview": "Este es un resumen de la peli",
                 "year": 2024,
@@ -80,9 +79,10 @@ class Movie(BaseModel):
         }
 
 
+
 @app.get('/', tags=['home'], status_code=200)
-def message():
-    return HTMLResponse('<h1>Hello World</h1>')
+async def message():
+    return JSONResponse(status_code=200, content={"message": "hello world"})
 
 @app.post('/login', tags=['auth'])
 def login(user: User):
@@ -90,7 +90,7 @@ def login(user: User):
         token: str = create_token(user.model_dump())
         return JSONResponse(status_code=200, content=token)
 
-@app.get('/movies', tags=['movies'], response_model=List[Movie], status_code=200, dependencies=[Depends(JWTBearer())])
+@app.get('/movies', tags=['movies'], response_model=List[Movie], status_code=200)
 def get_movies() -> List[Movie]:
     db = Session()
     result = db.query(MovieModel).all()
@@ -116,15 +116,16 @@ def get_movie_by_category(category: str = Query(min_length=5, max_length=15)) ->
 
 
 @app.post('/movies/', tags=['movies'], response_model=dict, status_code=201)
-def create_movie(movie: Movie) -> dict:
+def create_movies(movies: List[Movie]) -> dict:
     db = Session()
-    new_movie = MovieModel(**movie.model_dump())
-    db.add(new_movie)
+    new_movies = [MovieModel(**movie.model_dump()) for movie in movies]
+    db.add_all(new_movies)
     db.commit()
+    db.close()
     # movies.append(movie)
-    return JSONResponse(status_code=201, content={"message" : "Se registro la peli"})
+    return JSONResponse(status_code=201, content={"message": f"Se registraron {len(new_movies)} películas"})
 
-@app.put('/movies/{id}', tags=['movies'], response_model=dict, status_code=200)
+@app.put('/movies/{id}', tags=['movies'], response_model=dict, status_code=200, dependencies=[Depends(JWTBearer())])
 def update_movie(id: int, movie: Movie) -> dict:
     for item in movies:
         if item['id'] == id:
@@ -135,7 +136,7 @@ def update_movie(id: int, movie: Movie) -> dict:
             item['category'] = movie.category
     return JSONResponse(status_code=200, content={"message" : "Se actualizo la peli"})
 
-@app.delete('/movies/{id}', tags=['movies'], response_model=dict, status_code=200)
+@app.delete('/movies/{id}', tags=['movies'], response_model=dict, status_code=200, dependencies=[Depends(JWTBearer())])
 def delete_movie(id: int ) -> dict:
     movies = [item for item in movies if item['id'] != id]
     return JSONResponse(status_code=200, content={"message" : "Se elimino la peli"})
