@@ -2,13 +2,14 @@ from fastapi import FastAPI, Path, Query, Request, HTTPException, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 from typing import Optional, List
-from jwt_manager import create_token, validate_token
-from fastapi.security import HTTPBearer
-import os
-from dotenv import load_dotenv
+from jwt_manager import create_token
 from config.database import Session, engine, Base
 from models.movie import Movie as MovieModel
 from fastapi.encoders import jsonable_encoder
+from middlewares.error_handler import ErrorHandler
+from middlewares.jwt_bearer import JWTBearer
+import os
+from dotenv import load_dotenv
 
 load_dotenv()
 ADMIN_EMAIL= os.getenv("ADMIN_EMAIL")
@@ -18,15 +19,11 @@ app = FastAPI()
 app.title = "Mi aplicación con FastApi"
 app.version = "0.0.1"
 
-Base.metadata.create_all(bind=engine)
+app.add_middleware(ErrorHandler)
 
-class JWTBearer(HTTPBearer):
-    async def __call__(self, request: Request):
-        auth = await super().__call__(request)
-        data = validate_token(auth.credentials)
-        if data['email'] != ADMIN_EMAIL:
-            raise HTTPException(status_code=403, detail="Credenciales invalidas")
-        
+Base.metadata.create_all(bind=engine)
+ 
+  
 class User(BaseModel):
     email: str
     password: str
@@ -50,17 +47,17 @@ class Movie(BaseModel):
             }
         }
 
-@app.get('/', tags=['home'], status_code=200)
+@app.get('/', tags=['Home'], status_code=200)
 async def message():
     return JSONResponse(status_code=200, content={"message": "hello world"})
 
-@app.post('/login', tags=['auth'])
+@app.post('/login', tags=['Authentication'])
 def login(user: User):
     if user.email == ADMIN_EMAIL and user.password == ADMIN_PASS:
         token: str = create_token(user.model_dump())
         return JSONResponse(status_code=200, content=token)
 
-@app.get('/movies', tags=['movies'], response_model=List[Movie], status_code=200)
+@app.get('/movies', tags=['Get movies'], response_model=List[Movie], status_code=200)
 def get_movies() -> List[Movie]:
     db = Session()
     result = db.query(MovieModel).all()
@@ -70,7 +67,7 @@ def get_movies() -> List[Movie]:
         return JSONResponse(status_code=404, content={"message" : "No hay peliculas registradas"})
 
 
-@app.get('/movies/{id}', tags=['movies'], response_model=List[Movie], status_code=200)
+@app.get('/movies/{id}', tags=['Get movies'], response_model=List[Movie], status_code=200)
 def get_movie(id: int = Path(ge=1, le=2000)) -> List[Movie]:
     db = Session()
     result = db.query(MovieModel).filter(MovieModel.id == id).first()
@@ -79,7 +76,7 @@ def get_movie(id: int = Path(ge=1, le=2000)) -> List[Movie]:
     else:
         return JSONResponse(status_code=404, content={"message" : "Id de Peli no encontrada"})
 
-@app.get('/movies/', tags=['movies'], response_model=List[Movie], status_code=200)
+@app.get('/movies/', tags=['Get movies'], response_model=List[Movie], status_code=200)
 def get_movie_by_category(category: str = Query(min_length=5, max_length=30)) -> List[Movie]:
     db = Session()
     result = db.query(MovieModel).filter(MovieModel.category == category).all()
@@ -89,7 +86,7 @@ def get_movie_by_category(category: str = Query(min_length=5, max_length=30)) ->
         return JSONResponse(status_code=404, content={"message" : "Categoria no encontrada"})
 
 
-@app.post('/movies/', tags=['movies'], response_model=dict, status_code=201, dependencies=[Depends(JWTBearer())])
+@app.post('/movies/', tags=['Modify movies'], response_model=dict, status_code=201, dependencies=[Depends(JWTBearer())])
 def create_movies(movies: List[Movie]) -> dict:
     db = Session()
     new_movies = [MovieModel(**movie.model_dump()) for movie in movies]
@@ -98,7 +95,7 @@ def create_movies(movies: List[Movie]) -> dict:
     db.close()
     return JSONResponse(status_code=201, content={"message": f"Se registraron {len(new_movies)} películas"})
 
-@app.put('/movies/{id}', tags=['movies'], response_model=dict, status_code=200, dependencies=[Depends(JWTBearer())])
+@app.put('/movies/{id}', tags=['Modify movies'], response_model=dict, status_code=200, dependencies=[Depends(JWTBearer())])
 def update_movie(id: int, movie: Movie) -> dict:
     db = Session()
     result = db.query(MovieModel).filter(MovieModel.id == id).first()
@@ -114,7 +111,7 @@ def update_movie(id: int, movie: Movie) -> dict:
     else:
         return JSONResponse(status_code=404, content={"message" : "Id de Peli no encontrada"})
 
-@app.delete('/movies/{id}', tags=['movies'], response_model=dict, status_code=200, dependencies=[Depends(JWTBearer())])
+@app.delete('/movies/{id}', tags=['Modify movies'], response_model=dict, status_code=200, dependencies=[Depends(JWTBearer())])
 def delete_movie(id: int ) -> dict:
     db = Session()
     result = db.query(MovieModel).filter(MovieModel.id == id).first()
