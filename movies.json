@@ -1,0 +1,128 @@
+[
+    {
+        "title": "Avatar",
+        "overview": "En un exuberante planeta llamado Pandora viven los Na'vi, seres que...",
+        "year": 2009,
+        "rating": 7.8,
+        "category": "Action"
+    },
+    {
+        "title": "Titanic",
+        "overview": "Una tragedia de amor en un barco que se hunde...",
+        "year": 1997,
+        "rating": 7.8,
+        "category": "Drama"
+    },
+    {
+        "title": "Gorillaz",
+        "overview": "Cualquier cosa puedo ir aca y los Na'vi, seres que...",
+        "year": 2021,
+        "rating": 9.8,
+        "category": "Fiction"
+    },
+    {
+        "title": "Inception",
+        "overview": "Un ladrón que roba secretos a través del uso de la tecnología de sueños.",
+        "year": 2010,
+        "rating": 8.8,
+        "category": "Sci-Fi"
+    },
+    {
+        "title": "The Dark Knight",
+        "overview": "Batman enfrenta al Joker en una batalla épica por Gotham.",
+        "year": 2008,
+        "rating": 9.0,
+        "category": "Action"
+    },
+    {
+        "title": "Interstellar",
+        "overview": "Un grupo de astronautas viaja a través de un agujero de gusano en busca de un nuevo hogar para la humanidad.",
+        "year": 2014,
+        "rating": 8.6,
+        "category": "Sci-Fi"
+    },
+    {
+        "title": "The Matrix",
+        "overview": "Un programador descubre que el mundo en el que vive es una simulación creada por máquinas.",
+        "year": 1999,
+        "rating": 8.7,
+        "category": "Action"
+    },
+    {
+        "title": "The Godfather",
+        "overview": "La historia de la familia Corleone, una de las más poderosas de la mafia italoamericana.",
+        "year": 1972,
+        "rating": 9.2,
+        "category": "Crime"
+    },
+    {
+        "title": "Pulp Fiction",
+        "overview": "Las vidas de dos matones, un boxeador y una pareja de criminales se entrelazan en esta historia no lineal.",
+        "year": 1994,
+        "rating": 8.9,
+        "category": "Crime"
+    },
+    {
+        "title": "Forrest Gump",
+        "overview": "La vida de Forrest Gump, un hombre con un bajo coeficiente intelectual que presencia momentos clave de la historia.",
+        "year": 1994,
+        "rating": 8.8,
+        "category": "Drama"
+    },
+    {
+        "title": "Fight Club",
+        "overview": "Un hombre insomne forma un club de lucha clandestino con un vendedor de jabón.",
+        "year": 1999,
+        "rating": 8.8,
+        "category": "Drama"
+    },
+    {
+        "title": "The Shawshank Redemption",
+        "overview": "La historia de un hombre injustamente encarcelado que desarrolla una amistad con otro prisionero.",
+        "year": 1994,
+        "rating": 9.3,
+        "category": "Drama"
+    },
+    {
+        "title": "Star Wars: A New Hope",
+        "overview": "Un joven granjero se une a una lucha intergaláctica para destruir la estación espacial del Imperio.",
+        "year": 1977,
+        "rating": 8.6,
+        "category": "Sci-Fi"
+    },
+    {
+        "title": "The Lord of the Rings: The Fellowship of the Ring",
+        "overview": "Un joven hobbit y sus amigos emprenden una peligrosa misión para destruir un anillo maldito.",
+        "year": 2001,
+        "rating": 8.8,
+        "category": "Fantasy"
+    },
+    {
+        "title": "The Silence of the Lambs",
+        "overview": "Una joven agente del FBI busca la ayuda de un asesino en serie para capturar a otro asesino.",
+        "year": 1991,
+        "rating": 8.6,
+        "category": "Thriller"
+    },
+    {
+        "title": "Schindler's List",
+        "overview": "La historia real de Oskar Schindler, quien salvó a más de mil judíos durante el Holocausto.",
+        "year": 1993,
+        "rating": 9.0,
+        "category": "Biography"
+    },
+    {
+        "title": "Gladiator",
+        "overview": "Un general romano es traicionado y busca venganza en el coliseo como gladiador.",
+        "year": 2000,
+        "rating": 8.5,
+        "category": "Action"
+    },
+    {
+        "title": "The Green Mile",
+        "overview": "Un guardia de prisión se ve afectado por un recluso con habilidades sobrenaturales en el corredor de la muerte.",
+        "year": 1999,
+        "rating": 8.6,
+        "category": "Drama"
+    }
+]
