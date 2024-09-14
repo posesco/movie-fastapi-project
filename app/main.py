@@ -6,6 +6,9 @@ from jwt_manager import create_token, validate_token
 from fastapi.security import HTTPBearer
 import os
 from dotenv import load_dotenv
+from config.database import Session, engine, Base
+from models.movie import Movie as MovieModel
+from fastapi.encoders import jsonable_encoder
 
 movies = [
     {
@@ -36,9 +39,13 @@ movies = [
 load_dotenv()
 ADMIN_EMAIL= os.getenv("ADMIN_EMAIL")
 ADMIN_PASS = os.getenv("ADMIN_PASS")
+
 app = FastAPI()
 app.title = "Mi aplicación con FastApi"
 app.version = "0.0.1"
+
+
+Base.metadata.create_all(bind=engine)
 
 class JWTBearer(HTTPBearer):
     async def __call__(self, request: Request):
@@ -59,7 +66,7 @@ class Movie(BaseModel):
     year: int = Field(le=2024)
     rating: float = Field(ge= 1, le=10.0)
     category: str = Field(min_length=5, max_length=15)
-    
+
     class Config:
         json_schema_extra = {
             "example" : {
@@ -68,8 +75,8 @@ class Movie(BaseModel):
                 "overview": "Este es un resumen de la peli",
                 "year": 2024,
                 "rating": 8.8,
-                "category": "Una Categoria X"   
-            } 
+                "category": "Una Categoria X"
+            }
         }
 
 
@@ -85,18 +92,22 @@ def login(user: User):
 
 @app.get('/movies', tags=['movies'], response_model=List[Movie], status_code=200, dependencies=[Depends(JWTBearer())])
 def get_movies() -> List[Movie]:
-    return JSONResponse(status_code=200, content=movies)
+    db = Session()
+    result = db.query(MovieModel).all()
+    return JSONResponse(status_code=200, content=jsonable_encoder(result))
 
 @app.get('/movies/{id}', tags=['movies'], response_model=List[Movie], status_code=200)
 def get_movie(id: int = Path(ge=1, le=2000)) -> List[Movie]:
-    movie = [item for item in movies if item['id'] == id ]
-    if movie:
-        return JSONResponse(status_code=200, content=movie)
-    else:
-        return JSONResponse(status_code=404, content={"message" : "Id de Peli no encontrada"})
+    db = Session()
+    result = db.query(MovieModel).filter(MovieModel.id == id).first()
+    # movie = [item for item in movies if item['id'] == id ]
+    # if movie:
+    #     return JSONResponse(status_code=200, content=movie)
+    # else:
+    #     return JSONResponse(status_code=404, content={"message" : "Id de Peli no encontrada"})
 
 @app.get('/movies/', tags=['movies'], response_model=List[Movie], status_code=200)
-def get_movie_by_category(category: str = Query(min_length=5, max_length=15)) -> List[Movie]:    
+def get_movie_by_category(category: str = Query(min_length=5, max_length=15)) -> List[Movie]:
     movie = [item for item in movies if item['category'] == category ]
     if movie:
         return JSONResponse(status_code=200, content=movie)
@@ -106,17 +117,21 @@ def get_movie_by_category(category: str = Query(min_length=5, max_length=15)) ->
 
 @app.post('/movies/', tags=['movies'], response_model=dict, status_code=201)
 def create_movie(movie: Movie) -> dict:
-    movies.append(movie)
+    db = Session()
+    new_movie = MovieModel(**movie.model_dump())
+    db.add(new_movie)
+    db.commit()
+    # movies.append(movie)
     return JSONResponse(status_code=201, content={"message" : "Se registro la peli"})
 
 @app.put('/movies/{id}', tags=['movies'], response_model=dict, status_code=200)
 def update_movie(id: int, movie: Movie) -> dict:
     for item in movies:
         if item['id'] == id:
-            item['title'] = movie.title  
-            item['overview'] = movie.overview 
-            item['year'] = movie.year  
-            item['rating'] = movie.rating  
+            item['title'] = movie.title
+            item['overview'] = movie.overview
+            item['year'] = movie.year
+            item['rating'] = movie.rating
             item['category'] = movie.category
     return JSONResponse(status_code=200, content={"message" : "Se actualizo la peli"})
 
@@ -124,5 +139,5 @@ def update_movie(id: int, movie: Movie) -> dict:
 def delete_movie(id: int ) -> dict:
     movies = [item for item in movies if item['id'] != id]
     return JSONResponse(status_code=200, content={"message" : "Se elimino la peli"})
-            
-            
+
+
