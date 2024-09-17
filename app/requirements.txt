@@ -3,6 +3,8 @@ anyio==4.4.0
 astroid==3.2.4
 click==8.1.7
 dill==0.3.8
+dnspython==2.6.1
+email_validator==2.2.0
 exceptiongroup==1.2.2
 fastapi==0.114.2
 greenlet==3.1.0

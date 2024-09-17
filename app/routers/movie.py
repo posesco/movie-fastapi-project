@@ -7,16 +7,17 @@ from config.database import Session
 from models.movie import Movie as MovieModel
 from fastapi.encoders import jsonable_encoder
 from middlewares.jwt_bearer import JWTBearer
+from datetime import datetime
 
 movie_router = APIRouter()
 
 class Movie(BaseModel):
     id: Optional[int] = None
-    title: str = Field(min_length=5, max_length=100)
+    title: str = Field(min_length=3, max_length=100)
     overview: str = Field(min_length=15, max_length=350)
-    year: int = Field(le=2024)
+    year: int = Field(default_factory=lambda: datetime.now().year)
     rating: float = Field(ge= 1, le=10.0)
-    category: str = Field(min_length=5, max_length=30)
+    category: str = Field(min_length=3, max_length=30)
 
     class Config:   
         json_schema_extra = {
