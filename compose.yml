@@ -4,12 +4,6 @@ services:
     container_name: fastapi_app
     ports:
       - "5000:80"
-    environment:
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_PORT: ${MYSQL_PORT}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     depends_on:
       - mariadb
     volumes:
