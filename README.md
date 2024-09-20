@@ -52,7 +52,7 @@ Asegúrate de tener instalado:
 
     ```bash
     cd app
-    pip3 install -r requirements.txt
+    pip install -r requirements.txt
     ```
 
 ### Ejecución en entorno local
