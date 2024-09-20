@@ -119,11 +119,13 @@ El proyecto está preparado para ser ejecutado en contenedores Docker con **Mari
     │   └── services
     │       ├── __init__.py
     │       └── movie.py
-    ├── docker-compose.yml
+    ├── compose.yml
     ├── Dockerfile
     ├── LICENSE
     ├── movies.json
-    └── README.md
+    ├── README.md
+    └── requirements.txt
+
     ```
 
 ## Licencia
