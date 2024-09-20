@@ -1,4 +1,4 @@
-# FastAPI Starter Project
+# FastAPI Starter Project (Movie API)
 
 Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre esta potente herramienta para construir APIs modernas y de alto rendimiento. El objetivo de este proyecto es ir implementando características paso a paso, comenzando con una API básica y, en el futuro, avanzando a una arquitectura más robusta con MariaDB y contenedores.
 
