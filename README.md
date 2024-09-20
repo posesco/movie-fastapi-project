@@ -94,15 +94,31 @@ El proyecto está preparado para ser ejecutado en contenedores Docker con **Mari
     ```bash
     .
     ├── app
-    │   ├── config
-    │   │   ├── database.py
-    │   │   └── __init__.py
-    │   ├── jwt_manager.py
-    │   ├── main.py
-    │   ├── models
-    │   │   ├── __init__.py
-    │   │   └── movie.py
-    │   └── requirements.txt
+    │   ├── config
+    │   │   ├── database.py
+    │   │   └── __init__.py
+    │   ├── database.sqlite
+    │   ├── jwt_manager.py
+    │   ├── main.py
+    │   ├── middlewares
+    │   │   ├── error_handler.py
+    │   │   ├── __init__.py
+    │   │   └── jwt_bearer.py
+    │   ├── models
+    │   │   ├── __init__.py
+    │   │   └── movie.py
+    │   ├── requirements.txt
+    │   ├── routers
+    │   │   ├── __init__.py
+    │   │   ├── movie.py
+    │   │   └── user.py
+    │   ├── schemas
+    │   │   ├── __init__.py
+    │   │   ├── movie.py
+    │   │   └── user.py
+    │   └── services
+    │       ├── __init__.py
+    │       └── movie.py
     ├── docker-compose.yml
     ├── Dockerfile
     ├── LICENSE
