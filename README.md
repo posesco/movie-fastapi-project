@@ -112,6 +112,10 @@ El proyecto está preparado para ser ejecutado en contenedores Docker con **Mari
     │   │   ├── __init__.py
     │   │   ├── movie.py
     │   │   └── user.py
+    │   ├── schemas
+    │   │   ├── __init__.py
+    │   │   ├── movie.py
+    │   │   └── user.py
     │   └── services
     │       ├── __init__.py
     │       └── movie.py
