@@ -6,12 +6,16 @@ from routers.movie import movie_router
 from routers.user import user_router
 
 app = FastAPI()
-app.title = "Movie API con FastApi"
+app.title = "Movie API with FastApi"
 app.version = "0.0.1"
 
 @app.get('/', tags=['Home'], status_code=200)
-async def message():
-    return JSONResponse(status_code=200, content={"message": "hello world"})
+async def root():
+    return JSONResponse(status_code=200, content={"message": "Hi, Welcome to the movie API"})
+
+@app.get('/healthcheck', tags=['Home'], status_code=200)
+async def healthcheck():
+    return JSONResponse(status_code=200, content={"message": "The API is LIVE!!"})
 
 app.add_middleware(ErrorHandler)
 app.include_router(user_router)
