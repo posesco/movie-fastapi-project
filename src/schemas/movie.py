@@ -1,6 +1,6 @@
 
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
 
 class Movie(BaseModel):
@@ -14,9 +14,9 @@ class Movie(BaseModel):
     studio: str = Field(min_length=3, max_length=30)
     box_office: str = Field(min_length=3, max_length=30)
     
-    class Config:   
-        json_schema_extra = {
-            "example" : {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "title": "Mi Pelicula",
                 "overview": "Este es un resumen de la peli",
                 "year": 2024,
@@ -27,3 +27,4 @@ class Movie(BaseModel):
                 "box_office": "$1,046,132,472"
             }
         }
+    )

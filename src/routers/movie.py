@@ -8,6 +8,7 @@ from fastapi.encoders import jsonable_encoder
 from middlewares.jwt_bearer import JWTBearer
 from services.movie import MovieService
 from schemas.movie import Movie
+
 movie_router = APIRouter()
 
 @movie_router.get('/movies', tags=['Get movies'], response_model=List[Movie], status_code=200)
