@@ -4,265 +4,399 @@
         "overview": "En un exuberante planeta llamado Pandora viven los Na'vi, seres que...",
         "year": 2009,
         "rating": 7.8,
-        "category": "Action"
+        "category": "Action",
+        "director": "James Cameron",
+        "studio": "20th Century Fox",
+        "box_office": "$2,847,246,203"
     },
     {
         "title": "Titanic",
         "overview": "Una tragedia de amor en un barco que se hunde...",
         "year": 1997,
         "rating": 7.8,
-        "category": "Drama"
+        "category": "Drama",
+        "director": "James Cameron",
+        "studio": "Paramount Pictures",
+        "box_office": "$2,195,169,307"
     },
     {
         "title": "Gorillaz",
         "overview": "Cualquier cosa puedo ir aca y los Na'vi, seres que...",
         "year": 2021,
         "rating": 9.8,
-        "category": "Fiction"
+        "category": "Fiction",
+        "director": "Damon Albarn",
+        "studio": "Warner Music",
+        "box_office": "$500,000,000"
     },
     {
         "title": "Inception",
         "overview": "Un ladrón que roba secretos a través del uso de la tecnología de sueños.",
         "year": 2010,
         "rating": 8.8,
-        "category": "Sci-Fi"
+        "category": "Sci-Fi",
+        "director": "Christopher Nolan",
+        "studio": "Warner Bros.",
+        "box_office": "$836,836,967"
     },
     {
         "title": "The Dark Knight",
         "overview": "Batman enfrenta al Joker en una batalla épica por Gotham.",
         "year": 2008,
         "rating": 9.0,
-        "category": "Action"
+        "category": "Action",
+        "director": "Christopher Nolan",
+        "studio": "Warner Bros.",
+        "box_office": "$1,005,973,645"
     },
     {
         "title": "Interstellar",
         "overview": "Un grupo de astronautas viaja a través de un agujero de gusano en busca de un nuevo hogar para la humanidad.",
         "year": 2014,
         "rating": 8.6,
-        "category": "Sci-Fi"
+        "category": "Sci-Fi",
+        "director": "Christopher Nolan",
+        "studio": "Paramount Pictures",
+        "box_office": "$701,729,206"
     },
     {
         "title": "The Matrix",
         "overview": "Un programador descubre que el mundo en el que vive es una simulación creada por máquinas.",
         "year": 1999,
         "rating": 8.7,
-        "category": "Action"
+        "category": "Action",
+        "director": "The Wachowskis",
+        "studio": "Warner Bros.",
+        "box_office": "$463,517,383"
     },
     {
         "title": "The Godfather",
         "overview": "La historia de la familia Corleone, una de las más poderosas de la mafia italoamericana.",
         "year": 1972,
         "rating": 9.2,
-        "category": "Crime"
+        "category": "Crime",
+        "director": "Francis Ford Coppola",
+        "studio": "Paramount Pictures",
+        "box_office": "$246,120,974"
     },
     {
         "title": "Pulp Fiction",
         "overview": "Las vidas de dos matones, un boxeador y una pareja de criminales se entrelazan en esta historia no lineal.",
         "year": 1994,
         "rating": 8.9,
-        "category": "Crime"
+        "category": "Crime",
+        "director": "Quentin Tarantino",
+        "studio": "Miramax Films",
+        "box_office": "$213,928,762"
     },
     {
         "title": "Forrest Gump",
         "overview": "La vida de Forrest Gump, un hombre con un bajo coeficiente intelectual que presencia momentos clave de la historia.",
         "year": 1994,
         "rating": 8.8,
-        "category": "Drama"
+        "category": "Drama",
+        "director": "Robert Zemeckis",
+        "studio": "Paramount Pictures",
+        "box_office": "$678,226,465"
     },
     {
         "title": "Fight Club",
         "overview": "Un hombre insomne forma un club de lucha clandestino con un vendedor de jabón.",
         "year": 1999,
         "rating": 8.8,
-        "category": "Drama"
+        "category": "Drama",
+        "director": "David Fincher",
+        "studio": "20th Century Fox",
+        "box_office": "$101,209,702"
     },
     {
         "title": "The Shawshank Redemption",
         "overview": "La historia de un hombre injustamente encarcelado que desarrolla una amistad con otro prisionero.",
         "year": 1994,
         "rating": 9.3,
-        "category": "Drama"
+        "category": "Drama",
+        "director": "Frank Darabont",
+        "studio": "Columbia Pictures",
+        "box_office": "$58,500,000"
     },
     {
         "title": "Star Wars: A New Hope",
         "overview": "Un joven granjero se une a una lucha intergaláctica para destruir la estación espacial del Imperio.",
         "year": 1977,
         "rating": 8.6,
-        "category": "Sci-Fi"
+        "category": "Sci-Fi",
+        "director": "George Lucas",
+        "studio": "Lucasfilm",
+        "box_office": "$775,398,007"
     },
     {
         "title": "The Lord of the Rings: The Fellowship of the Ring",
         "overview": "Un joven hobbit y sus amigos emprenden una peligrosa misión para destruir un anillo maldito.",
         "year": 2001,
         "rating": 8.8,
-        "category": "Fantasy"
+        "category": "Fantasy",
+        "director": "Peter Jackson",
+        "studio": "New Line Cinema",
+        "box_office": "$897,690,072"
     },
     {
         "title": "The Silence of the Lambs",
         "overview": "Una joven agente del FBI busca la ayuda de un asesino en serie para capturar a otro asesino.",
         "year": 1991,
         "rating": 8.6,
-        "category": "Thriller"
+        "category": "Thriller",
+        "director": "Jonathan Demme",
+        "studio": "Orion Pictures",
+        "box_office": "$272,742,922"
     },
     {
         "title": "Schindler's List",
         "overview": "La historia real de Oskar Schindler, quien salvó a más de mil judíos durante el Holocausto.",
         "year": 1993,
         "rating": 9.0,
-        "category": "Biography"
+        "category": "Biography",
+        "director": "Steven Spielberg",
+        "studio": "Universal Pictures",
+        "box_office": "$322,161,245"
     },
     {
         "title": "Gladiator",
         "overview": "Un general romano es traicionado y busca venganza en el coliseo como gladiador.",
         "year": 2000,
         "rating": 8.5,
-        "category": "Action"
+        "category": "Action",
+        "director": "Ridley Scott",
+        "studio": "DreamWorks Pictures",
+        "box_office": "$460,583,960"
     },
     {
         "title": "The Green Mile",
         "overview": "Un guardia de prisión se ve afectado por un recluso con habilidades sobrenaturales en el corredor de la muerte.",
         "year": 1999,
         "rating": 8.6,
-        "category": "Drama"
+        "category": "Drama",
+        "director": "Frank Darabont",
+        "studio": "Warner Bros.",
+        "box_office": "$286,801,374"
     },
     {
-        "title": "Eternal Sunshine of the Spotless Mind",
-        "overview": "Una pareja se somete a un procedimiento para borrar los recuerdos del otro después de su ruptura.",
-        "year": 2004,
-        "rating": 8.3,
-        "category": "Drama"
+        "title": "Saving Private Ryan",
+        "overview": "Durante la invasión de Normandía en la Segunda Guerra Mundial, un grupo de soldados busca rescatar a un paracaidista.",
+        "year": 1998,
+        "rating": 8.6,
+        "category": "War",
+        "director": "Steven Spielberg",
+        "studio": "DreamWorks Pictures",
+        "box_office": "$481,840,909"
     },
     {
-        "title": "The Revenant",
-        "overview": "Un explorador lucha por sobrevivir en la naturaleza salvaje después de ser atacado por un oso.",
-        "year": 2015,
+        "title": "Jurassic Park",
+        "overview": "Un parque temático con dinosaurios clonados enfrenta un desastre cuando las criaturas escapan.",
+        "year": 1993,
+        "rating": 8.2,
+        "category": "Sci-Fi",
+        "director": "Steven Spielberg",
+        "studio": "Universal Pictures",
+        "box_office": "$1,046,132,472"
+    },
+    {
+        "title": "The Avengers",
+        "overview": "Un equipo de superhéroes se une para salvar la Tierra de una invasión alienígena liderada por Loki.",
+        "year": 2012,
         "rating": 8.0,
-        "category": "Adventure"
+        "category": "Action",
+        "director": "Joss Whedon",
+        "studio": "Marvel Studios",
+        "box_office": "$1,518,812,988"
     },
     {
-        "title": "Whiplash",
-        "overview": "Un joven baterista de jazz se enfrenta a un exigente instructor en su búsqueda de la perfección.",
-        "year": 2014,
+        "title": "The Lion King",
+        "overview": "Un joven león príncipe huye de su reino solo para aprender el verdadero significado de la responsabilidad y la valentía.",
+        "year": 1994,
         "rating": 8.5,
-        "category": "Drama"
+        "category": "Animation",
+        "director": "Roger Allers, Rob Minkoff",
+        "studio": "Walt Disney Pictures",
+        "box_office": "$968,483,777"
     },
     {
-        "title": "The Grand Budapest Hotel",
-        "overview": "Las aventuras de un conserje legendario y su joven protegido en un famoso hotel europeo.",
-        "year": 2014,
+        "title": "Inglourious Basterds",
+        "overview": "En la Francia ocupada por los nazis durante la Segunda Guerra Mundial, un plan para asesinar a los líderes nazis se pone en marcha.",
+        "year": 2009,
+        "rating": 8.3,
+        "category": "Adventure",
+        "director": "Quentin Tarantino",
+        "studio": "Universal Pictures",
+        "box_office": "$321,455,689"
+    },
+    {
+        "title": "The Departed",
+        "overview": "Un policía encubierto y un topo en la policía intentan identificarse mutuamente mientras se infiltran en una banda irlandesa en Boston.",
+        "year": 2006,
+        "rating": 8.5,
+        "category": "Crime",
+        "director": "Martin Scorsese",
+        "studio": "Warner Bros.",
+        "box_office": "$291,465,034"
+    },
+    {
+        "title": "Back to the Future",
+        "overview": "Un adolescente es enviado accidentalmente 30 años atrás en un DeLorean modificado y debe asegurarse de que sus padres se enamoren para volver al presente.",
+        "year": 1985,
+        "rating": 8.5,
+        "category": "Sci-Fi",
+        "director": "Robert Zemeckis",
+        "studio": "Universal Pictures",
+        "box_office": "$380,607,692"
+    },
+    {
+        "title": "The Usual Suspects",
+        "overview": "Un estafador cuenta a la policía una complicada historia sobre los eventos que llevaron a un tiroteo y un incendio en un barco.",
+        "year": 1995,
+        "rating": 8.5,
+        "category": "Crime",
+        "director": "Bryan Singer",
+        "studio": "Gramercy Pictures",
+        "box_office": "$23,341,568"
+    },
+    {
+        "title": "The Truman Show",
+        "overview": "Un hombre descubre que toda su vida ha sido un programa de televisión en vivo.",
+        "year": 1998,
         "rating": 8.1,
-        "category": "Comedy"
+        "category": "Comedy-Drama",
+        "director": "Peter Weir",
+        "studio": "Paramount Pictures",
+        "box_office": "$264,118,201"
+    },
+    {
+        "title": "The Sixth Sense",
+        "overview": "Un psicólogo infantil intenta ayudar a un niño que afirma ver personas muertas.",
+        "year": 1999,
+        "rating": 8.1,
+        "category": "Thriller",
+        "director": "M. Night Shyamalan",
+        "studio": "Hollywood Pictures",
+        "box_office": "$672,806,292"
     },
     {
         "title": "La La Land",
         "overview": "Un pianista de jazz y una aspirante a actriz se enamoran mientras persiguen sus sueños en Los Ángeles.",
         "year": 2016,
         "rating": 8.0,
-        "category": "Musical"
+        "category": "Musical",
+        "director": "Damien Chazelle",
+        "studio": "Summit Entertainment",
+        "box_office": "$448,967,403"
     },
     {
-        "title": "The Departed",
-        "overview": "Un policía encubierto y un topo en la policía intentan identificarse mutuamente.",
-        "year": 2006,
+        "title": "The Grand Budapest Hotel",
+        "overview": "Las aventuras de un legendario conserje de un famoso hotel europeo y el joven empleado que se convierte en su protegido.",
+        "year": 2014,
+        "rating": 8.1,
+        "category": "Comedy",
+        "director": "Wes Anderson",
+        "studio": "Fox Searchlight Pictures",
+        "box_office": "$172,936,984"
+    },
+    {
+        "title": "Parasite",
+        "overview": "Una familia pobre se infiltra en el hogar de una familia rica, con consecuencias inesperadas.",
+        "year": 2019,
         "rating": 8.5,
-        "category": "Crime"
-    },
-    {
-        "title": "Memento",
-        "overview": "Un hombre con pérdida de memoria a corto plazo busca al asesino de su esposa.",
-        "year": 2000,
-        "rating": 8.4,
-        "category": "Thriller"
-    },
-    {
-        "title": "The Prestige",
-        "overview": "Dos magos rivales se obsesionan con crear el mejor truco de ilusionismo.",
-        "year": 2006,
-        "rating": 8.5,
-        "category": "Mystery"
-    },
-    {
-        "title": "Blade Runner 2049",
-        "overview": "Un blade runner descubre un secreto que podría sumir a la sociedad en el caos.",
-        "year": 2017,
-        "rating": 8.0,
-        "category": "Sci-Fi"
-    },
-    {
-        "title": "The Shining",
-        "overview": "Una familia aislada en un hotel de montaña se enfrenta a fuerzas sobrenaturales.",
-        "year": 1980,
-        "rating": 8.4,
-        "category": "Horror"
-    },
-    {
-        "title": "Inglourious Basterds",
-        "overview": "En la Francia ocupada por los nazis, un grupo de soldados judíos planea asesinar a líderes nazis.",
-        "year": 2009,
-        "rating": 8.3,
-        "category": "War"
+        "category": "Thriller",
+        "director": "Bong Joon-ho",
+        "studio": "CJ Entertainment",
+        "box_office": "$258,773,928"
     },
     {
         "title": "The Social Network",
         "overview": "La historia de la creación de Facebook y los conflictos legales que surgieron.",
         "year": 2010,
         "rating": 7.7,
-        "category": "Biography"
+        "category": "Biography",
+        "director": "David Fincher",
+        "studio": "Columbia Pictures",
+        "box_office": "$224,920,315"
     },
     {
-        "title": "Her",
-        "overview": "Un hombre desarrolla una relación con un sistema operativo con inteligencia artificial.",
-        "year": 2013,
+        "title": "Whiplash",
+        "overview": "Un joven baterista de jazz aspira a la perfección bajo la tutela de un instructor implacable.",
+        "year": 2014,
+        "rating": 8.5,
+        "category": "Drama",
+        "director": "Damien Chazelle",
+        "studio": "Sony Pictures Classics",
+        "box_office": "$49,054,705"
+    },
+    {
+        "title": "The Revenant",
+        "overview": "Un explorador lucha por sobrevivir y vengarse después de ser abandonado por su equipo tras un ataque de oso.",
+        "year": 2015,
         "rating": 8.0,
-        "category": "Sci-Fi"
+        "category": "Adventure",
+        "director": "Alejandro González Iñárritu",
+        "studio": "20th Century Fox",
+        "box_office": "$533,000,000"
     },
     {
-        "title": "The Wolf of Wall Street",
-        "overview": "La historia real de un corredor de bolsa y su vida de excesos y corrupción.",
-        "year": 2013,
-        "rating": 8.2,
-        "category": "Biography"
-    },
-    {
-        "title": "Pan's Labyrinth",
-        "overview": "Una niña se adentra en un mundo fantástico para escapar de la realidad de la posguerra española.",
-        "year": 2006,
-        "rating": 8.2,
-        "category": "Fantasy"
-    },
-    {
-        "title": "The Truman Show",
-        "overview": "Un hombre descubre que toda su vida ha sido un reality show televisivo.",
-        "year": 1998,
-        "rating": 8.1,
-        "category": "Comedy"
-    },
-    {
-        "title": "12 Angry Men",
-        "overview": "Un jurado debe decidir el destino de un joven acusado de asesinato.",
-        "year": 1957,
-        "rating": 9.0,
-        "category": "Drama"
-    },
-    {
-        "title": "Amélie",
-        "overview": "Una camarera parisina decide cambiar las vidas de quienes la rodean para mejor.",
-        "year": 2001,
+        "title": "Eternal Sunshine of the Spotless Mind",
+        "overview": "Una pareja se somete a un procedimiento para borrar los recuerdos el uno del otro después de su ruptura.",
+        "year": 2004,
         "rating": 8.3,
-        "category": "Romance"
+        "category": "Sci-Fi",
+        "director": "Michel Gondry",
+        "studio": "Focus Features",
+        "box_office": "$74,036,715"
+    },
+    {
+        "title": "The Prestige",
+        "overview": "Dos magos rivales se obsesionan con descubrir los secretos del otro, con consecuencias trágicas.",
+        "year": 2006,
+        "rating": 8.5,
+        "category": "Mystery",
+        "director": "Christopher Nolan",
+        "studio": "Warner Bros. Pictures",
+        "box_office": "$109,676,311"
     },
     {
         "title": "Spirited Away",
-        "overview": "Una niña se encuentra atrapada en un mundo mágico habitado por espíritus y criaturas fantásticas.",
+        "overview": "Una niña se encuentra atrapada en un mundo mágico y debe trabajar en una casa de baños para espíritus para liberar a sus padres.",
         "year": 2001,
         "rating": 8.6,
-        "category": "Animation"
+        "category": "Animation",
+        "director": "Hayao Miyazaki",
+        "studio": "Studio Ghibli",
+        "box_office": "$395,802,070"
     },
     {
-        "title": "The Usual Suspects",
-        "overview": "La policía interroga al único superviviente de una masacre en busca del misterioso criminal Keyser Söze.",
-        "year": 1995,
-        "rating": 8.5,
-        "category": "Mystery"
+        "title": "The Shining",
+        "overview": "Una familia se muda a un hotel aislado para el invierno donde una presencia siniestra influye en el padre hacia la violencia.",
+        "year": 1980,
+        "rating": 8.4,
+        "category": "Horror",
+        "director": "Stanley Kubrick",
+        "studio": "Warner Bros.",
+        "box_office": "$47,302,331"
+    },
+    {
+        "title": "Goodfellas",
+        "overview": "La historia de Henry Hill y su vida en la mafia, cubriendo su relación con su esposa Karen y sus compañeros mafiosos.",
+        "year": 1990,
+        "rating": 8.7,
+        "category": "Crime",
+        "director": "Martin Scorsese",
+        "studio": "Warner Bros.",
+        "box_office": "$47,033,086"
+    },
+    {
+        "title": "The Breakfast Club",
+        "overview": "Cinco estudiantes de secundaria con diferentes personalidades pasan un sábado en detención juntos y descubren que tienen más en común de lo que pensaban.",
+        "year": 1985,
+        "rating": 7.8,
+        "category": "Comedy-Drama",
+        "director": "John Hughes",
+        "studio": "Universal Pictures",
+        "box_office": "$51,525,171"
     }
 ]

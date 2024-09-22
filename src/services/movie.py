@@ -31,6 +31,9 @@ class MovieService():
         result.year = movie.year
         result.rating = movie.rating
         result.category = movie.category
+        result.director = movie.director
+        result.studio = movie.studio
+        result.box_office = movie.box_office
         self.db.commit()
         return result
 
