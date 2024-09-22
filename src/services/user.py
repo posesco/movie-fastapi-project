@@ -10,4 +10,12 @@ class UserService():
         new_user = UserModel(**user.model_dump())
         self.db.add(new_user)
         self.db.commit()
-        return new_user.username
+        return new_user
+
+    def get_users(self):
+        result = self.db.query(UserModel).all()
+        return result
+   
+    def get_user(self, username):
+        result = self.db.query(UserModel).filter(UserModel.username == username).first()
+        return result

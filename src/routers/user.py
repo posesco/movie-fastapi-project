@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from middlewares.jwt_bearer import JWTBearer
 from jwt_manager import create_token
+from fastapi.encoders import jsonable_encoder
 import os
 from dotenv import load_dotenv
 from schemas.user import User
 from services.user import UserService
 from config.database import Session
+from typing import List
 
 
 load_dotenv()
@@ -16,7 +17,7 @@ ADMIN_PASS = os.getenv("ADMIN_PASS")
 
 user_router = APIRouter()
    
-@user_router.post('/login', tags=['Users'])
+@user_router.post('/login', tags=['users'])
 def login(user: User):
     if user.password == ADMIN_PASS and (user.email == ADMIN_EMAIL or user.username == ADMIN_USER):
         token: str = create_token(user.model_dump())
@@ -24,10 +25,28 @@ def login(user: User):
     else:
         return JSONResponse(status_code=404, content={"message" : "Usuario o contraseña no encontrada"})
         
-@user_router.post('/register', tags=['Users'], dependencies=[Depends(JWTBearer())])
+@user_router.post('/register', tags=['users'])
 def create_user(user: User) -> dict:
     db = Session()
-    new_user = UserService(db).create_user(user)
+    UserService(db).create_user(user)
     db.close()
-    return JSONResponse(status_code=201, content={"message": f"Se registro exitosamente el usuario {new_user}"})
-        
+    return JSONResponse(status_code=201, content={"message": "Usuario creado exitosamente"})
+
+@user_router.get('/users', tags=['users'], response_model=List[User], status_code=200)
+def get_users() -> List[User]:
+    db = Session()
+    result= UserService(db).get_users()
+    if result:
+        return JSONResponse(status_code=200, content=jsonable_encoder(result))
+    else:
+        return JSONResponse(status_code=404, content={"message" : "No hay usuarios registrados"})
+
+@user_router.get('/users/{username}', tags=['users'], response_model=List[User], status_code=200)
+def get_user(username: str) -> List[User]:
+    db = Session()
+    result= UserService(db).get_user(username)
+    db.close()
+    if result:
+        return JSONResponse(status_code=200, content=jsonable_encoder(result))
+    else:
+        return JSONResponse(status_code=404, content={"message" : f"Usuario {username} no encontrada"})

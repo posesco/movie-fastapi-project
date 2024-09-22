@@ -21,7 +21,7 @@ class Movie(BaseModel):
                 "overview": "Este es un resumen de la peli",
                 "year": 2024,
                 "rating": 8.8,
-                "category": "Una Categoria X",
+                "category": "Una Categoria X:X",
                 "director": "Director X",
                 "studio": "Studio X",
                 "box_office": "$1,046,132,472"
