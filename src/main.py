@@ -23,7 +23,6 @@ app = FastAPI(
     
 )
 
-
 @app.get('/', tags=['home'], status_code=200)
 async def root():
     return JSONResponse(status_code=200, content={"message": "Hi, Welcome to the movie API"})

@@ -25,7 +25,7 @@ def login(user: User):
     else:
         return JSONResponse(status_code=404, content={"message" : "Usuario o contraseña no encontrada"})
         
-@user_router.post('/register', tags=['users'])
+@user_router.post('/register', tags=['users'],response_model=dict, status_code=201)
 def create_user(user: User) -> dict:
     db = Session()
     UserService(db).create_user(user)
