@@ -33,6 +33,16 @@ def create_user(user: User) -> dict:
     db.close()
     return JSONResponse(status_code=201, content={"message": "Usuario creado exitosamente"})
 
+@user_router.delete('/users/{id}', tags=['users'], response_model=dict, status_code=200, dependencies=[Depends(JWTBearer())])
+def delete_user(id: str ) -> dict:
+    db = Session()
+    result = UserService(db).delete_user(id)
+    if result:
+        db.close()
+        return JSONResponse(status_code=200, content={"message" : "Usuario eliminado"})
+    else:
+        return JSONResponse(status_code=404, content={"message" : "Id de usuario no encontrado"})
+
 @user_router.get('/users', tags=['users'], response_model=List[User], status_code=200, dependencies=[Depends(JWTBearer())])
 def get_users() -> List[User]:
     db = Session()

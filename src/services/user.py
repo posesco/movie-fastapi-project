@@ -17,6 +17,12 @@ class UserService():
         self.db.add(new_user)
         self.db.commit()
         return new_user
+    
+    def delete_user(self, id):
+        result = self.db.query(UserModel).filter(UserModel.id == id).first()
+        self.db.delete(result)
+        self.db.commit()
+        return result
 
     def get_users(self):
         result = self.db.query(UserModel).all()
