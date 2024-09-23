@@ -6,14 +6,14 @@ class Movie(Base):
     __tablename__ = "movies"
     
     id = Column(Integer, primary_key = True, autoincrement=True)
-    title = Column(String, nullable=False)
-    overview = Column(String, nullable=False)
+    title = Column(String(100), nullable=False)
+    overview = Column(String(350), nullable=False)
     year = Column(Integer, nullable=False)
     rating = Column(Float, nullable=False)
-    category = Column(String, nullable=False)
-    director = Column(String, nullable=False)
-    studio = Column(String, nullable=False)
-    box_office = Column(String, nullable=True)
+    category = Column(String(30), nullable=False)
+    director = Column(String(30), nullable=False)
+    studio = Column(String(60), nullable=False)
+    box_office = Column(Integer, nullable=False)
     
 class GenderEnum(enum.Enum):
     male = "Masculino"

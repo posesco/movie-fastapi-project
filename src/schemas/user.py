@@ -17,10 +17,10 @@ class User(BaseModel):
         return values
 
 class UserCreate(BaseModel):
-    username: str = Field(min_length=3, max_length=100)
+    username: str = Field(min_length=5, max_length=100)
     email: EmailStr
     password: str = Field(min_length=5, max_length=100)
-    
+
     model_config = ConfigDict(
         json_schema_extra={
             "example": {

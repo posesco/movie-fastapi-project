@@ -5,11 +5,12 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-ADMIN_EMAIL= os.getenv("ADMIN_EMAIL")
+ADMIN_PASS = os.getenv("ADMIN_PASS")
 
 class JWTBearer(HTTPBearer):
     async def __call__(self, request: Request):
         auth = await super().__call__(request)
         data = validate_token(auth.credentials)
-        if data['email'] != ADMIN_EMAIL:
+        print(data)
+        if data['password'] != ADMIN_PASS:
             raise HTTPException(status_code=403, detail="Credenciales invalidas")

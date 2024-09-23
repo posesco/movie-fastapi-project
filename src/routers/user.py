@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from middlewares.jwt_bearer import JWTBearer
 from fastapi.responses import JSONResponse
 from jwt_manager import create_token
 from fastapi.encoders import jsonable_encoder
@@ -25,14 +26,14 @@ def login(user: User):
     else:
         return JSONResponse(status_code=404, content={"message" : "Usuario o contraseña no encontrada"})
         
-@user_router.post('/register', tags=['users'],response_model=dict, status_code=201)
+@user_router.post('/register', tags=['users'], response_model=dict, status_code=201, dependencies=[Depends(JWTBearer())])
 def create_user(user: User) -> dict:
     db = Session()
     UserService(db).create_user(user)
     db.close()
     return JSONResponse(status_code=201, content={"message": "Usuario creado exitosamente"})
 
-@user_router.get('/users', tags=['users'], response_model=List[User], status_code=200)
+@user_router.get('/users', tags=['users'], response_model=List[User], status_code=200, dependencies=[Depends(JWTBearer())])
 def get_users() -> List[User]:
     db = Session()
     result= UserService(db).get_users()
@@ -41,7 +42,7 @@ def get_users() -> List[User]:
     else:
         return JSONResponse(status_code=404, content={"message" : "No hay usuarios registrados"})
 
-@user_router.get('/users/{username}', tags=['users'], response_model=List[User], status_code=200)
+@user_router.get('/users/{username}', tags=['users'], response_model=List[User], status_code=200, dependencies=[Depends(JWTBearer())])
 def get_user(username: str) -> List[User]:
     db = Session()
     result= UserService(db).get_user(username)
@@ -49,4 +50,4 @@ def get_user(username: str) -> List[User]:
     if result:
         return JSONResponse(status_code=200, content=jsonable_encoder(result))
     else:
-        return JSONResponse(status_code=404, content={"message" : f"Usuario {username} no encontrada"})
+        return JSONResponse(status_code=404, content={"message" : f"Usuario {username} no encontrado"})

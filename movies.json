@@ -7,7 +7,7 @@
         "category": "Action",
         "director": "James Cameron",
         "studio": "20th Century Fox",
-        "box_office": "$2,847,246,203"
+        "box_office": 2847246203
     },
     {
         "title": "Titanic",
@@ -17,7 +17,7 @@
         "category": "Drama",
         "director": "James Cameron",
         "studio": "Paramount Pictures",
-        "box_office": "$2,195,169,307"
+        "box_office": 2195169307
     },
     {
         "title": "Gorillaz",
@@ -27,7 +27,7 @@
         "category": "Fiction",
         "director": "Damon Albarn",
         "studio": "Warner Music",
-        "box_office": "$500,000,000"
+        "box_office": 500000000
     },
     {
         "title": "Inception",
@@ -37,7 +37,7 @@
         "category": "Sci-Fi",
         "director": "Christopher Nolan",
         "studio": "Warner Bros.",
-        "box_office": "$836,836,967"
+        "box_office": 836836967
     },
     {
         "title": "The Dark Knight",
@@ -47,7 +47,7 @@
         "category": "Action",
         "director": "Christopher Nolan",
         "studio": "Warner Bros.",
-        "box_office": "$1,005,973,645"
+        "box_office": 1005973645
     },
     {
         "title": "Interstellar",
@@ -57,7 +57,7 @@
         "category": "Sci-Fi",
         "director": "Christopher Nolan",
         "studio": "Paramount Pictures",
-        "box_office": "$701,729,206"
+        "box_office": 701729206
     },
     {
         "title": "The Matrix",
@@ -67,7 +67,7 @@
         "category": "Action",
         "director": "The Wachowskis",
         "studio": "Warner Bros.",
-        "box_office": "$463,517,383"
+        "box_office": 463517383
     },
     {
         "title": "The Godfather",
@@ -77,7 +77,7 @@
         "category": "Crime",
         "director": "Francis Ford Coppola",
         "studio": "Paramount Pictures",
-        "box_office": "$246,120,974"
+        "box_office": 246120974
     },
     {
         "title": "Pulp Fiction",
@@ -87,7 +87,7 @@
         "category": "Crime",
         "director": "Quentin Tarantino",
         "studio": "Miramax Films",
-        "box_office": "$213,928,762"
+        "box_office": 213928762
     },
     {
         "title": "Forrest Gump",
@@ -97,7 +97,7 @@
         "category": "Drama",
         "director": "Robert Zemeckis",
         "studio": "Paramount Pictures",
-        "box_office": "$678,226,465"
+        "box_office": 678226465
     },
     {
         "title": "Fight Club",
@@ -107,7 +107,7 @@
         "category": "Drama",
         "director": "David Fincher",
         "studio": "20th Century Fox",
-        "box_office": "$101,209,702"
+        "box_office": 101209702
     },
     {
         "title": "The Shawshank Redemption",
@@ -117,7 +117,7 @@
         "category": "Drama",
         "director": "Frank Darabont",
         "studio": "Columbia Pictures",
-        "box_office": "$58,500,000"
+        "box_office": 58500000
     },
     {
         "title": "Star Wars: A New Hope",
@@ -127,7 +127,7 @@
         "category": "Sci-Fi",
         "director": "George Lucas",
         "studio": "Lucasfilm",
-        "box_office": "$775,398,007"
+        "box_office": 775398007
     },
     {
         "title": "The Lord of the Rings: The Fellowship of the Ring",
@@ -137,7 +137,7 @@
         "category": "Fantasy",
         "director": "Peter Jackson",
         "studio": "New Line Cinema",
-        "box_office": "$897,690,072"
+        "box_office": 897690072
     },
     {
         "title": "The Silence of the Lambs",
@@ -147,7 +147,7 @@
         "category": "Thriller",
         "director": "Jonathan Demme",
         "studio": "Orion Pictures",
-        "box_office": "$272,742,922"
+        "box_office": 272742922
     },
     {
         "title": "Schindler's List",
@@ -157,7 +157,7 @@
         "category": "Biography",
         "director": "Steven Spielberg",
         "studio": "Universal Pictures",
-        "box_office": "$322,161,245"
+        "box_office": 322161245
     },
     {
         "title": "Gladiator",
@@ -167,7 +167,7 @@
         "category": "Action",
         "director": "Ridley Scott",
         "studio": "DreamWorks Pictures",
-        "box_office": "$460,583,960"
+        "box_office": 460583960
     },
     {
         "title": "The Green Mile",
@@ -177,7 +177,7 @@
         "category": "Drama",
         "director": "Frank Darabont",
         "studio": "Warner Bros.",
-        "box_office": "$286,801,374"
+        "box_office": 286801374
     },
     {
         "title": "Saving Private Ryan",
@@ -187,7 +187,7 @@
         "category": "War",
         "director": "Steven Spielberg",
         "studio": "DreamWorks Pictures",
-        "box_office": "$481,840,909"
+        "box_office": 481840909
     },
     {
         "title": "Jurassic Park",
@@ -197,7 +197,7 @@
         "category": "Sci-Fi",
         "director": "Steven Spielberg",
         "studio": "Universal Pictures",
-        "box_office": "$1,046,132,472"
+        "box_office": 1046132472
     },
     {
         "title": "The Avengers",
@@ -207,7 +207,7 @@
         "category": "Action",
         "director": "Joss Whedon",
         "studio": "Marvel Studios",
-        "box_office": "$1,518,812,988"
+        "box_office": 1518812988
     },
     {
         "title": "The Lion King",
@@ -217,7 +217,7 @@
         "category": "Animation",
         "director": "Roger Allers, Rob Minkoff",
         "studio": "Walt Disney Pictures",
-        "box_office": "$968,483,777"
+        "box_office": 968483777
     },
     {
         "title": "Inglourious Basterds",
@@ -227,7 +227,7 @@
         "category": "Adventure",
         "director": "Quentin Tarantino",
         "studio": "Universal Pictures",
-        "box_office": "$321,455,689"
+        "box_office": 321455689
     },
     {
         "title": "The Departed",
@@ -237,7 +237,7 @@
         "category": "Crime",
         "director": "Martin Scorsese",
         "studio": "Warner Bros.",
-        "box_office": "$291,465,034"
+        "box_office": 291465034
     },
     {
         "title": "Back to the Future",
@@ -247,7 +247,7 @@
         "category": "Sci-Fi",
         "director": "Robert Zemeckis",
         "studio": "Universal Pictures",
-        "box_office": "$380,607,692"
+        "box_office": 380607692
     },
     {
         "title": "The Usual Suspects",
@@ -257,7 +257,7 @@
         "category": "Crime",
         "director": "Bryan Singer",
         "studio": "Gramercy Pictures",
-        "box_office": "$23,341,568"
+        "box_office": 23341568
     },
     {
         "title": "The Truman Show",
@@ -267,7 +267,7 @@
         "category": "Comedy-Drama",
         "director": "Peter Weir",
         "studio": "Paramount Pictures",
-        "box_office": "$264,118,201"
+        "box_office": 264118201
     },
     {
         "title": "The Sixth Sense",
@@ -277,7 +277,7 @@
         "category": "Thriller",
         "director": "M. Night Shyamalan",
         "studio": "Hollywood Pictures",
-        "box_office": "$672,806,292"
+        "box_office": 672806292
     },
     {
         "title": "La La Land",
@@ -287,7 +287,7 @@
         "category": "Musical",
         "director": "Damien Chazelle",
         "studio": "Summit Entertainment",
-        "box_office": "$448,967,403"
+        "box_office": 448967403
     },
     {
         "title": "The Grand Budapest Hotel",
@@ -297,7 +297,7 @@
         "category": "Comedy",
         "director": "Wes Anderson",
         "studio": "Fox Searchlight Pictures",
-        "box_office": "$172,936,984"
+        "box_office": 172936984
     },
     {
         "title": "Parasite",
@@ -307,7 +307,7 @@
         "category": "Thriller",
         "director": "Bong Joon-ho",
         "studio": "CJ Entertainment",
-        "box_office": "$258,773,928"
+        "box_office": 258773928
     },
     {
         "title": "The Social Network",
@@ -317,7 +317,7 @@
         "category": "Biography",
         "director": "David Fincher",
         "studio": "Columbia Pictures",
-        "box_office": "$224,920,315"
+        "box_office": 224920315
     },
     {
         "title": "Whiplash",
@@ -327,7 +327,7 @@
         "category": "Drama",
         "director": "Damien Chazelle",
         "studio": "Sony Pictures Classics",
-        "box_office": "$49,054,705"
+        "box_office": 49054705
     },
     {
         "title": "The Revenant",
@@ -337,7 +337,7 @@
         "category": "Adventure",
         "director": "Alejandro González Iñárritu",
         "studio": "20th Century Fox",
-        "box_office": "$533,000,000"
+        "box_office": 533000000
     },
     {
         "title": "Eternal Sunshine of the Spotless Mind",
@@ -347,7 +347,7 @@
         "category": "Sci-Fi",
         "director": "Michel Gondry",
         "studio": "Focus Features",
-        "box_office": "$74,036,715"
+        "box_office": 74036715
     },
     {
         "title": "The Prestige",
@@ -357,7 +357,7 @@
         "category": "Mystery",
         "director": "Christopher Nolan",
         "studio": "Warner Bros. Pictures",
-        "box_office": "$109,676,311"
+        "box_office": 109676311
     },
     {
         "title": "Spirited Away",
@@ -367,7 +367,7 @@
         "category": "Animation",
         "director": "Hayao Miyazaki",
         "studio": "Studio Ghibli",
-        "box_office": "$395,802,070"
+        "box_office": 395802070
     },
     {
         "title": "The Shining",
@@ -377,7 +377,7 @@
         "category": "Horror",
         "director": "Stanley Kubrick",
         "studio": "Warner Bros.",
-        "box_office": "$47,302,331"
+        "box_office": 47302331
     },
     {
         "title": "Goodfellas",
@@ -387,7 +387,7 @@
         "category": "Crime",
         "director": "Martin Scorsese",
         "studio": "Warner Bros.",
-        "box_office": "$47,033,086"
+        "box_office": 47033086
     },
     {
         "title": "The Breakfast Club",
@@ -397,6 +397,106 @@
         "category": "Comedy-Drama",
         "director": "John Hughes",
         "studio": "Universal Pictures",
-        "box_office": "$51,525,171"
+        "box_office": 51525171
+    },
+    {
+        "title": "Mad Max: Fury Road",
+        "overview": "En un futuro post-apocalíptico, Max se une a una guerrera para escapar de un tirano y buscar la libertad.",
+        "year": 2015,
+        "rating": 8.1,
+        "category": "Action",
+        "director": "George Miller",
+        "studio": "Warner Bros.",
+        "box_office": 374736354
+    },
+    {
+        "title": "A Beautiful Mind",
+        "overview": "La vida de John Nash, un brillante pero asocial matemático, que lucha contra la esquizofrenia.",
+        "year": 2001,
+        "rating": 8.2,
+        "category": "Biography",
+        "director": "Ron Howard",
+        "studio": "Universal Pictures",
+        "box_office": 313542341
+    },
+    {
+        "title": "Black Panther",
+        "overview": "T'Challa, el nuevo rey de Wakanda, lucha por proteger su reino y el mundo exterior.",
+        "year": 2018,
+        "rating": 7.3,
+        "category": "Action",
+        "director": "Ryan Coogler",
+        "studio": "Marvel Studios",
+        "box_office": 1346913161
+    },
+    {
+        "title": "Coco",
+        "overview": "Un niño mexicano se adentra en la Tierra de los Muertos para descubrir el misterio detrás de su familia.",
+        "year": 2017,
+        "rating": 8.4,
+        "category": "Animation",
+        "director": "Lee Unkrich",
+        "studio": "Pixar Animation Studios",
+        "box_office": 807082196
+    },
+    {
+        "title": "The Wolf of Wall Street",
+        "overview": "La vida de excesos de Jordan Belfort, un corredor de bolsa que comete fraude.",
+        "year": 2013,
+        "rating": 8.2,
+        "category": "Biography",
+        "director": "Martin Scorsese",
+        "studio": "Paramount Pictures",
+        "box_office": 392000694
+    },
+    {
+        "title": "Her",
+        "overview": "Un hombre se enamora de un sistema operativo diseñado para satisfacer todas sus necesidades.",
+        "year": 2013,
+        "rating": 8.0,
+        "category": "Sci-Fi",
+        "director": "Spike Jonze",
+        "studio": "Warner Bros.",
+        "box_office": 48000000
+    },
+    {
+        "title": "Get Out",
+        "overview": "Un joven afroamericano descubre un perturbador secreto cuando visita la casa de los padres de su novia.",
+        "year": 2017,
+        "rating": 7.7,
+        "category": "Thriller",
+        "director": "Jordan Peele",
+        "studio": "Universal Pictures",
+        "box_office": 255407969
+    },
+    {
+        "title": "Gravity",
+        "overview": "Dos astronautas quedan atrapados en el espacio después de que su nave es destruida.",
+        "year": 2013,
+        "rating": 7.7,
+        "category": "Sci-Fi",
+        "director": "Alfonso Cuarón",
+        "studio": "Warner Bros.",
+        "box_office": 723192705
+    },
+    {
+        "title": "The Imitation Game",
+        "overview": "La historia del matemático Alan Turing, quien descifró los códigos nazis durante la Segunda Guerra Mundial.",
+        "year": 2014,
+        "rating": 8.0,
+        "category": "Biography",
+        "director": "Morten Tyldum",
+        "studio": "The Weinstein Company",
+        "box_office": 233555708
+    },
+    {
+        "title": "Joker",
+        "overview": "La transformación de Arthur Fleck en el icónico villano Joker mientras enfrenta problemas de salud mental y pobreza.",
+        "year": 2019,
+        "rating": 8.4,
+        "category": "Drama",
+        "director": "Todd Phillips",
+        "studio": "Warner Bros.",
+        "box_office": 1074251311
     }
 ]
