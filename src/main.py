@@ -1,6 +1,6 @@
 from middlewares.error_handler import ErrorHandler
 from fastapi.responses import JSONResponse
-from config.database import (
+from config.db import (
     engine, 
     Base,
 )

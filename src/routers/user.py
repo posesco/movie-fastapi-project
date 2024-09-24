@@ -7,8 +7,8 @@ from fastapi import (
 from middlewares.jwt_bearer import JWTBearer
 from fastapi.responses import JSONResponse
 from services.user import UserService
-from jwt_manager import create_token
-from config.database import Session
+from config.security import create_token
+from config.db import Session
 from typing import (
     List, 
     Annotated,

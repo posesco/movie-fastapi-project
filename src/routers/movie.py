@@ -2,7 +2,7 @@ from fastapi.encoders import jsonable_encoder
 # from models.movie import Movie as MovieModel
 from fastapi import Path, Query, Depends
 from fastapi.responses import JSONResponse
-from config.database import Session
+from config.db import Session
 from fastapi import APIRouter
 from typing import List
 from middlewares.jwt_bearer import JWTBearer

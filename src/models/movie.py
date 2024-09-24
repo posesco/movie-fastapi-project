@@ -6,7 +6,7 @@ from sqlalchemy import (
     Date, 
     Enum,
 )
-from config.database import Base
+from config.db import Base
 import enum
 
 class Movie(Base):

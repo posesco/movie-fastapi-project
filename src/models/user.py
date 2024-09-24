@@ -3,7 +3,7 @@ from sqlalchemy import (
     String, 
     DateTime,
 )
-from config.database import Base
+from config.db import Base
 from datetime import datetime
 import uuid
 
