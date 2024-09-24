@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Form
 from middlewares.jwt_bearer import JWTBearer
 from fastapi.responses import JSONResponse
 from jwt_manager import create_token
@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from schemas.user import User
 from services.user import UserService
 from config.database import Session
-from typing import List
+from typing import List, Annotated
 
 
 load_dotenv()
@@ -18,8 +18,8 @@ ADMIN_PASS = os.getenv("ADMIN_PASS")
 
 user_router = APIRouter()
    
-@user_router.post('/login', tags=['users'])
-def login(user: User):
+@user_router.post('/login/', tags=['users'])
+def login(user: Annotated[User, Form()]):
     if user.password == ADMIN_PASS and (user.email == ADMIN_EMAIL or user.username == ADMIN_USER):
         token: str = create_token(user.model_dump())
         return JSONResponse(status_code=200, content=token)
