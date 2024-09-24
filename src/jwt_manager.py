@@ -1,5 +1,8 @@
-from jwt import encode, decode
 from dotenv import load_dotenv
+from jwt import (
+    encode, 
+    decode,
+)
 import os
 
 load_dotenv()

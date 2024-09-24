@@ -1,9 +1,12 @@
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-from config.database import engine, Base
 from middlewares.error_handler import ErrorHandler
+from fastapi.responses import JSONResponse
+from config.database import (
+    engine, 
+    Base,
+)
 from routers.movie import movie_router
 from routers.user import user_router
+from fastapi import FastAPI
 
 app = FastAPI(
     title = "Movie API with FastApi",

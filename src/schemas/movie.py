@@ -1,6 +1,10 @@
 
+from pydantic import (
+    BaseModel, 
+    ConfigDict, 
+    Field,
+)
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
 
 class Movie(BaseModel):

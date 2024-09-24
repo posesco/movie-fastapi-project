@@ -1,5 +1,9 @@
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator
-from typing import Optional
+from pydantic import (
+    BaseModel, 
+    ConfigDict, 
+    EmailStr, 
+    Field,
+)
 
 class User(BaseModel):
     username: str = Field(min_length=5, max_length=100) 

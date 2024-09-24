@@ -1,7 +1,11 @@
+from sqlalchemy import (
+    Column, 
+    String, 
+    DateTime,
+)
 from config.database import Base
-from sqlalchemy import Column, String, DateTime
-import uuid
 from datetime import datetime
+import uuid
 
 class User(Base):
     __tablename__ = "users"

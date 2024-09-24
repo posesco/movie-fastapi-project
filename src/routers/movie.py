@@ -1,10 +1,10 @@
-from fastapi import APIRouter
+from fastapi.encoders import jsonable_encoder
+# from models.movie import Movie as MovieModel
 from fastapi import Path, Query, Depends
 from fastapi.responses import JSONResponse
-from typing import List
 from config.database import Session
-from models.movie import Movie as MovieModel
-from fastapi.encoders import jsonable_encoder
+from fastapi import APIRouter
+from typing import List
 from middlewares.jwt_bearer import JWTBearer
 from services.movie import MovieService
 from schemas.movie import Movie

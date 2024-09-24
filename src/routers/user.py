@@ -1,14 +1,21 @@
-from fastapi import APIRouter, Depends, Form
+from fastapi.encoders import jsonable_encoder
+from fastapi import (
+    APIRouter, 
+    Depends, 
+    Form,
+)
 from middlewares.jwt_bearer import JWTBearer
 from fastapi.responses import JSONResponse
+from services.user import UserService
 from jwt_manager import create_token
-from fastapi.encoders import jsonable_encoder
-import os
+from config.database import Session
+from typing import (
+    List, 
+    Annotated,
+)
 from dotenv import load_dotenv
 from schemas.user import User
-from services.user import UserService
-from config.database import Session
-from typing import List, Annotated
+import os
 
 
 load_dotenv()
