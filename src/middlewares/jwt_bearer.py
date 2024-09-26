@@ -1,6 +1,6 @@
 from fastapi.security import HTTPBearer
 from fastapi import Request, HTTPException
-from jwt_manager import validate_token
+from config.security import validate_token
 import os
 from dotenv import load_dotenv
 

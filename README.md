@@ -96,15 +96,16 @@ El proyecto está preparado para ser ejecutado en contenedores Docker con **Mari
     ├── compose.yml
     ├── Dockerfile
     ├── LICENSE
+    ├── movie_api_db.sqlite
     ├── movies.json
     ├── pytest.ini
     ├── README.md
     ├── requirements.txt
     └── src
         ├── config
-        │   ├── database.py
-        │   └── __init__.py
-        ├── jwt_manager.py
+        │   ├── db.py
+        │   ├── __init__.py
+        │   └── security.py
         ├── main.py
         ├── middlewares
         │   ├── error_handler.py
@@ -114,7 +115,6 @@ El proyecto está preparado para ser ejecutado en contenedores Docker con **Mari
         │   ├── __init__.py
         │   ├── movie.py
         │   └── user.py
-        ├── movie_api_db.sqlite
         ├── requirements.txt
         ├── routers
         │   ├── __init__.py
@@ -133,7 +133,7 @@ El proyecto está preparado para ser ejecutado en contenedores Docker con **Mari
             ├── routers
             │   ├── __init__.py
             │   ├── movie.py
-            │   └── user.py
+            │   └── test_user.py
             └── test_main.py
     ```
 

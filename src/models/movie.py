@@ -1,5 +1,12 @@
-from config.database import Base
-from sqlalchemy import Column, Integer, String, Float, Date, Enum
+from sqlalchemy import (
+    Column, 
+    Integer, 
+    String, 
+    Float, 
+    Date, 
+    Enum,
+)
+from config.db import Base
 import enum
 
 class Movie(Base):
