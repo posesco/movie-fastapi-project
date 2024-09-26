@@ -53,6 +53,23 @@ def create_user(user: User) -> dict:
     )
 
 
+@user_router.patch(
+    "/users/pass",
+    tags=["users"],
+    response_model=dict,
+    status_code=200,
+    dependencies=[Depends(JWTBearer())],
+)
+def update_password(username: str, current_pass: str, new_pass: str) -> dict:
+    pass
+    # db = Sesszion()
+    # UserService(db).update_password(id, new_pass)
+    # db.close()
+    # return JSONResponse(
+    #     status_code=200, content={"message": "Usuario creado exitosamente"}
+    # )
+
+
 @user_router.delete(
     "/users/{id}",
     tags=["users"],
