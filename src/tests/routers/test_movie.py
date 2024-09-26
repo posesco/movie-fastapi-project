@@ -1,9 +1,9 @@
-from fastapi.encoders import jsonable_encoder
+from fastapi import APIRouter
 from fastapi import Path, Query, Depends
 from fastapi.responses import JSONResponse
-from config.db import Session
-from fastapi import APIRouter
 from typing import List
+from config.db import Session
+from fastapi.encoders import jsonable_encoder
 from middlewares.jwt_bearer import JWTBearer
 from services.movie import MovieService
 from schemas.movie import Movie
@@ -12,7 +12,7 @@ movie_router = APIRouter()
 
 
 @movie_router.get(
-    "/movies", tags=["movies"], response_model=List[Movie], status_code=200
+    "/movies", tags=["Get movies"], response_model=List[Movie], status_code=200
 )
 def get_movies() -> List[Movie]:
     db = Session()
@@ -21,12 +21,12 @@ def get_movies() -> List[Movie]:
         return JSONResponse(status_code=200, content=jsonable_encoder(result))
     else:
         return JSONResponse(
-            status_code=404, content={"message": "No hay peliculas registradas"}
+            status_code=404, content={"message": "No hay películas registradas"}
         )
 
 
 @movie_router.get(
-    "/movies/{id}", tags=["movies"], response_model=List[Movie], status_code=200
+    "/movies/{id}", tags=["Get movies"], response_model=List[Movie], status_code=200
 )
 def get_movie(id: int = Path(ge=1, le=2000)) -> List[Movie]:
     db = Session()
@@ -36,12 +36,12 @@ def get_movie(id: int = Path(ge=1, le=2000)) -> List[Movie]:
         return JSONResponse(status_code=200, content=jsonable_encoder(result))
     else:
         return JSONResponse(
-            status_code=404, content={"message": "Id de Peli no encontrada"}
+            status_code=404, content={"message": "Id de película no encontrada"}
         )
 
 
 @movie_router.get(
-    "/movies/", tags=["movies"], response_model=List[Movie], status_code=200
+    "/movies/", tags=["Get movies"], response_model=List[Movie], status_code=200
 )
 def get_movie_by_category(
     category: str = Query(min_length=5, max_length=30),
@@ -54,18 +54,18 @@ def get_movie_by_category(
             status_code=200,
             content={
                 "message": f"Se encontraron {len(result)} películas",
-                "Peliculas": jsonable_encoder(result),
+                "películas": jsonable_encoder(result),
             },
         )
     else:
         return JSONResponse(
-            status_code=404, content={"message": "Categoria no encontrada"}
+            status_code=404, content={"message": "Categoría no encontrada"}
         )
 
 
 @movie_router.post(
     "/movies/",
-    tags=["movies"],
+    tags=["Modify movies"],
     response_model=dict,
     status_code=201,
     dependencies=[Depends(JWTBearer())],
@@ -82,7 +82,7 @@ def create_movies(movies: List[Movie]) -> dict:
 
 @movie_router.put(
     "/movies/{id}",
-    tags=["movies"],
+    tags=["Modify movies"],
     response_model=dict,
     status_code=200,
     dependencies=[Depends(JWTBearer())],
@@ -93,17 +93,17 @@ def update_movie(id: int, movie: Movie) -> dict:
     if result:
         db.close()
         return JSONResponse(
-            status_code=200, content={"message": "Se actualizo la peli"}
+            status_code=200, content={"message": "Se actualizo la película"}
         )
     else:
         return JSONResponse(
-            status_code=404, content={"message": "Id de Peli no encontrada"}
+            status_code=404, content={"message": "Id de película no encontrada"}
         )
 
 
 @movie_router.delete(
     "/movies/{id}",
-    tags=["movies"],
+    tags=["Modify movies"],
     response_model=dict,
     status_code=200,
     dependencies=[Depends(JWTBearer())],
@@ -113,8 +113,10 @@ def delete_movie(id: int) -> dict:
     result = MovieService(db).delete_movie(id)
     if result:
         db.close()
-        return JSONResponse(status_code=200, content={"message": "Se elimino la peli"})
+        return JSONResponse(
+            status_code=200, content={"message": "Se elimino la película"}
+        )
     else:
         return JSONResponse(
-            status_code=404, content={"message": "Id de Peli no encontrada"}
+            status_code=404, content={"message": "Id de película no encontrada"}
         )
