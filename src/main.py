@@ -1,5 +1,5 @@
 from middlewares.error_handler import ErrorHandler
-from fastapi.responses import JSONResponse
+from fastapi.responses import RedirectResponse
 from config.db import (
     engine,
     Base,
@@ -7,11 +7,14 @@ from config.db import (
 from routers.movie import movie_router
 from routers.user import user_router
 from fastapi import FastAPI
+from datetime import datetime
+from schemas.health_check import HealthCheck
+from services.db import check_db
 
 app = FastAPI(
     title="Movie API with FastApi",
     version="0.0.1",
-    summary="""
+    description="""
     This is my initial project with FastAPI, in which I explore and learn
     about this powerful tool for building modern, high-performance APIs.
     """,
@@ -25,24 +28,25 @@ app = FastAPI(
         "url": "https://posesco.com/contact/",
         "email": "info@posesco.com",
     },
-    debug=True,
+    debug=False,
 )
-
-
-@app.get("/", tags=["home"], status_code=200)
-async def root():
-    return JSONResponse(
-        status_code=200, content={"message": "Hi, Welcome to the movie API"}
-    )
-
-
-@app.get("/healthcheck", tags=["Home"], status_code=200)
-async def healthcheck():
-    return JSONResponse(status_code=200, content={"message": "The API is LIVE!!"})
-
 
 app.add_middleware(ErrorHandler)
 app.include_router(user_router)
 app.include_router(movie_router)
+
+
+@app.get("/", tags=["health"], status_code=301)
+async def redirect_to_status():
+    return RedirectResponse(url="/_status/")
+
+
+@app.get("/_status/", response_model=HealthCheck, tags=["health"], status_code=200)
+async def health_check():
+    db_status = check_db()
+    return HealthCheck(
+        status="OK", version=app.version, db_status=db_status, timestamp=datetime.now()
+    )
+
 
 Base.metadata.create_all(bind=engine)

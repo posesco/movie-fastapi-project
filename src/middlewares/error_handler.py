@@ -1,4 +1,3 @@
-import traceback
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
@@ -14,15 +13,12 @@ class ErrorHandler(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response | JSONResponse:
         try:
             return await call_next(request)
-        except Exception as e:
-            return await self.handle_exception(request, e)
+        except Exception as exc:
+            return await self.handle_exception(request, exc)
 
     async def handle_exception(self, request: Request, exc: Exception) -> JSONResponse:
-        error_traceback = traceback.format_exc()
         request_details = self.get_request_details(request)
-        error_response = self.format_error_response(
-            exc, error_traceback, request_details
-        )
+        error_response = self.format_error_response(exc, request_details)
 
         self.log_error(exc, request_details)
 
@@ -40,12 +36,11 @@ class ErrorHandler(BaseHTTPMiddleware):
         }
 
     def format_error_response(
-        self, exc: Exception, traceback: str, request_details: Dict[str, Any]
+        self, exc: Exception, request_details: Dict[str, Any]
     ) -> Dict[str, Any]:
         return {
             "error": str(exc),
             "type": type(exc).__name__,
-            "traceback": traceback,
             "request": request_details,
         }
 

@@ -14,7 +14,7 @@ from typing import (
     Annotated,
 )
 from dotenv import load_dotenv
-from schemas.user import User
+from schemas.user import User, UserCreate
 import os
 
 
@@ -44,7 +44,7 @@ def login(user: Annotated[User, Form()]):
     status_code=201,
     dependencies=[Depends(JWTBearer())],
 )
-def create_user(user: User) -> dict:
+def create_user(user: UserCreate) -> dict:
     db = Session()
     UserService(db).create_user(user)
     db.close()
