@@ -34,7 +34,7 @@ def login(user: Annotated[User, Form()]):
 
 
 @user_router.post(
-    "/register",
+    "/users/register",
     tags=["users"],
     response_model=dict,
     status_code=201,
@@ -50,7 +50,7 @@ def create_user(user: UserCreate) -> dict:
 
 
 @user_router.patch(
-    "/users/pass",
+    "/users/new_pass",
     tags=["users"],
     response_model=dict,
     status_code=200,

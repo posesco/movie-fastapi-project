@@ -7,10 +7,18 @@ from datetime import datetime, timedelta, timezone
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 if not SECRET_KEY:
     raise ValueError("El SECRET_KEY no está definido")
+
+if not ALGORITHM:
+    raise ValueError("El ALGORITHM no está definido")
+
+if not ACCESS_TOKEN_EXPIRE_MINUTES:
+    raise ValueError("El ACCESS_TOKEN_EXPIRE_MINUTES no está definido")
+else:
+    ACCESS_TOKEN_EXPIRE_MINUTES = int(ACCESS_TOKEN_EXPIRE_MINUTES)
 
 
 def create_token(data: dict, expires_in: int = ACCESS_TOKEN_EXPIRE_MINUTES) -> str:

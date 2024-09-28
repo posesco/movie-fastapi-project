@@ -31,6 +31,7 @@ app = FastAPI(
     debug=False,
 )
 
+start_time = datetime.now()
 app.add_middleware(ErrorHandler)
 app.include_router(user_router)
 app.include_router(movie_router)
@@ -44,8 +45,10 @@ async def redirect_to_status():
 @app.get("/_status/", response_model=HealthCheck, tags=["health"], status_code=200)
 async def health_check():
     db_status = check_db()
+    current_time = datetime.now()
+    uptime = current_time - start_time
     return HealthCheck(
-        status="OK", version=app.version, db_status=db_status, timestamp=datetime.now()
+        status="OK", version=app.version, db_status=db_status, uptime=str(uptime)
     )
 
 
