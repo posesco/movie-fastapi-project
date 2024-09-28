@@ -43,7 +43,7 @@ Asegúrate de tener instalado:
 2. Crea un entorno virtual (opcional pero recomendado):
 
     ```bash
-    python3 -m venv venv  
+    python3 -m venv venv
     source venv/bin/activate  # En Linux/macOS
     venv\Scripts\activate     # En Windows
     ```
@@ -51,7 +51,7 @@ Asegúrate de tener instalado:
 3. Instala las dependencias del proyecto:
 
     ```bash
-    cd app
+    cd src
     pip install -r requirements.txt
     ```
 

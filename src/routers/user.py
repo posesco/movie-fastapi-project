@@ -7,29 +7,25 @@ from fastapi import (
 from middlewares.jwt_bearer import JWTBearer
 from fastapi.responses import JSONResponse
 from services.user import UserService
-from config.security import create_token
+
 from config.db import Session
 from typing import (
     List,
     Annotated,
 )
-from dotenv import load_dotenv
-from schemas.user import User
-import os
 
+from schemas.user import User, UserCreate
 
-load_dotenv()
-ADMIN_USER = os.getenv("ADMIN_USER")
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
-ADMIN_PASS = os.getenv("ADMIN_PASS")
 
 user_router = APIRouter()
 
 
 @user_router.post("/login/", tags=["users"])
 def login(user: Annotated[User, Form()]):
-    if user.password == ADMIN_PASS and user.username == ADMIN_USER:
-        token: str = create_token(user.model_dump())
+    db = Session()
+    token = UserService(db).login_user(user)
+    db.close()
+    if token:
         return JSONResponse(status_code=200, content=token)
     else:
         return JSONResponse(
@@ -38,13 +34,13 @@ def login(user: Annotated[User, Form()]):
 
 
 @user_router.post(
-    "/register",
+    "/users/register",
     tags=["users"],
     response_model=dict,
     status_code=201,
     dependencies=[Depends(JWTBearer())],
 )
-def create_user(user: User) -> dict:
+def create_user(user: UserCreate) -> dict:
     db = Session()
     UserService(db).create_user(user)
     db.close()
@@ -54,7 +50,7 @@ def create_user(user: User) -> dict:
 
 
 @user_router.patch(
-    "/users/pass",
+    "/users/new_pass",
     tags=["users"],
     response_model=dict,
     status_code=200,

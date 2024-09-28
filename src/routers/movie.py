@@ -17,6 +17,7 @@ movie_router = APIRouter()
 def get_movies() -> List[Movie]:
     db = Session()
     result = MovieService(db).get_movies()
+    db.close()
     if result:
         return JSONResponse(status_code=200, content=jsonable_encoder(result))
     else:

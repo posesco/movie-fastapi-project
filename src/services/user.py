@@ -1,11 +1,37 @@
 from models.user import User as UserModel
 from schemas.user import UserCreate
+from config.security import create_token
 import bcrypt
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+ADMIN_USER = os.getenv("ADMIN_USER")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
+ADMIN_PASS = os.getenv("ADMIN_PASS")
+ADMIN_PASS_HASED = bcrypt.hashpw(ADMIN_PASS.encode("utf-8"), bcrypt.gensalt())
 
 
 class UserService:
     def __init__(self, db) -> None:
         self.db = db
+
+    def login_user(self, user):
+        hashed_password = bcrypt.hashpw(user.password.encode("utf-8"), bcrypt.gensalt())
+        if hashed_password == ADMIN_PASS_HASED and user.username == ADMIN_USER:
+            token: str = create_token(user.model_dump())
+        elif (
+            self.db.query(UserModel)
+            .filter(
+                UserModel.username == user.username
+                and UserModel.password == user.password
+            )
+            .first()
+        ):
+            token: str = create_token(user.model_dump())
+        else:
+            token = False
+        return token
 
     def create_user(self, user: UserCreate):
         hashed_password = bcrypt.hashpw(user.password.encode("utf-8"), bcrypt.gensalt())
