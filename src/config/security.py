@@ -32,8 +32,8 @@ def create_token(data: dict, expires_in: int = ACCESS_TOKEN_EXPIRE_MINUTES) -> s
 def validate_token(token: str) -> dict:
     try:
         data: dict = decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
-        return data
+        return {"status": "success", "data": data}
     except ExpiredSignatureError as exec:
-        return f"Token Expirado, Error: {str(exec)}"
+        return {"status": "token expired", "error": str(exec)}
     except InvalidTokenError as exec:
-        return f"Token Invalido, Error: {str(exec)}"
+        return {"status": "invalid token", "error": str(exec)}

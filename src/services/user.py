@@ -9,7 +9,7 @@ load_dotenv()
 ADMIN_USER = os.getenv("ADMIN_USER")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 ADMIN_PASS = os.getenv("ADMIN_PASS")
-ADMIN_PASS_HASHED = bcrypt.hashpw(ADMIN_PASS.encode("utf-8"), bcrypt.gensalt())
+ADMIN_PASS_HASED = bcrypt.hashpw(ADMIN_PASS.encode("utf-8"), bcrypt.gensalt())
 
 
 class UserService:
@@ -18,13 +18,13 @@ class UserService:
 
     def login_user(self, user):
         hashed_password = bcrypt.hashpw(user.password.encode("utf-8"), bcrypt.gensalt())
-        if hashed_password == ADMIN_PASS_HASHED and user.username == ADMIN_USER:
+        if hashed_password == ADMIN_PASS_HASED and user.username == ADMIN_USER:
             token: str = create_token(user.model_dump())
         elif (
             self.db.query(UserModel)
             .filter(
                 UserModel.username == user.username
-                and UserModel.password == hashed_password
+                and UserModel.password == user.password
             )
             .first()
         ):

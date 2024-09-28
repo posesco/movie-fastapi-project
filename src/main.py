@@ -1,13 +1,13 @@
-from middlewares.error_handler import ErrorHandler
+from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from datetime import datetime, timezone
 from config.db import (
     engine,
     Base,
 )
+from middlewares.error_handler import ErrorHandler
 from routers.movie import movie_router
 from routers.user import user_router
-from fastapi import FastAPI
-from datetime import datetime, timezone
 from schemas.health_check import HealthCheck
 from services.db import check_db
 
