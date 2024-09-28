@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, DateTime, Integer, Enum, String, Float
 from config.db import Base
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class ActionEnum(enum.Enum):
@@ -17,7 +17,7 @@ class MovieAuditLog(Base):
     movie_id = Column(String, ForeignKey("movies.id"), nullable=False)
     action = Column(Enum(ActionEnum), nullable=False)
     description = Column(String(300))
-    date = Column(DateTime, default=lambda: datetime.now(), nullable=False)
+    date = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
 
 class Movie(Base):
@@ -32,5 +32,9 @@ class Movie(Base):
     director = Column(String(30), nullable=False)
     studio = Column(String(60), nullable=False)
     box_office = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(), nullable=False)
-    last_update = Column(DateTime, default=lambda: datetime.now(), nullable=False)
+    created_at = Column(
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+    last_update = Column(
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    )

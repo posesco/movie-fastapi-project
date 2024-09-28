@@ -7,7 +7,7 @@ from sqlalchemy import (
     ForeignKey,
 )
 from config.db import Base
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 import enum
 
@@ -25,7 +25,7 @@ class UserAuditLog(Base):
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
     action = Column(Enum(ActionEnum), nullable=False)
     description = Column(String(300))
-    date = Column(DateTime, default=lambda: datetime.now(), nullable=False)
+    date = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
 
 class User(Base):
@@ -35,8 +35,12 @@ class User(Base):
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password = Column(String(200), nullable=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(), nullable=False)
-    last_update = Column(DateTime, default=lambda: datetime.now(), nullable=False)
+    created_at = Column(
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+    last_update = Column(
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    )
 
     def log_modification(self, session, action, description):
         if action not in ["create", "update", "delete"]:

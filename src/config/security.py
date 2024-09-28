@@ -33,9 +33,7 @@ def validate_token(token: str) -> dict:
     try:
         data: dict = decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
         return data
-    except ExpiredSignatureError:
-        print("El Token ha expirado")
-        return None
-    except InvalidTokenError:
-        print("Token inválido")
-    return None
+    except ExpiredSignatureError as exec:
+        return f"Token Expirado, Error: {str(exec)}"
+    except InvalidTokenError as exec:
+        return f"Token Invalido, Error: {str(exec)}"
