@@ -32,13 +32,12 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    username = Column(String(50), unique=True, nullable=False)
+    name = Column(String(30), nullable=False)
+    surname = Column(String(30), nullable=False)
+    username = Column(String(30), unique=True, nullable=False)
     email = Column(String(100), unique=True, nullable=False)
-    password = Column(String(200), nullable=False)
+    password = Column(String(100), nullable=False)
     created_at = Column(
-        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
-    )
-    last_update = Column(
         DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
     )
 

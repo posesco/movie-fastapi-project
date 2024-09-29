@@ -1,5 +1,4 @@
 from models.user import User as UserModel
-from schemas.user import UserCreate
 from config.security import create_token
 import bcrypt
 from dotenv import load_dotenv
@@ -24,11 +23,7 @@ class UserService:
         ):
             return create_token(user.model_dump())
         else:
-            db_user = (
-                self.db.query(UserModel)
-                .filter(UserModel.username == user.username)
-                .first()
-            )
+            db_user = self._get_db_user(user.username)
             if db_user and self._verify_password(user.password, db_user.password):
                 return create_token(user.model_dump())
 
@@ -37,18 +32,33 @@ class UserService:
     def _verify_password(self, provided_password, stored_password):
         return bcrypt.checkpw(provided_password.encode("utf-8"), stored_password)
 
-    def create_user(self, user: UserCreate):
-        hashed_password = bcrypt.hashpw(user.password.encode("utf-8"), bcrypt.gensalt())
-        new_user = UserModel(
-            username=user.username,
-            email=user.email,
-            password=hashed_password,
-            action="create",
-            description="Nuevo usuario creado",
-        )
-        self.db.add(new_user)
-        self.db.commit()
-        return new_user
+    def _get_db_user(self, username):
+        return self.db.query(UserModel).filter(UserModel.username == username).first()
+
+    def create_user(self, user: UserModel):
+        if not self._get_db_user(user.username):
+            hashed_password = bcrypt.hashpw(
+                user.password.encode("utf-8"), bcrypt.gensalt()
+            )
+            new_user = UserModel(
+                name=user.name or "",
+                surname=user.surname or "",
+                username=user.username,
+                email=user.email,
+                password=hashed_password,
+            )
+            self.db.add(new_user)
+            self.db.commit()
+            self.db.refresh(new_user)
+            new_user.log_modification(
+                session=self.db,
+                action="create",
+                description=f"Usuario {new_user.username} creado",
+            )
+            self.db.commit()
+            return new_user
+
+        return False
 
     def update_password(self, username, new_pass):
         new_pass = (
