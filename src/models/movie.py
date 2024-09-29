@@ -24,7 +24,7 @@ class Movie(Base):
     __tablename__ = "movies"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String(100), nullable=False)
+    title = Column(String(100), unique=True, nullable=False)
     overview = Column(String(350), nullable=False)
     year = Column(Integer, nullable=False)
     rating = Column(Float, nullable=False)
@@ -33,8 +33,5 @@ class Movie(Base):
     studio = Column(String(60), nullable=False)
     box_office = Column(Integer, nullable=False)
     created_at = Column(
-        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
-    )
-    last_update = Column(
         DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
     )

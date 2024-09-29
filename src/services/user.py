@@ -8,8 +8,9 @@ import os
 load_dotenv()
 ADMIN_USER = os.getenv("ADMIN_USER")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
-ADMIN_PASS = os.getenv("ADMIN_PASS")
-ADMIN_PASS_HASED = bcrypt.hashpw(ADMIN_PASS.encode("utf-8"), bcrypt.gensalt())
+ADMIN_PASS_HASHED = bcrypt.hashpw(
+    os.getenv("ADMIN_PASS").encode("utf-8"), bcrypt.gensalt()
+)
 
 
 class UserService:
@@ -17,21 +18,24 @@ class UserService:
         self.db = db
 
     def login_user(self, user):
-        hashed_password = bcrypt.hashpw(user.password.encode("utf-8"), bcrypt.gensalt())
-        if hashed_password == ADMIN_PASS_HASED and user.username == ADMIN_USER:
-            token: str = create_token(user.model_dump())
-        elif (
-            self.db.query(UserModel)
-            .filter(
-                UserModel.username == user.username
-                and UserModel.password == user.password
-            )
-            .first()
+        if (
+            self._verify_password(user.password, ADMIN_PASS_HASHED)
+            and user.username == ADMIN_USER
         ):
-            token: str = create_token(user.model_dump())
+            return create_token(user.model_dump())
         else:
-            token = False
-        return token
+            db_user = (
+                self.db.query(UserModel)
+                .filter(UserModel.username == user.username)
+                .first()
+            )
+            if db_user and self._verify_password(user.password, db_user.password):
+                return create_token(user.model_dump())
+
+        return False
+
+    def _verify_password(self, provided_password, stored_password):
+        return bcrypt.checkpw(provided_password.encode("utf-8"), stored_password)
 
     def create_user(self, user: UserCreate):
         hashed_password = bcrypt.hashpw(user.password.encode("utf-8"), bcrypt.gensalt())
