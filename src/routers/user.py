@@ -62,7 +62,7 @@ def update_password(username: str, current_pass: str, new_pass: str) -> dict:
     if result:
         return JSONResponse(
             status_code=200,
-            content={"success": f"Contraseña actualizado para usuario: {username}"},
+            content={"success": f"Contraseña actualizada para usuario: {username}"},
         )
     else:
         return JSONResponse(
