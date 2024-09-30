@@ -2,6 +2,7 @@ from models.user import User as UserModel
 from config.security import create_token
 import bcrypt
 from dotenv import load_dotenv
+from fastapi.encoders import jsonable_encoder
 import os
 
 load_dotenv()
@@ -23,7 +24,7 @@ class UserService:
         ):
             return create_token(user.model_dump())
         else:
-            db_user = self._get_db_user(user.username)
+            db_user = self.get_user(user.username)
             if db_user and self._verify_password(user.password, db_user.password):
                 return create_token(user.model_dump())
 
@@ -32,11 +33,14 @@ class UserService:
     def _verify_password(self, provided_password, stored_password):
         return bcrypt.checkpw(provided_password.encode("utf-8"), stored_password)
 
-    def _get_db_user(self, username):
+    def get_user(self, username):
         return self.db.query(UserModel).filter(UserModel.username == username).first()
 
+    def get_users(self):
+        return self.db.query(UserModel).all()
+
     def create_user(self, user: UserModel):
-        if not self._get_db_user(user.username):
+        if not self.get_user(user.username):
             hashed_password = bcrypt.hashpw(
                 user.password.encode("utf-8"), bcrypt.gensalt()
             )
@@ -56,31 +60,33 @@ class UserService:
                 description=f"Usuario {new_user.username} creado",
             )
             self.db.commit()
-            return new_user
+            return True
 
         return False
 
-    def update_password(self, username, new_pass):
-        new_pass = (
-            self.db.query(UserModel).filter(UserModel.username == username).first()
-        )
-        hashed_password = bcrypt.hashpw(new_pass.encode("utf-8"), bcrypt.gensalt())
-        new_pass.password = hashed_password
-        new_pass.action = "update"
-        new_pass.description = "Password actualizado"
-        self.db.commit()
-        return new_pass
+    def update_password(self, username: str, current_pass: str, new_pass: str):
+        db_user = self.get_user(username)
+        if db_user and self._verify_password(current_pass, db_user.password):
+            hashed_password = bcrypt.hashpw(new_pass.encode("utf-8"), bcrypt.gensalt())
+            db_user.password = hashed_password
+            db_user.log_modification(
+                session=self.db,
+                action="update",
+                description=f"Usuario {db_user.username} actualizo su password",
+            )
+            self.db.commit()
+            return True
+        return False
 
-    def delete_user(self, id):
-        result = self.db.query(UserModel).filter(UserModel.id == id).first()
-        self.db.delete(result)
-        self.db.commit()
-        return result
-
-    def get_users(self):
-        result = self.db.query(UserModel).all()
-        return result
-
-    def get_user(self, username):
-        result = self.db.query(UserModel).filter(UserModel.username == username).first()
-        return result
+    def delete_user(self, username: str):
+        db_user = self.get_user(username)
+        if db_user:
+            db_user.log_modification(
+                session=self.db,
+                action="delete",
+                description=f"Usuario eliminado. {jsonable_encoder(db_user)}",
+            )
+            self.db.delete(db_user)
+            self.db.commit()
+            return True
+        return False
