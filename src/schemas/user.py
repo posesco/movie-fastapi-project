@@ -14,8 +14,8 @@ class UserLogin(BaseModel):
 
 
 class UserCreate(BaseModel):
-    name: Optional[str] = Field(min_length=3, max_length=30)
-    surname: Optional[str] = Field(min_length=3, max_length=30)
+    name: Optional[str] = Field(default=None, max_length=30)
+    surname: Optional[str] = Field(default=None, max_length=30)
     username: str = Field(min_length=5, max_length=30)
     email: EmailStr
     password: str = Field(min_length=5, max_length=100)

@@ -1,4 +1,4 @@
-from models.user import User as UserModel
+from models.user import User as UserModel, Role
 from config.security import create_token
 import bcrypt
 from dotenv import load_dotenv
@@ -39,14 +39,17 @@ class UserService:
     def get_users(self):
         return self.db.query(UserModel).all()
 
+    def get_roles(self, role_names: list):
+        return self.db.query(Role).filter(Role.name.in_(role_names)).all()
+
     def create_user(self, user: UserModel):
         if not self.get_user(user.username):
             hashed_password = bcrypt.hashpw(
                 user.password.encode("utf-8"), bcrypt.gensalt()
             )
             new_user = UserModel(
-                name=user.name or "",
-                surname=user.surname or "",
+                name=user.name if user.name else None,
+                surname=user.surname if user.surname else None,
                 username=user.username,
                 email=user.email,
                 password=hashed_password,
@@ -62,6 +65,20 @@ class UserService:
             self.db.commit()
             return True
 
+        return False
+
+    def assign_roles(self, username: str, roles: list):
+        db_user = self.get_user(username)
+        db_roles = self.get_roles(roles)
+        if db_user:
+            db_user.roles = []
+            db_user.log_modification(
+                session=self.db,
+                action="update",
+                description=f"Se asignaron los roles: [{', '.join([role.name for role in db_roles])}] para el usuario {username}",
+            )
+            self.db.commit()
+            return True
         return False
 
     def update_password(self, username: str, current_pass: str, new_pass: str):
