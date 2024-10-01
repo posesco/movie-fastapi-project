@@ -1,13 +1,13 @@
-from sqlalchemy import Column, ForeignKey, DateTime, Integer, Enum, String, Float
+from sqlalchemy import Column, ForeignKey, DateTime, Integer, Table, String, Float
 from config.db import Base
-import enum
 from datetime import datetime, timezone
 
-
-class ActionEnum(enum.Enum):
-    CREATE = "create"
-    UPDATE = "update"
-    DELETE = "delete"
+movie_actions = Table(
+    "movie_actions",
+    Base.metadata,
+    Column("movie_id", String, ForeignKey("movies.id"), primary_key=True),
+    Column("action_id", String, ForeignKey("actions.id"), primary_key=True),
+)
 
 
 class MovieAuditLog(Base):
@@ -15,7 +15,7 @@ class MovieAuditLog(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     movie_id = Column(String, ForeignKey("movies.id"), nullable=False)
-    action = Column(Enum(ActionEnum), nullable=False)
+    action_id = Column(String, ForeignKey("actions.id"), nullable=False)
     description = Column(String(300))
     date = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
@@ -35,3 +35,15 @@ class Movie(Base):
     created_at = Column(
         DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
     )
+
+    def log_modification(self, session, action, description):
+        if action not in ["create", "update", "delete"]:
+            raise ValueError(
+                "Acción no válida: debe ser 'create', 'update', or 'delete'"
+            )
+        log_entry = MovieAuditLog(
+            movie_id=self.id,
+            action=action,
+            description=description,
+        )
+        session.add(log_entry)

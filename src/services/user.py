@@ -1,4 +1,4 @@
-from models.user import User as UserModel, Role
+from models import User as UserModel, Role
 from config.security import create_token
 import bcrypt
 from dotenv import load_dotenv

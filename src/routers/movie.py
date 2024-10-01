@@ -1,9 +1,11 @@
+from fastapi import Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
-from fastapi import Path, Query, Depends
 from fastapi.responses import JSONResponse
-from config.db import Session
-from fastapi import APIRouter
+from fastapi import Path, Query
+from sqlalchemy.orm import Session
 from typing import List
+from config.db import get_db
+from fastapi import APIRouter
 from middlewares.jwt_bearer import JWTBearer
 from services.movie import MovieService
 from schemas.movie import Movie
@@ -14,30 +16,28 @@ movie_router = APIRouter()
 @movie_router.get(
     "/movies", tags=["movies"], response_model=List[Movie], status_code=200
 )
-def get_movies() -> List[Movie]:
-    db = Session()
+def get_movies(db: Session = Depends(get_db)) -> List[Movie]:
     result = MovieService(db).get_movies()
-    db.close()
     if result:
         return JSONResponse(status_code=200, content=jsonable_encoder(result))
     else:
-        return JSONResponse(
-            status_code=404, content={"message": "No hay peliculas registradas"}
+        raise HTTPException(
+            status_code=404, detail={"error": "No hay peliculas registradas"}
         )
 
 
 @movie_router.get(
     "/movies/{id}", tags=["movies"], response_model=List[Movie], status_code=200
 )
-def get_movie(id: int = Path(ge=1, le=2000)) -> List[Movie]:
-    db = Session()
+def get_movie(
+    db: Session = Depends(get_db), id: int = Path(ge=1, le=2000)
+) -> List[Movie]:
     result = MovieService(db).get_movie(id)
-    db.close()
     if result:
         return JSONResponse(status_code=200, content=jsonable_encoder(result))
     else:
-        return JSONResponse(
-            status_code=404, content={"message": "Id de Peli no encontrada"}
+        raise HTTPException(
+            status_code=404, detail={"error": "Id de pelicula no encontrada"}
         )
 
 
@@ -45,22 +45,21 @@ def get_movie(id: int = Path(ge=1, le=2000)) -> List[Movie]:
     "/movies/", tags=["movies"], response_model=List[Movie], status_code=200
 )
 def get_movie_by_category(
+    db: Session = Depends(get_db),
     category: str = Query(min_length=5, max_length=30),
 ) -> List[Movie]:
-    db = Session()
     result = MovieService(db).get_movies_by_category(category)
-    db.close()
     if result:
         return JSONResponse(
             status_code=200,
             content={
-                "message": f"Se encontraron {len(result)} películas",
-                "Peliculas": jsonable_encoder(result),
+                "success": f"Se encontraron {len(result)} películas",
+                "Películas": jsonable_encoder(result),
             },
         )
     else:
-        return JSONResponse(
-            status_code=404, content={"message": "Categoria no encontrada"}
+        raise HTTPException(
+            status_code=404, detail={"error": "Categoria no encontrada"}
         )
 
 
@@ -71,13 +70,11 @@ def get_movie_by_category(
     status_code=201,
     dependencies=[Depends(JWTBearer())],
 )
-def create_movies(movies: List[Movie]) -> dict:
-    db = Session()
+def create_movies(movies: List[Movie], db: Session = Depends(get_db)) -> dict:
     new_movies = MovieService(db).create_movies(movies)
-    db.close()
     return JSONResponse(
         status_code=201,
-        content={"message": f"Se registraron {len(new_movies)} películas"},
+        content={"success": f"Se registraron {len(new_movies)} películas"},
     )
 
 
@@ -88,17 +85,15 @@ def create_movies(movies: List[Movie]) -> dict:
     status_code=200,
     dependencies=[Depends(JWTBearer())],
 )
-def update_movie(id: int, movie: Movie) -> dict:
-    db = Session()
+def update_movie(id: int, movie: Movie, db: Session = Depends(get_db)) -> dict:
     result = MovieService(db).update_movie(id, movie)
     if result:
-        db.close()
         return JSONResponse(
-            status_code=200, content={"message": "Se actualizo la peli"}
+            status_code=200, content={"success": "Se actualizo la película"}
         )
     else:
-        return JSONResponse(
-            status_code=404, content={"message": "Id de Peli no encontrada"}
+        raise HTTPException(
+            status_code=404, detail={"error": "Id de película no encontrada"}
         )
 
 
@@ -109,13 +104,13 @@ def update_movie(id: int, movie: Movie) -> dict:
     status_code=200,
     dependencies=[Depends(JWTBearer())],
 )
-def delete_movie(id: int) -> dict:
-    db = Session()
+def delete_movie(id: int, db: Session = Depends(get_db)) -> dict:
     result = MovieService(db).delete_movie(id)
     if result:
-        db.close()
-        return JSONResponse(status_code=200, content={"message": "Se elimino la peli"})
-    else:
         return JSONResponse(
-            status_code=404, content={"message": "Id de Peli no encontrada"}
+            status_code=200, content={"success": "Se elimino la película"}
+        )
+    else:
+        raise HTTPException(
+            status_code=404, detail={"error": "Id de película no encontrada"}
         )

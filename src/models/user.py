@@ -28,6 +28,25 @@ user_actions = Table(
 )
 
 
+class Role(Base):
+    __tablename__ = "roles"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = Column(String(30), unique=True, nullable=False)
+
+
+def insert_default_roles(target, connection, **kwargs):
+    roles = ["admin", "editor", "user"]
+    session = Session(bind=connection)
+    for role_name in roles:
+        role = Role(name=role_name)
+        session.add(role)
+    session.commit()
+
+
+event.listen(Role.__table__, "after_create", insert_default_roles)
+
+
 class UserAuditLog(Base):
     __tablename__ = "user_audit_logs"
 
@@ -36,20 +55,6 @@ class UserAuditLog(Base):
     action_id = Column(String, ForeignKey("actions.id"), nullable=False)
     description = Column(String(300))
     date = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
-
-
-class Action(Base):
-    __tablename__ = "actions"
-
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String(30), unique=True, nullable=False)
-
-
-class Role(Base):
-    __tablename__ = "roles"
-
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String(30), unique=True, nullable=False)
 
 
 class User(Base):
@@ -78,27 +83,3 @@ class User(Base):
             description=description,
         )
         session.add(log_entry)
-
-
-def insert_default_roles(target, connection, **kwargs):
-    roles = ["admin", "editor", "user"]
-    session = Session(bind=connection)
-    for role_name in roles:
-        role = Role(name=role_name)
-        session.add(role)
-    session.commit()
-
-
-event.listen(Role.__table__, "after_create", insert_default_roles)
-
-
-def insert_default_actions(target, connection, **kwargs):
-    actions = ["create", "update", "delete"]
-    session = Session(bind=connection)
-    for action_name in actions:
-        action = Action(name=action_name)
-        session.add(action)
-    session.commit()
-
-
-event.listen(Action.__table__, "after_create", insert_default_actions)
