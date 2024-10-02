@@ -1,31 +1,30 @@
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from fastapi import (
+    HTTPException,
     APIRouter,
     Depends,
     Form,
 )
-from middlewares.jwt_bearer import JWTBearer
-from fastapi.responses import JSONResponse
-from services.user import UserService
-
-from config.db import Session
 from typing import Annotated, List
-from fastapi.encoders import jsonable_encoder
+from sqlalchemy.orm import Session
 from schemas.user import UserLogin, UserCreate
+from middlewares.jwt_bearer import JWTBearer
+from services.user import UserService
+from config.db import get_db
 
 
 user_router = APIRouter()
 
 
 @user_router.post("/login/", tags=["users"])
-def login(user: Annotated[UserLogin, Form()]) -> dict:
-    db = Session()
+def login(user: Annotated[UserLogin, Form()], db: Session = Depends(get_db)) -> dict:
     token = UserService(db).login_user(user)
-    db.close()
     if token:
         return JSONResponse(status_code=200, content=token)
     else:
-        return JSONResponse(
-            status_code=404, content={"error": "Usuario o contraseña no encontrada"}
+        raise HTTPException(
+            status_code=404, detail={"error": "Usuario o contraseña no encontrada"}
         )
 
 
@@ -36,16 +35,46 @@ def login(user: Annotated[UserLogin, Form()]) -> dict:
     status_code=201,
     dependencies=[Depends(JWTBearer())],
 )
-def create_user(user: Annotated[UserCreate, Form()]) -> dict:
-    db = Session()
+def create_user(
+    user: Annotated[UserCreate, Form()], db: Session = Depends(get_db)
+) -> dict:
     result = UserService(db).create_user(user)
-    db.close()
     if result:
         return JSONResponse(
             status_code=201, content={"success": "Usuario creado exitosamente"}
         )
     else:
-        return JSONResponse(status_code=409, content={"error": "El usuario ya existe"})
+        raise HTTPException(status_code=409, detail={"error": "El usuario ya existe"})
+
+
+# @user_router.post(
+#     "/users/assign_role",
+#     tags=["users"],
+#     response_model=dict,
+#     status_code=200,
+#     dependencies=[Depends(JWTBearer())],
+# )
+# def assign_role(
+#     username: str, roles: list, db: Session = Depends(get_db)
+# ) -> dict:
+#     existing_roles = UserService(db)._get_roles(roles)
+
+#     if len(existing_roles) != len(roles):
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"error": "Uno o más roles especificados no existen"}
+#         )
+
+#     result = UserService(db).assign_roles(username, existing_roles)
+#     if result:
+#         return JSONResponse(
+#             status_code=200,
+#             content={"success": f"Roles: [{', '.join(r.name for r in existing_roles)}] asignados al usuario: {username}"},
+#         )
+#     else:
+#         raise HTTPException(
+#             status_code=404, detail={"error": "Error al asignar roles"}
+#         )
 
 
 @user_router.patch(
@@ -55,19 +84,39 @@ def create_user(user: Annotated[UserCreate, Form()]) -> dict:
     status_code=200,
     dependencies=[Depends(JWTBearer())],
 )
-def update_password(username: str, current_pass: str, new_pass: str) -> dict:
-    db = Session()
+def update_password(
+    username: str, current_pass: str, new_pass: str, db: Session = Depends(get_db)
+) -> dict:
     result = UserService(db).update_password(username, current_pass, new_pass)
-    db.close()
     if result:
         return JSONResponse(
             status_code=200,
-            content={"success": f"Contraseña actualizado para usuario: {username}"},
+            content={"success": f"Contraseña actualizada para usuario: {username}"},
         )
     else:
-        return JSONResponse(
-            status_code=404, content={"error": "Usuario o contraseña no encontrada"}
+        raise HTTPException(
+            status_code=404, detail={"error": "Usuario o contraseña no encontrada"}
         )
+
+
+@user_router.patch(
+    "/users/change_state",
+    tags=["users"],
+    response_model=dict,
+    status_code=200,
+    dependencies=[Depends(JWTBearer())],
+)
+def change_state(username: str, state: bool, db: Session = Depends(get_db)) -> dict:
+    result = UserService(db).state_user(username, state)
+    if result:
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": f'El estado del usuario: {username} es {"habilitado" if state else "deshabilitado"}'
+            },
+        )
+    else:
+        raise HTTPException(status_code=404, detail={"error": "Usuario no encontrado"})
 
 
 @user_router.delete(
@@ -77,16 +126,12 @@ def update_password(username: str, current_pass: str, new_pass: str) -> dict:
     status_code=200,
     dependencies=[Depends(JWTBearer())],
 )
-def delete_user(username: str) -> dict:
-    db = Session()
+def delete_user(username: str, db: Session = Depends(get_db)) -> dict:
     result = UserService(db).delete_user(username)
     if result:
-        db.close()
         return JSONResponse(status_code=200, content={"success": "Usuario eliminado"})
     else:
-        return JSONResponse(
-            status_code=404, content={"error": "Id de usuario no encontrado"}
-        )
+        raise HTTPException(status_code=404, detail={"error": "Usuario no encontrado"})
 
 
 @user_router.get(
@@ -96,14 +141,13 @@ def delete_user(username: str) -> dict:
     status_code=200,
     dependencies=[Depends(JWTBearer())],
 )
-def get_users() -> List[UserCreate]:
-    db = Session()
+def get_users(db: Session = Depends(get_db)) -> List[UserCreate]:
     users_info = UserService(db).get_users()
     if users_info:
         return JSONResponse(status_code=200, content=jsonable_encoder(users_info))
     else:
-        return JSONResponse(
-            status_code=404, content={"error": "No hay usuarios registrados"}
+        raise HTTPException(
+            status_code=404, detail={"error": "No hay usuarios registrados"}
         )
 
 
@@ -114,13 +158,11 @@ def get_users() -> List[UserCreate]:
     status_code=200,
     dependencies=[Depends(JWTBearer())],
 )
-def get_user(username: str) -> list[UserCreate]:
-    db = Session()
+def get_user(username: str, db: Session = Depends(get_db)) -> list[UserCreate]:
     user_info = UserService(db).get_user(username)
-    db.close()
     if user_info:
         return JSONResponse(status_code=200, content=jsonable_encoder(user_info))
     else:
-        return JSONResponse(
-            status_code=404, content={"error": f"Usuario {username} no encontrado"}
+        raise HTTPException(
+            status_code=404, detail={"error": f"Usuario {username} no encontrado"}
         )
