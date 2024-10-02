@@ -20,13 +20,6 @@ user_roles = Table(
     Column("role_id", String, ForeignKey("roles.id"), primary_key=True),
 )
 
-user_actions = Table(
-    "user_actions",
-    Base.metadata,
-    Column("user_id", String, ForeignKey("users.id"), primary_key=True),
-    Column("action_id", String, ForeignKey("actions.id"), primary_key=True),
-)
-
 
 class Role(Base):
     __tablename__ = "roles"
@@ -72,14 +65,10 @@ class User(Base):
     )
     roles = relationship("Role", secondary=user_roles, backref="users")
 
-    def log_modification(self, session, action, description):
-        if action not in ["create", "update", "delete"]:
-            raise ValueError(
-                "Acción no válida: debe ser 'create', 'update', or 'delete'"
-            )
+    def log_modification(self, session, action_id, description):
         log_entry = UserAuditLog(
             user_id=self.id,
-            action=action,
+            action_id=action_id,
             description=description,
         )
         session.add(log_entry)

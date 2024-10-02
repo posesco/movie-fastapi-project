@@ -1,13 +1,6 @@
-from sqlalchemy import Column, ForeignKey, DateTime, Integer, Table, String, Float
+from sqlalchemy import Column, ForeignKey, DateTime, Integer, String, Float
 from config.db import Base
 from datetime import datetime, timezone
-
-movie_actions = Table(
-    "movie_actions",
-    Base.metadata,
-    Column("movie_id", String, ForeignKey("movies.id"), primary_key=True),
-    Column("action_id", String, ForeignKey("actions.id"), primary_key=True),
-)
 
 
 class MovieAuditLog(Base):
@@ -36,14 +29,10 @@ class Movie(Base):
         DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
     )
 
-    def log_modification(self, session, action, description):
-        if action not in ["create", "update", "delete"]:
-            raise ValueError(
-                "Acción no válida: debe ser 'create', 'update', or 'delete'"
-            )
+    def log_modification(self, session, action_id, description):
         log_entry = MovieAuditLog(
             movie_id=self.id,
-            action=action,
+            action_id=action_id,
             description=description,
         )
         session.add(log_entry)

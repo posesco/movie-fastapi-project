@@ -47,6 +47,36 @@ def create_user(
         raise HTTPException(status_code=409, detail={"error": "El usuario ya existe"})
 
 
+# @user_router.post(
+#     "/users/assign_role",
+#     tags=["users"],
+#     response_model=dict,
+#     status_code=200,
+#     dependencies=[Depends(JWTBearer())],
+# )
+# def assign_role(
+#     username: str, roles: list, db: Session = Depends(get_db)
+# ) -> dict:
+#     existing_roles = UserService(db)._get_roles(roles)
+
+#     if len(existing_roles) != len(roles):
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"error": "Uno o más roles especificados no existen"}
+#         )
+
+#     result = UserService(db).assign_roles(username, existing_roles)
+#     if result:
+#         return JSONResponse(
+#             status_code=200,
+#             content={"success": f"Roles: [{', '.join(r.name for r in existing_roles)}] asignados al usuario: {username}"},
+#         )
+#     else:
+#         raise HTTPException(
+#             status_code=404, detail={"error": "Error al asignar roles"}
+#         )
+
+
 @user_router.patch(
     "/users/new_pass",
     tags=["users"],
@@ -69,6 +99,26 @@ def update_password(
         )
 
 
+@user_router.patch(
+    "/users/change_state",
+    tags=["users"],
+    response_model=dict,
+    status_code=200,
+    dependencies=[Depends(JWTBearer())],
+)
+def change_state(username: str, state: bool, db: Session = Depends(get_db)) -> dict:
+    result = UserService(db).state_user(username, state)
+    if result:
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": f'El estado del usuario: {username} es {"habilitado" if state else "deshabilitado"}'
+            },
+        )
+    else:
+        raise HTTPException(status_code=404, detail={"error": "Usuario no encontrado"})
+
+
 @user_router.delete(
     "/users/{username}",
     tags=["users"],
@@ -81,9 +131,7 @@ def delete_user(username: str, db: Session = Depends(get_db)) -> dict:
     if result:
         return JSONResponse(status_code=200, content={"success": "Usuario eliminado"})
     else:
-        raise HTTPException(
-            status_code=404, detail={"error": "Id de usuario no encontrado"}
-        )
+        raise HTTPException(status_code=404, detail={"error": "Usuario no encontrado"})
 
 
 @user_router.get(
