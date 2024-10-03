@@ -26,7 +26,7 @@ class UserService:
         ):
             return create_token(user.model_dump())
         else:
-            db_user = self.get_user(user.username)
+            db_user = self.get_username(user.username)
             if db_user and self._verify_password(user.password, db_user.password):
                 return create_token(user.model_dump())
 
@@ -35,8 +35,11 @@ class UserService:
     def _verify_password(self, provided_password, stored_password):
         return bcrypt.checkpw(provided_password.encode("utf-8"), stored_password)
 
-    def get_user(self, username):
+    def get_username(self, username):
         return self.db.query(UserModel).filter(UserModel.username == username).first()
+
+    def get_email(self, email):
+        return self.db.query(UserModel).filter(UserModel.email == email).first()
 
     def get_users(self):
         return self.db.query(UserModel).all()
@@ -47,33 +50,28 @@ class UserService:
         return result.scalars().all()
 
     def create_user(self, user: UserModel):
-        if not self.get_user(user.username):
-            hashed_password = bcrypt.hashpw(
-                user.password.encode("utf-8"), bcrypt.gensalt()
-            )
-            new_user = UserModel(
-                name=user.name if user.name else None,
-                surname=user.surname if user.surname else None,
-                username=user.username,
-                email=user.email,
-                password=hashed_password,
-            )
-            self.db.add(new_user)
-            self.db.commit()
-            self.db.refresh(new_user)
-            action = get_action(self.db, action="create")
-            new_user.log_modification(
-                session=self.db,
-                action_id=action.id,
-                description=f"Usuario {new_user.username} creado",
-            )
-            self.db.commit()
-            return True
-
-        return False
+        hashed_password = bcrypt.hashpw(user.password.encode("utf-8"), bcrypt.gensalt())
+        new_user = UserModel(
+            name=user.name if user.name else None,
+            surname=user.surname if user.surname else None,
+            username=user.username,
+            email=user.email,
+            password=hashed_password,
+        )
+        self.db.add(new_user)
+        self.db.commit()
+        self.db.refresh(new_user)
+        action = get_action(self.db, action="create")
+        new_user.log_modification(
+            session=self.db,
+            action_id=action.id,
+            description=f"Usuario {new_user.username} creado",
+        )
+        self.db.commit()
+        return True
 
     def assign_roles(self, username: str, roles: list):
-        db_user = self.get_user(username)
+        db_user = self.get_username(username)
         db_roles = self._get_roles(roles)
 
         if db_user:
@@ -89,23 +87,22 @@ class UserService:
             return True
         return False
 
-    def update_password(self, username: str, current_pass: str, new_pass: str):
-        db_user = self.get_user(username)
-        if db_user and self._verify_password(current_pass, db_user.password):
+    def update_password(self, user: UserModel, current_pass: str, new_pass: str):
+        if self._verify_password(current_pass, user.password):
             hashed_password = bcrypt.hashpw(new_pass.encode("utf-8"), bcrypt.gensalt())
-            db_user.password = hashed_password
+            user.password = hashed_password
             action = get_action(self.db, action="update")
-            db_user.log_modification(
+            user.log_modification(
                 session=self.db,
                 action_id=action.id,
-                description=f"Usuario {username} actualizo su password",
+                description=f"Usuario {user.username} actualizo su password",
             )
             self.db.commit()
             return True
         return False
 
     def state_user(self, username: str, state: bool):
-        db_user = self.get_user(username)
+        db_user = self.get_username(username)
         if db_user:
             db_user.is_active = state
             action = get_action(self.db, action="update")
@@ -119,7 +116,7 @@ class UserService:
         return False
 
     def delete_user(self, username: str):
-        db_user = self.get_user(username)
+        db_user = self.get_username(username)
         if db_user:
             action = get_action(self.db, action="delete")
             db_user.log_modification(

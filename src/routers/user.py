@@ -38,13 +38,26 @@ def login(user: Annotated[UserLogin, Form()], db: Session = Depends(get_db)) -> 
 def create_user(
     user: Annotated[UserCreate, Form()], db: Session = Depends(get_db)
 ) -> dict:
-    result = UserService(db).create_user(user)
-    if result:
+    check_username = UserService(db).get_username(user.username)
+    check_email = UserService(db).get_email(user.email)
+    if check_username:
+        raise HTTPException(
+            status_code=409, detail={"error": "El nombre de usuario ya existe"}
+        )
+    if check_email:
+        raise HTTPException(
+            status_code=409, detail={"error": "El correo electrónico ya existe"}
+        )
+
+    new_user = UserService(db).create_user(user)
+    if new_user:
         return JSONResponse(
             status_code=201, content={"success": "Usuario creado exitosamente"}
         )
     else:
-        raise HTTPException(status_code=409, detail={"error": "El usuario ya existe"})
+        raise HTTPException(
+            status_code=500, detail={"error": "No se pudo crear usuario"}
+        )
 
 
 # @user_router.post(
@@ -87,7 +100,10 @@ def create_user(
 def update_password(
     username: str, current_pass: str, new_pass: str, db: Session = Depends(get_db)
 ) -> dict:
-    result = UserService(db).update_password(username, current_pass, new_pass)
+    check_username = UserService(db).get_username(username)
+    if not check_username:
+        raise HTTPException(status_code=404, detail={"error": "Usuario no existe"})
+    result = UserService(db).update_password(check_username, current_pass, new_pass)
     if result:
         return JSONResponse(
             status_code=200,
@@ -95,7 +111,7 @@ def update_password(
         )
     else:
         raise HTTPException(
-            status_code=404, detail={"error": "Usuario o contraseña no encontrada"}
+            status_code=404, detail={"error": "La contraseña actual no coincide"}
         )
 
 
@@ -159,7 +175,7 @@ def get_users(db: Session = Depends(get_db)) -> List[UserCreate]:
     dependencies=[Depends(JWTBearer())],
 )
 def get_user(username: str, db: Session = Depends(get_db)) -> list[UserCreate]:
-    user_info = UserService(db).get_user(username)
+    user_info = UserService(db).get_username(username)
     if user_info:
         return JSONResponse(status_code=200, content=jsonable_encoder(user_info))
     else:
