@@ -3,9 +3,10 @@ from dotenv import load_dotenv
 from sqlalchemy import select
 import os
 import bcrypt
+from typing import Optional
 from models import User as UserModel, Role
 from config.security import create_token
-from services.db import get_action
+from services.db import DBService
 
 load_dotenv()
 ADMIN_USER = os.getenv("ADMIN_USER")
@@ -19,29 +20,35 @@ class UserService:
     def __init__(self, db) -> None:
         self.db = db
 
-    def login_user(self, user):
-        if (
-            self._verify_password(user.password, ADMIN_PASS_HASHED)
-            and user.username == ADMIN_USER
-        ):
-            return create_token(user.model_dump())
-        else:
-            db_user = self.get_username(user.username)
-            if db_user and self._verify_password(user.password, db_user.password):
-                return create_token(user.model_dump())
+    def _log_modification(
+        self, user: UserModel, user_action: str, details: str
+    ) -> None:
+        action = DBService(self.db).get_action(user_action)
+        description_data = {
+            "user": user.username,
+            "action": user_action,
+            "details": details,
+        }
+        user.log_modification(
+            session=self.db,
+            action_id=action.id,
+            description=description_data,
+        )
+        self.db.commit()
 
-        return False
+    def get_token(self, user) -> str:
+        return create_token(user.model_dump())
 
-    def _verify_password(self, provided_password, stored_password):
+    def verify_password(self, provided_password, stored_password) -> bool:
         return bcrypt.checkpw(provided_password.encode("utf-8"), stored_password)
 
-    def get_username(self, username):
+    def get_username(self, username) -> Optional[UserModel]:
         return self.db.query(UserModel).filter(UserModel.username == username).first()
 
-    def get_email(self, email):
+    def get_email(self, email) -> Optional[UserModel]:
         return self.db.query(UserModel).filter(UserModel.email == email).first()
 
-    def get_users(self):
+    def get_users(self) -> Optional[UserModel]:
         return self.db.query(UserModel).all()
 
     def _get_roles(self, role_names: list) -> list[Role]:
@@ -49,7 +56,7 @@ class UserService:
         result = self.db.execute(stmt)
         return result.scalars().all()
 
-    def create_user(self, user: UserModel):
+    def create_user(self, user: UserModel) -> bool:
         hashed_password = bcrypt.hashpw(user.password.encode("utf-8"), bcrypt.gensalt())
         new_user = UserModel(
             name=user.name if user.name else None,
@@ -60,71 +67,36 @@ class UserService:
         )
         self.db.add(new_user)
         self.db.commit()
-        self.db.refresh(new_user)
-        action = get_action(self.db, action="create")
-        new_user.log_modification(
-            session=self.db,
-            action_id=action.id,
-            description=f"Usuario {new_user.username} creado",
-        )
-        self.db.commit()
+        details = "Nuevo usuario"
+        self._log_modification(new_user, "create", details)
         return True
 
-    def assign_roles(self, username: str, roles: list):
+    def assign_roles(self, username: str, roles: list) -> bool:
         db_user = self.get_username(username)
         db_roles = self._get_roles(roles)
+        db_user.roles = db_roles
+        details = "Roles asignados"
+        self._log_modification(db_user, "update", details)
+        return True
 
-        if db_user:
-            db_user.roles = db_roles
-            action = get_action(self.db, action="update")
-            role_names = ", ".join([role.name for role in db_roles])
-            db_user.log_modification(
-                session=self.db,
-                action_id=action.id,
-                description=f"Se asignaron los roles: [{role_names}] para el usuario {username}",
-            )
-            self.db.commit()
-            return True
-        return False
-
-    def update_password(self, user: UserModel, current_pass: str, new_pass: str):
-        if self._verify_password(current_pass, user.password):
-            hashed_password = bcrypt.hashpw(new_pass.encode("utf-8"), bcrypt.gensalt())
-            user.password = hashed_password
-            action = get_action(self.db, action="update")
-            user.log_modification(
-                session=self.db,
-                action_id=action.id,
-                description=f"Usuario {user.username} actualizo su password",
-            )
-            self.db.commit()
-            return True
-        return False
-
-    def state_user(self, username: str, state: bool):
+    def update_password(self, username: str, new_pass: str) -> bool:
         db_user = self.get_username(username)
-        if db_user:
-            db_user.is_active = state
-            action = get_action(self.db, action="update")
-            db_user.log_modification(
-                session=self.db,
-                action_id=action.id,
-                description=f"Usuario {username} cambio su estado de {not state} a {state}",
-            )
-            self.db.commit()
-            return True
-        return False
+        hashed_password = bcrypt.hashpw(new_pass.encode("utf-8"), bcrypt.gensalt())
+        db_user.password = hashed_password
+        details = "Password actualizado"
+        self._log_modification(db_user, "update", details)
+        return True
+
+    def state_user(self, user: UserModel, state: bool) -> bool:
+        user.is_active = state
+        details = f'El estado actual es {"habilitado" if state else "deshabilitado"}'
+        self._log_modification(user, "update", details)
+        return True
 
     def delete_user(self, username: str):
         db_user = self.get_username(username)
-        if db_user:
-            action = get_action(self.db, action="delete")
-            db_user.log_modification(
-                session=self.db,
-                action_id=action.id,
-                description=f"Usuario eliminado. {jsonable_encoder(db_user)}",
-            )
-            self.db.delete(db_user)
-            self.db.commit()
-            return True
-        return False
+        details = f"Usuario eliminado. {jsonable_encoder(db_user)}"
+        self._log_modification(db_user, "update", details)
+        self.db.delete(db_user)
+        self.db.commit()
+        return True

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 from config.db import (
@@ -9,8 +9,7 @@ from config.db import (
 from middlewares.error_handler import ErrorHandler
 from routers.movie import movie_router
 from routers.user import user_router
-from schemas.health_check import HealthCheck
-from services.db import check_db
+from services.db import DBService
 from models import init_db
 
 
@@ -48,17 +47,23 @@ app.include_router(movie_router)
 
 
 @app.get("/", tags=["health"], status_code=301)
-async def redirect_to_status():
+async def redirect_to_status() -> RedirectResponse:
     return RedirectResponse(url="/_status/")
 
 
-@app.get("/_status/", response_model=HealthCheck, tags=["health"], status_code=200)
-async def health_check():
-    db_status = check_db()
+@app.get("/_status/", tags=["health"], status_code=200)
+async def health_check() -> dict:
+    db_status = DBService().check_db()
     current_time = datetime.now(timezone.utc)
     uptime = current_time - start_time
-    return HealthCheck(
-        status="OK", version=app.version, db_status=db_status, uptime=str(uptime)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "status": "OK",
+            "version": app.version,
+            "db_status": db_status,
+            "uptime": str(uptime),
+        },
     )
 
 

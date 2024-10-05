@@ -12,6 +12,7 @@ from sqlalchemy.orm import relationship, Session
 from config.db import Base
 from datetime import datetime, timezone
 import uuid
+import json
 
 user_roles = Table(
     "user_roles",
@@ -46,7 +47,7 @@ class UserAuditLog(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
     action_id = Column(String, ForeignKey("actions.id"), nullable=False)
-    description = Column(String(300))
+    description = Column(String, nullable=False)
     date = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
 
@@ -69,6 +70,6 @@ class User(Base):
         log_entry = UserAuditLog(
             user_id=self.id,
             action_id=action_id,
-            description=description,
+            description=json.dumps(description),
         )
         session.add(log_entry)
