@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from config.db import get_db
 from fastapi import APIRouter
-from middlewares.jwt_bearer import JWTBearer
+
+# from middlewares.jwt_bearer import JWTBearer
 from services.movie import MovieService
 from schemas.movie import Movie
 
@@ -68,7 +69,7 @@ def get_movie_by_category(
     tags=["movies"],
     response_model=dict,
     status_code=201,
-    dependencies=[Depends(JWTBearer())],
+    # dependencies=[Depends(JWTBearer())],
 )
 def create_movies(movies: List[Movie], db: Session = Depends(get_db)) -> dict:
     new_movies = MovieService(db).create_movies(movies)
@@ -83,7 +84,7 @@ def create_movies(movies: List[Movie], db: Session = Depends(get_db)) -> dict:
     tags=["movies"],
     response_model=dict,
     status_code=200,
-    dependencies=[Depends(JWTBearer())],
+    # dependencies=[Depends(JWTBearer())],
 )
 def update_movie(id: int, movie: Movie, db: Session = Depends(get_db)) -> dict:
     result = MovieService(db).update_movie(id, movie)
@@ -102,7 +103,7 @@ def update_movie(id: int, movie: Movie, db: Session = Depends(get_db)) -> dict:
     tags=["movies"],
     response_model=dict,
     status_code=200,
-    dependencies=[Depends(JWTBearer())],
+    # dependencies=[Depends(JWTBearer())],
 )
 def delete_movie(id: int, db: Session = Depends(get_db)) -> dict:
     result = MovieService(db).delete_movie(id)

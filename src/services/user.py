@@ -1,10 +1,20 @@
-from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select
-from typing import Optional
-from models import User as UserModel, Role
-from config.security import create_token
-from services.db import DBService
 import bcrypt
+from typing import Optional
+from sqlalchemy import select
+from fastapi.encoders import jsonable_encoder
+from models import User as UserModel, Role
+from config.security import create_token, pwd_context, oauth2_scheme
+from services.db import DBService
+from typing import Annotated
+from jwt import decode, ExpiredSignatureError, InvalidTokenError
+from fastapi import HTTPException, Depends, status
+from config.settings import settings
+from schemas.token import TokenData
+
+
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = int(settings.access_token_expire_minutes)
 
 
 class UserService:
@@ -27,11 +37,47 @@ class UserService:
         )
         self.db.commit()
 
-    def get_token(self, user) -> str:
-        return create_token(user.model_dump())
+    async def get_current_user(self, token: Annotated[str, Depends(oauth2_scheme)]):
+        try:
+            payload = decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            username: str = payload.get("sub")
+            if not username:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="No se han podido validar las credenciales",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+            token_data = TokenData(username=username)
+        except InvalidTokenError:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Token Invalido",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        except ExpiredSignatureError:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Token Expirado",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        user = self.get_username(token_data.username)
+        return user
 
-    def verify_password(self, provided_password, stored_password) -> bool:
-        return bcrypt.checkpw(provided_password.encode("utf-8"), stored_password)
+    async def get_current_active_user(
+        self,
+        current_user: Annotated[UserModel, Depends(get_current_user)],
+    ):
+        if not current_user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Usuario deshabilitado"
+            )
+        return current_user
+
+    def get_token(self, user: dict) -> str:
+        return create_token(user)
+
+    def verify_password(self, provided_password, hashed_password) -> bool:
+        return pwd_context.verify(provided_password, hashed_password)
 
     def get_username(self, username) -> Optional[UserModel]:
         return self.db.query(UserModel).filter(UserModel.username == username).first()
@@ -48,7 +94,7 @@ class UserService:
         return result.scalars().all()
 
     def create_user(self, user: UserModel) -> bool:
-        hashed_password = bcrypt.hashpw(user.password.encode("utf-8"), bcrypt.gensalt())
+        hashed_password = pwd_context.hash(user.password)
         new_user = UserModel(
             name=user.name if user.name else None,
             surname=user.surname if user.surname else None,

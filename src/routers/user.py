@@ -1,36 +1,43 @@
 from fastapi import HTTPException, APIRouter, Depends, Form, status
 from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from typing import Annotated, List
-from schemas.user import UserLogin, UserCreate
-from middlewares.jwt_bearer import JWTBearer
+from typing import Annotated, Optional
+from schemas.user import UserCreate
+from schemas.token import Token
 from services.user import UserService
 from config.db import get_db
 from config.settings import settings
-import bcrypt
+from config.security import pwd_context
+from fastapi.security import OAuth2PasswordRequestForm
 
-ADMIN_PASS_HASHED = bcrypt.hashpw(settings.admin_pass.encode("utf-8"), bcrypt.gensalt())
+
+ADMIN_PASS_HASHED = pwd_context.hash(settings.admin_pass)
 
 user_router = APIRouter()
 
 
-@user_router.post("/login/", tags=["users"], response_model=dict)
-def login(user: Annotated[UserLogin, Form()], db: Session = Depends(get_db)) -> dict:
+@user_router.post("/login", tags=["users"], response_model=Token)
+async def login(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Session = Depends(get_db),
+) -> Optional[Token]:
     user_service = UserService(db)
 
-    if user.username == settings.admin_user:
-        password_valid = user_service.verify_password(user.password, ADMIN_PASS_HASHED)
+    if form_data.username == settings.admin_user:
+        password_valid = user_service.verify_password(
+            form_data.username, ADMIN_PASS_HASHED
+        )
     else:
-        check_username = user_service.get_username(user.username)
+        check_username = user_service.get_username(form_data.username)
         if not check_username:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail={"error": "El usuario no existe"},
+                headers={"WWW-Authenticate": "Bearer"},
             )
 
         password_valid = user_service.verify_password(
-            user.password, check_username.password
+            form_data.username, check_username.password
         )
 
     if not password_valid:
@@ -39,21 +46,21 @@ def login(user: Annotated[UserLogin, Form()], db: Session = Depends(get_db)) -> 
             detail={"error": "Password incorrecto"},
             headers={"WWW-Authenticate": "Bearer"},
         )
-
-    token = user_service.get_token(user)
-    return JSONResponse(status_code=status.HTTP_200_OK, content={"success": token})
+    data = {"sub": form_data.username}
+    token = user_service.get_token(data)
+    return Token(access_token=token, token_type="bearer")
 
 
 @user_router.post(
     "/users/register",
     tags=["users"],
-    response_model=dict,
     status_code=201,
-    dependencies=[Depends(JWTBearer())],
+    response_model=UserCreate,
+    dependencies=[Depends(UserService.get_current_active_user)],
 )
-def create_user(
+async def create_user(
     user: Annotated[UserCreate, Form()], db: Session = Depends(get_db)
-) -> dict:
+) -> Optional[UserCreate]:
     user_service = UserService(db)
     check_username = user_service.get_username(user.username)
     check_email = user_service.get_email(user.email)
@@ -110,130 +117,130 @@ def create_user(
 #         )
 
 
-@user_router.patch(
-    "/users/new_pass",
-    tags=["users"],
-    response_model=dict,
-    status_code=status.HTTP_200_OK,
-    dependencies=[Depends(JWTBearer())],
-)
-def update_password(
-    username: str, current_pass: str, new_pass: str, db: Session = Depends(get_db)
-) -> dict:
-    user_service = UserService(db)
-    check_username = user_service.get_username(username)
-    if not check_username:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail={"error": "Usuario no existe"}
-        )
-    check_currentpass = user_service.verify_password(
-        current_pass, check_username.password
-    )
-    if not check_currentpass:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error": "La contraseña actual no coincide"},
-        )
-    result = user_service.update_password(username, new_pass)
-    if result:
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content={"success": f"Contraseña actualizada para usuario: {username}"},
-        )
+# @user_router.patch(
+#     "/users/new_pass",
+#     tags=["users"],
+#     response_model=dict,
+#     status_code=status.HTTP_200_OK,
+#     dependencies=[Depends(JWTBearer())],
+# )
+# def update_password(
+#     username: str, current_pass: str, new_pass: str, db: Session = Depends(get_db)
+# ) -> dict:
+#     user_service = UserService(db)
+#     check_username = user_service.get_username(username)
+#     if not check_username:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND, detail={"error": "Usuario no existe"}
+#         )
+#     check_currentpass = user_service.verify_password(
+#         current_pass, check_username.password
+#     )
+#     if not check_currentpass:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail={"error": "La contraseña actual no coincide"},
+#         )
+#     result = user_service.update_password(username, new_pass)
+#     if result:
+#         return JSONResponse(
+#             status_code=status.HTTP_200_OK,
+#             content={"success": f"Contraseña actualizada para usuario: {username}"},
+#         )
 
 
-@user_router.patch(
-    "/users/change_state",
-    tags=["users"],
-    response_model=dict,
-    status_code=status.HTTP_200_OK,
-    dependencies=[Depends(JWTBearer())],
-)
-def change_state(username: str, state: bool, db: Session = Depends(get_db)) -> dict:
-    check_username = UserService(db).get_username(username)
-    if not check_username:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error": "El usuario no existe"},
-        )
-    if check_username.is_active == state:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail={
-                "error": f'El estado actual es {"habilitado" if state else "deshabilitado"}'
-            },
-        )
-    result = UserService(db).state_user(check_username, state)
-    if result:
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content={
-                "success": f'El estado del usuario: {username} es {"habilitado" if state else "deshabilitado"}'
-            },
-        )
+# @user_router.patch(
+#     "/users/change_state",
+#     tags=["users"],
+#     response_model=dict,
+#     status_code=status.HTTP_200_OK,
+#     dependencies=[Depends(JWTBearer())],
+# )
+# def change_state(username: str, state: bool, db: Session = Depends(get_db)) -> dict:
+#     check_username = UserService(db).get_username(username)
+#     if not check_username:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail={"error": "El usuario no existe"},
+#         )
+#     if check_username.is_active == state:
+#         raise HTTPException(
+#             status_code=status.HTTP_409_CONFLICT,
+#             detail={
+#                 "error": f'El estado actual es {"habilitado" if state else "deshabilitado"}'
+#             },
+#         )
+#     result = UserService(db).state_user(check_username, state)
+#     if result:
+#         return JSONResponse(
+#             status_code=status.HTTP_200_OK,
+#             content={
+#                 "success": f'El estado del usuario: {username} es {"habilitado" if state else "deshabilitado"}'
+#             },
+#         )
 
 
-@user_router.delete(
-    "/users/{username}",
-    tags=["users"],
-    response_model=dict,
-    status_code=status.HTTP_200_OK,
-    dependencies=[Depends(JWTBearer())],
-)
-def delete_user(username: str, db: Session = Depends(get_db)) -> dict:
-    check_username = UserService(db).get_username(username)
-    if not check_username:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error": "El usuario no existe"},
-        )
-    result = UserService(db).delete_user(username)
-    if result:
-        return JSONResponse(
-            status_code=status.HTTP_200_OK, content={"success": "Usuario eliminado"}
-        )
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error": "Usuario no encontrado"},
-        )
+# @user_router.delete(
+#     "/users/{username}",
+#     tags=["users"],
+#     response_model=dict,
+#     status_code=status.HTTP_200_OK,
+#     dependencies=[Depends(JWTBearer())],
+# )
+# def delete_user(username: str, db: Session = Depends(get_db)) -> dict:
+#     check_username = UserService(db).get_username(username)
+#     if not check_username:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail={"error": "El usuario no existe"},
+#         )
+#     result = UserService(db).delete_user(username)
+#     if result:
+#         return JSONResponse(
+#             status_code=status.HTTP_200_OK, content={"success": "Usuario eliminado"}
+#         )
+#     else:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail={"error": "Usuario no encontrado"},
+#         )
 
 
-@user_router.get(
-    "/users",
-    tags=["users"],
-    response_model=List[UserCreate],
-    status_code=status.HTTP_200_OK,
-    dependencies=[Depends(JWTBearer())],
-)
-def get_users(db: Session = Depends(get_db)) -> List[UserCreate]:
-    users_info = UserService(db).get_users()
-    if users_info:
-        return JSONResponse(
-            status_code=status.HTTP_200_OK, content=jsonable_encoder(users_info)
-        )
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error": "No hay usuarios registrados"},
-        )
+# @user_router.get(
+#     "/users",
+#     tags=["users"],
+#     response_model=List[UserCreate],
+#     status_code=status.HTTP_200_OK,
+#     dependencies=[Depends(JWTBearer())],
+# )
+# def get_users(db: Session = Depends(get_db)) -> List[UserCreate]:
+#     users_info = UserService(db).get_users()
+#     if users_info:
+#         return JSONResponse(
+#             status_code=status.HTTP_200_OK, content=jsonable_encoder(users_info)
+#         )
+#     else:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail={"error": "No hay usuarios registrados"},
+#         )
 
 
-@user_router.get(
-    "/users/{username}",
-    tags=["users"],
-    response_model=List[UserCreate],
-    status_code=status.HTTP_200_OK,
-    dependencies=[Depends(JWTBearer())],
-)
-def get_user(username: str, db: Session = Depends(get_db)) -> list[UserCreate]:
-    user_info = UserService(db).get_username(username)
-    if user_info:
-        return JSONResponse(
-            status_code=status.HTTP_200_OK, content=jsonable_encoder(user_info)
-        )
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"error": f"Usuario {username} no encontrado"},
-        )
+# @user_router.get(
+#     "/users/{username}",
+#     tags=["users"],
+#     response_model=List[UserCreate],
+#     status_code=status.HTTP_200_OK,
+#     dependencies=[Depends(JWTBearer())],
+# )
+# def get_user(username: str, db: Session = Depends(get_db)) -> list[UserCreate]:
+#     user_info = UserService(db).get_username(username)
+#     if user_info:
+#         return JSONResponse(
+#             status_code=status.HTTP_200_OK, content=jsonable_encoder(user_info)
+#         )
+#     else:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail={"error": f"Usuario {username} no encontrado"},
+#         )
