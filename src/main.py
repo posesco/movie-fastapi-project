@@ -1,11 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse, JSONResponse
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
-from config.db import (
-    engine,
-    Base,
-)
+from config.db import engine, Base
+from config.settings import settings
 from middlewares.error_handler import ErrorHandler
 from routers.movie import movie_router
 from routers.user import user_router
@@ -20,23 +18,10 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Movie API with FastApi",
-    version="0.0.1",
-    description="""
-    This is my initial project with FastAPI, in which I explore and learn
-    about this powerful tool for building modern, high-performance APIs.
-    """,
-    license_info={
-        "name": "GPL-3.0 license",
-        "url": "https://www.gnu.org/licenses/gpl-3.0.html",
-    },
-    terms_of_service="https://posesco.com/terms/",
-    contact={
-        "name": "Jesus Posada",
-        "url": "https://posesco.com/contact/",
-        "email": "info@posesco.com",
-    },
-    debug=False,
+    title=settings.project_title,
+    version=settings.project_version,
+    description=settings.project_desc,
+    debug=settings.project_debug_mode,
     lifespan=lifespan,
 )
 
@@ -46,9 +31,9 @@ app.include_router(user_router)
 app.include_router(movie_router)
 
 
-@app.get("/", tags=["health"], status_code=301)
+@app.get("/", tags=["health"], status_code=status.HTTP_302_FOUND)
 async def redirect_to_status() -> RedirectResponse:
-    return RedirectResponse(url="/_status/")
+    return RedirectResponse(url="/_status/", status_code=status.HTTP_302_FOUND)
 
 
 @app.get("/_status/", tags=["health"], status_code=200)
@@ -59,7 +44,7 @@ async def health_check() -> dict:
     return JSONResponse(
         status_code=200,
         content={
-            "status": "OK",
+            "status": "Live",
             "version": app.version,
             "db_status": db_status,
             "uptime": str(uptime),

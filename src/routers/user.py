@@ -1,36 +1,29 @@
+from fastapi import HTTPException, APIRouter, Depends, Form, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from fastapi import HTTPException, APIRouter, Depends, Form, status
-from typing import Annotated, List
 from sqlalchemy.orm import Session
+from typing import Annotated, List
 from schemas.user import UserLogin, UserCreate
 from middlewares.jwt_bearer import JWTBearer
 from services.user import UserService
 from config.db import get_db
-from dotenv import load_dotenv
-import os
+from config.settings import settings
 import bcrypt
 
-load_dotenv()
-ADMIN_USER = os.getenv("ADMIN_USER")
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
-ADMIN_PASS_HASHED = bcrypt.hashpw(
-    os.getenv("ADMIN_PASS").encode("utf-8"), bcrypt.gensalt()
-)
-
+ADMIN_PASS_HASHED = bcrypt.hashpw(settings.admin_pass.encode("utf-8"), bcrypt.gensalt())
 
 user_router = APIRouter()
 
 
-@user_router.post("/login/", tags=["users"])
+@user_router.post("/login/", tags=["users"], response_model=dict)
 def login(user: Annotated[UserLogin, Form()], db: Session = Depends(get_db)) -> dict:
     user_service = UserService(db)
 
-    if user.username == ADMIN_USER:
+    if user.username == settings.admin_user:
         password_valid = user_service.verify_password(user.password, ADMIN_PASS_HASHED)
     else:
         check_username = user_service.get_username(user.username)
-        if check_username is None:
+        if not check_username:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail={"error": "El usuario no existe"},
@@ -44,10 +37,11 @@ def login(user: Annotated[UserLogin, Form()], db: Session = Depends(get_db)) -> 
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail={"error": "Password incorrecto"},
+            headers={"WWW-Authenticate": "Bearer"},
         )
 
     token = user_service.get_token(user)
-    return JSONResponse(status_code=status.HTTP_200_OK, content=token)
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"success": token})
 
 
 @user_router.post(
@@ -157,7 +151,7 @@ def update_password(
 )
 def change_state(username: str, state: bool, db: Session = Depends(get_db)) -> dict:
     check_username = UserService(db).get_username(username)
-    if check_username is None:
+    if not check_username:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"error": "El usuario no existe"},
@@ -188,7 +182,7 @@ def change_state(username: str, state: bool, db: Session = Depends(get_db)) -> d
 )
 def delete_user(username: str, db: Session = Depends(get_db)) -> dict:
     check_username = UserService(db).get_username(username)
-    if check_username is None:
+    if not check_username:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"error": "El usuario no existe"},

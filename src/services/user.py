@@ -1,19 +1,10 @@
 from fastapi.encoders import jsonable_encoder
-from dotenv import load_dotenv
 from sqlalchemy import select
-import os
-import bcrypt
 from typing import Optional
 from models import User as UserModel, Role
 from config.security import create_token
 from services.db import DBService
-
-load_dotenv()
-ADMIN_USER = os.getenv("ADMIN_USER")
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
-ADMIN_PASS_HASHED = bcrypt.hashpw(
-    os.getenv("ADMIN_PASS").encode("utf-8"), bcrypt.gensalt()
-)
+import bcrypt
 
 
 class UserService:
