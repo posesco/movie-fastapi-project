@@ -1,4 +1,4 @@
-from fastapi import HTTPException, APIRouter, Depends, Form, status
+from fastapi import HTTPException, APIRouter, Depends, Form, Request, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import Annotated, Optional
@@ -16,8 +16,9 @@ ADMIN_PASS_HASHED = pwd_context.hash(settings.admin_pass)
 user_router = APIRouter()
 
 
-@user_router.post("/login", tags=["users"], response_model=Token)
+@user_router.post("/login", tags=["Users"], response_model=Token)
 async def login(
+    request: Request,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(get_db),
 ) -> Optional[Token]:
@@ -46,14 +47,27 @@ async def login(
             detail={"error": "Password incorrecto"},
             headers={"WWW-Authenticate": "Bearer"},
         )
-    data = {"sub": form_data.username}
+    request_data = {
+        "headers": dict(request.headers),
+        "client_ip": request.client.host,
+        "method": request.method,
+        "url": str(request.url),
+        "path_params": request.path_params,
+        "query_params": dict(request.query_params),
+        "cookies": request.cookies,
+    }
+    data = {
+        "sub": form_data.username,
+        "user_id": check_username.id,
+        "request_data": request_data,
+    }
     token = user_service.get_token(data)
     return Token(access_token=token, token_type="bearer")
 
 
 @user_router.post(
     "/users/register",
-    tags=["users"],
+    tags=["Users"],
     status_code=201,
     response_model=UserCreate,
     dependencies=[Depends(UserService.get_current_active_user)],
@@ -88,7 +102,7 @@ async def create_user(
 
 # @user_router.post(
 #     "/users/assign_role",
-#     tags=["users"],
+#     tags=["Users"],
 #     response_model=dict,
 #     status_code=status.HTTP_200_OK,
 #     dependencies=[Depends(JWTBearer())],
@@ -119,7 +133,7 @@ async def create_user(
 
 # @user_router.patch(
 #     "/users/new_pass",
-#     tags=["users"],
+#     tags=["Users"],
 #     response_model=dict,
 #     status_code=status.HTTP_200_OK,
 #     dependencies=[Depends(JWTBearer())],
@@ -151,7 +165,7 @@ async def create_user(
 
 # @user_router.patch(
 #     "/users/change_state",
-#     tags=["users"],
+#     tags=["Users"],
 #     response_model=dict,
 #     status_code=status.HTTP_200_OK,
 #     dependencies=[Depends(JWTBearer())],
@@ -182,7 +196,7 @@ async def create_user(
 
 # @user_router.delete(
 #     "/users/{username}",
-#     tags=["users"],
+#     tags=["Users"],
 #     response_model=dict,
 #     status_code=status.HTTP_200_OK,
 #     dependencies=[Depends(JWTBearer())],
@@ -208,7 +222,7 @@ async def create_user(
 
 # @user_router.get(
 #     "/users",
-#     tags=["users"],
+#     tags=["Users"],
 #     response_model=List[UserCreate],
 #     status_code=status.HTTP_200_OK,
 #     dependencies=[Depends(JWTBearer())],
@@ -228,7 +242,7 @@ async def create_user(
 
 # @user_router.get(
 #     "/users/{username}",
-#     tags=["users"],
+#     tags=["Users"],
 #     response_model=List[UserCreate],
 #     status_code=status.HTTP_200_OK,
 #     dependencies=[Depends(JWTBearer())],

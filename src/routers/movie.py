@@ -15,7 +15,7 @@ movie_router = APIRouter()
 
 
 @movie_router.get(
-    "/movies", tags=["movies"], response_model=List[Movie], status_code=200
+    "/movies", tags=["Movies"], response_model=List[Movie], status_code=200
 )
 def get_movies(db: Session = Depends(get_db)) -> List[Movie]:
     result = MovieService(db).get_movies()
@@ -28,7 +28,7 @@ def get_movies(db: Session = Depends(get_db)) -> List[Movie]:
 
 
 @movie_router.get(
-    "/movies/{id}", tags=["movies"], response_model=List[Movie], status_code=200
+    "/movies/{id}", tags=["Movies"], response_model=List[Movie], status_code=200
 )
 def get_movie(
     db: Session = Depends(get_db), id: int = Path(ge=1, le=2000)
@@ -43,7 +43,7 @@ def get_movie(
 
 
 @movie_router.get(
-    "/movies/", tags=["movies"], response_model=List[Movie], status_code=200
+    "/movies/", tags=["Movies"], response_model=List[Movie], status_code=200
 )
 def get_movie_by_category(
     db: Session = Depends(get_db),
@@ -66,7 +66,7 @@ def get_movie_by_category(
 
 @movie_router.post(
     "/movies/",
-    tags=["movies"],
+    tags=["Movies"],
     response_model=dict,
     status_code=201,
     # dependencies=[Depends(JWTBearer())],
@@ -81,7 +81,7 @@ def create_movies(movies: List[Movie], db: Session = Depends(get_db)) -> dict:
 
 @movie_router.put(
     "/movies/{id}",
-    tags=["movies"],
+    tags=["Movies"],
     response_model=dict,
     status_code=200,
     # dependencies=[Depends(JWTBearer())],
@@ -100,7 +100,7 @@ def update_movie(id: int, movie: Movie, db: Session = Depends(get_db)) -> dict:
 
 @movie_router.delete(
     "/movies/{id}",
-    tags=["movies"],
+    tags=["Movies"],
     response_model=dict,
     status_code=200,
     # dependencies=[Depends(JWTBearer())],

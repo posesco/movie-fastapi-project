@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 from config.db import engine, Base
-from config.settings import settings
+from config.settings import settings, tags_metadata
 from middlewares.error_handler import ErrorHandler
 from routers.movie import movie_router
 from routers.user import user_router
@@ -23,6 +23,7 @@ app = FastAPI(
     description=settings.project_desc,
     debug=settings.project_debug_mode,
     lifespan=lifespan,
+    openapi_tags=tags_metadata,
 )
 
 start_time = datetime.now(timezone.utc)
