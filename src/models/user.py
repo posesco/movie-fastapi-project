@@ -1,72 +1,56 @@
-from sqlalchemy import (
-    Integer,
-    Column,
-    event,
-    String,
-    Table,
-    Boolean,
-    DateTime,
-    ForeignKey,
-)
-from sqlalchemy.orm import relationship, Session
-from config.db import Base
+from sqlmodel import SQLModel, Field, Relationship
+from typing import Optional, List
 from datetime import datetime, timezone
+
 import uuid
 import json
 
-user_roles = Table(
-    "user_roles",
-    Base.metadata,
-    Column("user_id", String, ForeignKey("users.id"), primary_key=True),
-    Column("role_id", String, ForeignKey("roles.id"), primary_key=True),
-)
+
+class UserRole(SQLModel, table=True):
+    __tablename__ = "user_roles"
+
+    user_id: uuid.UUID = Field(foreign_key="users.id", primary_key=True)
+    role_id: uuid.UUID = Field(foreign_key="roles.id", primary_key=True)
 
 
-class Role(Base):
+class Role(SQLModel, table=True):
     __tablename__ = "roles"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String(30), unique=True, nullable=False)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    name: str = Field(max_length=30, unique=True, nullable=False)
+
+    users: List["User"] = Relationship(back_populates="roles", link_model=UserRole)
 
 
-def insert_default_roles(target, connection, **kwargs):
-    roles = ["admin", "editor", "user"]
-    session = Session(bind=connection)
-    for role_name in roles:
-        role = Role(name=role_name)
-        session.add(role)
-    session.commit()
-
-
-event.listen(Role.__table__, "after_create", insert_default_roles)
-
-
-class UserAuditLog(Base):
+class UserAuditLog(SQLModel, table=True):
     __tablename__ = "user_audit_logs"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    action_id = Column(String, ForeignKey("actions.id"), nullable=False)
-    description = Column(String, nullable=False)
-    date = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: uuid.UUID = Field(foreign_key="users.id", nullable=False)
+    action_id: uuid.UUID = Field(foreign_key="actions.id", nullable=False)
+    description: str = Field(nullable=False)
+    date: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc), nullable=False
+    )
 
 
-class User(Base):
+class User(SQLModel, table=True):
     __tablename__ = "users"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String(30), nullable=True)
-    surname = Column(String(30), nullable=True)
-    username = Column(String(30), unique=True, nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
-    password = Column(String(100), nullable=False)
-    is_active = Column(Boolean, default=True)
-    created_at = Column(
-        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    name: Optional[str] = Field(max_length=30, nullable=True)
+    surname: Optional[str] = Field(max_length=30, nullable=True)
+    username: str = Field(max_length=30, unique=True, nullable=False)
+    email: str = Field(max_length=100, unique=True, nullable=False)
+    password: str = Field(max_length=100, nullable=False)
+    is_active: bool = Field(default=True)
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc), nullable=False
     )
-    roles = relationship("Role", secondary=user_roles, backref="users")
 
-    def log_modification(self, session, action_id, description):
+    roles: List[Role] = Relationship(back_populates="users", link_model=UserRole)
+
+    def log_modification(self, session, action_id: str, description: dict):
         log_entry = UserAuditLog(
             user_id=self.id,
             action_id=action_id,

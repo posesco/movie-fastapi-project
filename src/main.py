@@ -2,13 +2,14 @@ from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse, JSONResponse
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
-from config.db import engine, Base
+from config.db import init_db
 from config.settings import settings, tags_metadata
 from middlewares.error_handler import ErrorHandler
-from routers.movie import movie_router
+
+# from routers.movie import movie_router
 from routers.user import user_router
 from services.db import DBService
-from models import init_db
+import socket
 
 
 @asynccontextmanager
@@ -29,7 +30,7 @@ app = FastAPI(
 start_time = datetime.now(timezone.utc)
 app.add_middleware(ErrorHandler)
 app.include_router(user_router)
-app.include_router(movie_router)
+# app.include_router(movie_router)
 
 
 @app.get("/", tags=["health"], status_code=status.HTTP_302_FOUND)
@@ -49,8 +50,6 @@ async def health_check() -> dict:
             "version": app.version,
             "db_status": db_status,
             "uptime": str(uptime),
+            "server": socket.gethostname(),
         },
     )
-
-
-Base.metadata.create_all(bind=engine)

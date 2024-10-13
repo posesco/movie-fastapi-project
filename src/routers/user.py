@@ -1,6 +1,6 @@
 from fastapi import HTTPException, APIRouter, Depends, Form, Request, status
 from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 from typing import Annotated, Optional
 from schemas.user import UserCreate
 from schemas.token import Token
@@ -23,24 +23,17 @@ async def login(
     db: Session = Depends(get_db),
 ) -> Optional[Token]:
     user_service = UserService(db)
-
-    if form_data.username == settings.admin_user:
-        password_valid = user_service.verify_password(
-            form_data.username, ADMIN_PASS_HASHED
-        )
-    else:
-        check_username = user_service.get_username(form_data.username)
-        if not check_username:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail={"error": "El usuario no existe"},
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-
-        password_valid = user_service.verify_password(
-            form_data.username, check_username.password
+    check_username = user_service.get_username(form_data.username)
+    if not check_username:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"error": "El usuario no existe"},
+            headers={"WWW-Authenticate": "Bearer"},
         )
 
+    password_valid = user_service.verify_password(
+        form_data.password, check_username.password
+    )
     if not password_valid:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -48,17 +41,12 @@ async def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
     request_data = {
-        "headers": dict(request.headers),
         "client_ip": request.client.host,
-        "method": request.method,
         "url": str(request.url),
-        "path_params": request.path_params,
-        "query_params": dict(request.query_params),
-        "cookies": request.cookies,
     }
     data = {
         "sub": form_data.username,
-        "user_id": check_username.id,
+        "user_id": str(check_username.id),
         "request_data": request_data,
     }
     token = user_service.get_token(data)

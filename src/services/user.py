@@ -1,8 +1,8 @@
 import bcrypt
 from typing import Optional
-from sqlalchemy import select
+from sqlmodel import select
 from fastapi.encoders import jsonable_encoder
-from models import User as UserModel, Role
+from models.user import User as UserModel, Role
 from config.security import create_token, pwd_context, oauth2_scheme
 from services.db import DBService
 from typing import Annotated

@@ -29,3 +29,4 @@ def test_health_check():
     assert "uptime" in data
     assert data["status"] == "Live"
     assert isinstance(data["uptime"], str)
+    assert isinstance(data["server"], str)

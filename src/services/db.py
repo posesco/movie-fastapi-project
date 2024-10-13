@@ -1,7 +1,6 @@
-from sqlalchemy import text
-from sqlalchemy.exc import OperationalError
+from sqlmodel import Session, select
 from config.db import engine
-from models import Action
+from models.actions import Action
 from typing import Optional
 
 
@@ -11,11 +10,9 @@ class DBService:
 
     def check_db(self) -> str:
         try:
-            with engine.connect() as connection:
-                connection.execute(text("SELECT 1"))
+            with Session(engine) as session:
+                session.exec(select(1))
             return "OK"
-        except OperationalError as exec:
-            return f"Error: {str(exec)}"
         except Exception as exec:
             return f"Error: {str(exec)}"
 

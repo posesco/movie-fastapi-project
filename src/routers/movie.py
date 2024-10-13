@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi import Path, Query
-from sqlalchemy.orm import Session
+from sqlmodel import Session
 from typing import List
 from config.db import get_db
 from fastapi import APIRouter
