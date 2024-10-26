@@ -1,6 +1,6 @@
 import bcrypt
 from typing import Optional
-from sqlmodel import select
+from sqlmodel import select, Session
 from fastapi.encoders import jsonable_encoder
 from models.user import User as UserModel, Role
 from config.security import create_token, pwd_context, oauth2_scheme
@@ -9,7 +9,7 @@ from typing import Annotated
 from jwt import decode, ExpiredSignatureError, InvalidTokenError
 from fastapi import HTTPException, Depends, status
 from config.settings import settings
-from schemas.token import TokenData
+from config.db import get_db
 
 
 SECRET_KEY = settings.secret_key
@@ -37,7 +37,10 @@ class UserService:
         )
         self.db.commit()
 
-    async def get_current_user(self, token: Annotated[str, Depends(oauth2_scheme)]):
+    @staticmethod
+    async def get_current_user(
+        token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
+    ) -> UserModel:
         try:
             payload = decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             username: str = payload.get("sub")
@@ -47,26 +50,31 @@ class UserService:
                     detail="No se han podido validar las credenciales",
                     headers={"WWW-Authenticate": "Bearer"},
                 )
-            token_data = TokenData(username=username)
-        except InvalidTokenError:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Token Invalido",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
         except ExpiredSignatureError:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Token Expirado",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        user = self.get_username(token_data.username)
+        except InvalidTokenError:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Token Invalido",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        user = UserService(db).get_username(username)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="No se han podido validar las credenciales",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
         return user
 
+    @staticmethod
     async def get_current_active_user(
-        self,
         current_user: Annotated[UserModel, Depends(get_current_user)],
-    ):
+    ) -> UserModel:
         if not current_user.is_active:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN, detail="Usuario deshabilitado"

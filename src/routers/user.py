@@ -9,6 +9,7 @@ from config.db import get_db
 from config.settings import settings
 from config.security import pwd_context
 from fastapi.security import OAuth2PasswordRequestForm
+from models.user import User as UserModel
 
 
 ADMIN_PASS_HASHED = pwd_context.hash(settings.admin_pass)
@@ -22,8 +23,7 @@ async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(get_db),
 ) -> Optional[Token]:
-    user_service = UserService(db)
-    check_username = user_service.get_username(form_data.username)
+    check_username = UserService(db).get_username(form_data.username)
     if not check_username:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -31,7 +31,7 @@ async def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    password_valid = user_service.verify_password(
+    password_valid = UserService(db).verify_password(
         form_data.password, check_username.password
     )
     if not password_valid:
@@ -40,16 +40,17 @@ async def login(
             detail={"error": "Password incorrecto"},
             headers={"WWW-Authenticate": "Bearer"},
         )
-    request_data = {
+    user_info = {
+        "id": str(check_username.id),
+        "roles": [str(role.id) for role in check_username.roles],
         "client_ip": request.client.host,
         "url": str(request.url),
     }
     data = {
         "sub": form_data.username,
-        "user_id": str(check_username.id),
-        "request_data": request_data,
+        "user_info": user_info,
     }
-    token = user_service.get_token(data)
+    token = UserService(db).get_token(data)
     return Token(access_token=token, token_type="bearer")
 
 
@@ -58,14 +59,21 @@ async def login(
     tags=["Users"],
     status_code=201,
     response_model=UserCreate,
-    dependencies=[Depends(UserService.get_current_active_user)],
 )
 async def create_user(
-    user: Annotated[UserCreate, Form()], db: Session = Depends(get_db)
+    user: Annotated[UserCreate, Form()],
+    current_user: Annotated[UserModel, Depends(UserService.get_current_active_user)],
+    db: Session = Depends(get_db),
 ) -> Optional[UserCreate]:
-    user_service = UserService(db)
-    check_username = user_service.get_username(user.username)
-    check_email = user_service.get_email(user.email)
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"error": "No autenticado"},
+        )
+
+    check_username = UserService(db).get_username(user.username)
+    check_email = UserService(db).get_email(user.email)
+
     if check_username:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -77,7 +85,7 @@ async def create_user(
             detail={"error": "El correo electrónico ya existe"},
         )
 
-    new_user = user_service.create_user(user)
+    new_user = UserService(db).create_user(user)
     if new_user:
         return JSONResponse(
             status_code=201, content={"success": "Usuario creado exitosamente"}
@@ -98,8 +106,8 @@ async def create_user(
 # def assign_role(
 #     username: str, roles: list, db: Session = Depends(get_db)
 # ) -> dict:
-#     user_service = UserService(db)
-#     existing_roles = user_service._get_roles(roles)
+#
+#     existing_roles = UserService(db)._get_roles(roles)
 
 #     if len(existing_roles) != len(roles):
 #         raise HTTPException(
@@ -107,7 +115,7 @@ async def create_user(
 #             detail={"error": "Uno o más roles especificados no existen"}
 #         )
 
-#     result = user_service.assign_roles(username, existing_roles)
+#     result = UserService(db).assign_roles(username, existing_roles)
 #     if result:
 #         return JSONResponse(
 #             status_code=status.HTTP_200_OK,
@@ -129,13 +137,13 @@ async def create_user(
 # def update_password(
 #     username: str, current_pass: str, new_pass: str, db: Session = Depends(get_db)
 # ) -> dict:
-#     user_service = UserService(db)
-#     check_username = user_service.get_username(username)
+#
+#     check_username = UserService(db).get_username(username)
 #     if not check_username:
 #         raise HTTPException(
 #             status_code=status.HTTP_404_NOT_FOUND, detail={"error": "Usuario no existe"}
 #         )
-#     check_currentpass = user_service.verify_password(
+#     check_currentpass = UserService(db).verify_password(
 #         current_pass, check_username.password
 #     )
 #     if not check_currentpass:
@@ -143,7 +151,7 @@ async def create_user(
 #             status_code=status.HTTP_404_NOT_FOUND,
 #             detail={"error": "La contraseña actual no coincide"},
 #         )
-#     result = user_service.update_password(username, new_pass)
+#     result = UserService(db).update_password(username, new_pass)
 #     if result:
 #         return JSONResponse(
 #             status_code=status.HTTP_200_OK,
