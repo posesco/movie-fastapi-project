@@ -4,3 +4,5 @@ pip install "passlib[bcrypt]"
 pip install "pydantic[email]"
 pip install PyJWT
 pip install pre-commit
+pip install prometheus-client
+pip install prometheus-fastapi-instrumentator

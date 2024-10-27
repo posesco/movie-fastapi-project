@@ -5,6 +5,8 @@ from contextlib import asynccontextmanager
 from .config.db import init_db
 from .config.settings import settings, tags_metadata
 from .middlewares.error_handler import ErrorHandler
+from .services.metrics import custom_metrics
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # from routers.movie import movie_router
 from .routers.user import user_router
@@ -27,6 +29,8 @@ app = FastAPI(
     openapi_tags=tags_metadata,
 )
 
+Instrumentator().instrument(app).expose(app)
+custom_metrics.init()
 start_time = datetime.now(timezone.utc)
 app.add_middleware(ErrorHandler)
 app.include_router(user_router)
@@ -39,7 +43,7 @@ async def redirect_to_status() -> RedirectResponse:
 
 
 @app.get("/_status/", tags=["health"], status_code=200)
-async def health_check() -> dict:
+async def _status() -> dict:
     db_status = DBService().check_db()
     current_time = datetime.now(timezone.utc)
     uptime = current_time - start_time
@@ -53,3 +57,8 @@ async def health_check() -> dict:
             "server": socket.gethostname(),
         },
     )
+
+
+@app.get("/health-check/", tags=["health"], status_code=200)
+async def health_check() -> bool:
+    return True
