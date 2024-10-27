@@ -6,7 +6,8 @@ from .config.db import init_db
 from .config.settings import settings, tags_metadata
 from .middlewares.error_handler import ErrorHandler
 from .services.metrics import custom_metrics
-from prometheus_fastapi_instrumentator import Instrumentator
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
 
 # from routers.movie import movie_router
 from .routers.user import user_router
@@ -29,7 +30,7 @@ app = FastAPI(
     openapi_tags=tags_metadata,
 )
 
-Instrumentator().instrument(app).expose(app)
+FastAPIInstrumentor.instrument_app(app)
 custom_metrics.init()
 start_time = datetime.now(timezone.utc)
 app.add_middleware(ErrorHandler)
