@@ -2,13 +2,13 @@ from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse, JSONResponse
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
-from config.db import init_db
-from config.settings import settings, tags_metadata
-from middlewares.error_handler import ErrorHandler
+from .config.db import init_db
+from .config.settings import settings, tags_metadata
+from .middlewares.error_handler import ErrorHandler
 
 # from routers.movie import movie_router
-from routers.user import user_router
-from services.db import DBService
+from .routers.user import user_router
+from .services.db import DBService
 import socket
 
 

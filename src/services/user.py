@@ -2,14 +2,14 @@ import bcrypt
 from typing import Optional
 from sqlmodel import select, Session
 from fastapi.encoders import jsonable_encoder
-from models.user import User as UserModel, Role
-from config.security import create_token, pwd_context, oauth2_scheme
-from services.db import DBService
 from typing import Annotated
 from jwt import decode, ExpiredSignatureError, InvalidTokenError
 from fastapi import HTTPException, Depends, status
-from config.settings import settings
-from config.db import get_db
+from .db import DBService
+from src.models.user import User as UserModel, Role
+from src.config.settings import settings
+from src.config.db import get_db
+from src.config.security import create_token, pwd_context, oauth2_scheme
 
 
 SECRET_KEY = settings.secret_key

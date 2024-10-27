@@ -1,15 +1,15 @@
 from fastapi import HTTPException, APIRouter, Depends, Form, Request, status
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
 from typing import Annotated, Optional
-from schemas.user import UserCreate
-from schemas.token import Token
-from services.user import UserService
-from config.db import get_db
-from config.settings import settings
-from config.security import pwd_context
-from fastapi.security import OAuth2PasswordRequestForm
-from models.user import User as UserModel
+from src.schemas.user import UserCreate
+from src.schemas.token import Token
+from src.services.user import UserService
+from src.config.db import get_db
+from src.config.settings import settings
+from src.config.security import pwd_context
+from src.models.user import User as UserModel
 
 
 ADMIN_PASS_HASHED = pwd_context.hash(settings.admin_pass)

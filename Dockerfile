@@ -1,7 +1,7 @@
 FROM python:3.10-alpine
-WORKDIR /app/public
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 COPY ./src .
-COPY .env /app
-RUN pip install --no-cache-dir -r requirements.txt
-EXPOSE 80
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8888"]
+CMD ["fastapi", "run", "src/main.py"]

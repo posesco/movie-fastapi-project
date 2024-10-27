@@ -1,9 +1,9 @@
 import os
 from sqlmodel import SQLModel, create_engine, Session, select
-from models.actions import Action
-from models.user import Role, User, UserAuditLog, UserRole
-from config.settings import settings
-from config.security import pwd_context
+from src.models.actions import Action
+from src.models.user import Role, User, UserAuditLog, UserRole
+from .settings import settings
+from .security import pwd_context
 
 sqlite_file_name = "movie_api_db.sqlite"
 base_dir = os.path.dirname(os.path.realpath(__file__))

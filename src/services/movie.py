@@ -1,5 +1,5 @@
-from models import Movie as MovieModel
-from schemas.movie import Movie
+from src.models import Movie as MovieModel
+from src.schemas.movie import Movie
 
 
 class MovieService:

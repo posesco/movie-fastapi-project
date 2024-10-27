@@ -1,6 +1,6 @@
 from jwt import encode
 from datetime import datetime, timedelta, timezone
-from config.settings import settings
+from .settings import settings
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 

@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
-from config.db import engine
-from models.actions import Action
+from src.config.db import engine
+from src.models.actions import Action
 from typing import Optional
 
 

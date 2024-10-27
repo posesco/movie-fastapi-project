@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi import Path, Query
 from sqlmodel import Session
 from typing import List
-from config.db import get_db
+from src.config.db import get_db
 from fastapi import APIRouter
 
 # from middlewares.jwt_bearer import JWTBearer
