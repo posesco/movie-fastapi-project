@@ -2,22 +2,20 @@ from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse, JSONResponse
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
-from .config.db import init_db
-from .config.settings import settings, tags_metadata
+import socket
+
+from .core.database import init_db
+from .core.config import settings, tags_metadata
 from .middlewares.error_handler import ErrorHandler
 from .services.metrics import custom_metrics
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
-
-# from routers.movie import movie_router
-from .routers.user import user_router
-from .services.db import DBService
-import socket
+from .api.v1.router import api_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db()
+    await init_db()
     yield
 
 
@@ -34,8 +32,7 @@ FastAPIInstrumentor.instrument_app(app)
 custom_metrics.init()
 start_time = datetime.now(timezone.utc)
 app.add_middleware(ErrorHandler)
-app.include_router(user_router)
-# app.include_router(movie_router)
+app.include_router(api_router, prefix="/api/v1")
 
 
 @app.get("/", tags=["health"], status_code=status.HTTP_302_FOUND)
@@ -45,7 +42,16 @@ async def redirect_to_status() -> RedirectResponse:
 
 @app.get("/_status/", tags=["health"], status_code=200)
 async def _status() -> dict:
-    db_status = DBService().check_db()
+    from sqlmodel import select
+    from .core.database import engine
+    
+    db_status = "OK"
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(select(1))
+    except Exception as e:
+        db_status = f"Error: {str(e)}"
+
     current_time = datetime.now(timezone.utc)
     uptime = current_time - start_time
     return JSONResponse(

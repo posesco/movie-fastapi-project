@@ -5,7 +5,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      mariadb:
+      postgres:
         condition: service_healthy
     env_file:
       - .env
@@ -20,23 +20,20 @@ services:
       retries: 5
     restart: unless-stopped
 
-  mariadb:
-    image: mariadb:11.4
-    container_name: mariadb
+  postgres:
+    image: postgres:17-alpine
+    container_name: postgres
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "3306:3306"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "5432:5432"
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -95,4 +92,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  mariadb_data:
+  postgres_data:

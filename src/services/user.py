@@ -1,147 +1,89 @@
-import bcrypt
-from typing import Optional
-from sqlmodel import select, Session
+from typing import Optional, List
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
 from fastapi.encoders import jsonable_encoder
-from typing import Annotated
-from jwt import decode, ExpiredSignatureError, InvalidTokenError
-from fastapi import HTTPException, Depends, status
-from .db import DBService
-from src.models.user import User as UserModel, Role
-from src.config.settings import settings
-from src.config.db import get_db
-from src.config.security import create_token, pwd_context, oauth2_scheme
 
-
-SECRET_KEY = settings.secret_key
-ALGORITHM = settings.algorithm
-ACCESS_TOKEN_EXPIRE_MINUTES = int(settings.access_token_expire_minutes)
-
+from src.models.user import User, Role
+from src.repositories.user import user_repository
+from src.repositories.action import action_repository
+from src.core.security import pwd_context, create_token
 
 class UserService:
-    def __init__(self, db) -> None:
-        self.db = db
+    """Business logic for Users."""
 
-    def _log_modification(
-        self, user: UserModel, user_action: str, details: str
+    async def _log_modification(
+        self, db: AsyncSession, user: User, user_action: str, details: str
     ) -> None:
-        action = DBService(self.db).get_action(user_action)
+        action = await action_repository.get_by_name(db, user_action)
         description_data = {
             "user": user.username,
             "action": user_action,
             "details": details,
         }
         user.log_modification(
-            session=self.db,
+            session=db,
             action_id=action.id,
             description=description_data,
         )
-        self.db.commit()
+        # We don't commit here, we rely on the caller or middleware
 
-    @staticmethod
-    async def get_current_user(
-        token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)
-    ) -> UserModel:
-        try:
-            payload = decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            username: str = payload.get("sub")
-            if not username:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="No se han podido validar las credenciales",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-        except ExpiredSignatureError:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Token Expirado",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        except InvalidTokenError:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Token Invalido",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        user = UserService(db).get_username(username)
+    async def get_token(self, user_data: dict) -> str:
+        return create_token(user_data)
+
+    async def authenticate(
+        self, db: AsyncSession, username: str, password: str
+    ) -> Optional[User]:
+        user = await user_repository.get_by_username(db, username)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="No se han podido validar las credenciales",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
+            return None
+        if not pwd_context.verify(password, user.password):
+            return None
         return user
 
-    @staticmethod
-    async def get_current_active_user(
-        current_user: Annotated[UserModel, Depends(get_current_user)],
-    ) -> UserModel:
-        if not current_user.is_active:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="Usuario deshabilitado"
-            )
-        return current_user
+    async def get_users(self, db: AsyncSession) -> List[User]:
+        return await user_repository.get_multi(db)
 
-    def get_token(self, user: dict) -> str:
-        return create_token(user)
+    async def create_user(self, db: AsyncSession, user_in: User) -> User:
+        user_in.password = pwd_context.hash(user_in.password)
+        new_user = await user_repository.create(db, user_in)
+        await self._log_modification(db, new_user, "create", "Nuevo usuario")
+        return new_user
 
-    def verify_password(self, provided_password, hashed_password) -> bool:
-        return pwd_context.verify(provided_password, hashed_password)
-
-    def get_username(self, username) -> Optional[UserModel]:
-        return self.db.query(UserModel).filter(UserModel.username == username).first()
-
-    def get_email(self, email) -> Optional[UserModel]:
-        return self.db.query(UserModel).filter(UserModel.email == email).first()
-
-    def get_users(self) -> Optional[UserModel]:
-        return self.db.query(UserModel).all()
-
-    def _get_roles(self, role_names: list) -> list[Role]:
-        stmt = select(Role).where(Role.name.in_(role_names))
-        result = self.db.execute(stmt)
-        return result.scalars().all()
-
-    def create_user(self, user: UserModel) -> bool:
-        hashed_password = pwd_context.hash(user.password)
-        new_user = UserModel(
-            name=user.name if user.name else None,
-            surname=user.surname if user.surname else None,
-            username=user.username,
-            email=user.email,
-            password=hashed_password,
-        )
-        self.db.add(new_user)
-        self.db.commit()
-        details = "Nuevo usuario"
-        self._log_modification(new_user, "create", details)
-        return True
-
-    def assign_roles(self, username: str, roles: list) -> bool:
-        db_user = self.get_username(username)
-        db_roles = self._get_roles(roles)
+    async def assign_roles(self, db: AsyncSession, username: str, roles: List[str]) -> bool:
+        db_user = await user_repository.get_by_username(db, username)
+        if not db_user:
+            return False
+        
+        result = await db.execute(select(Role).where(Role.name.in_(roles)))
+        db_roles = result.scalars().all()
         db_user.roles = db_roles
-        details = "Roles asignados"
-        self._log_modification(db_user, "update", details)
+        
+        await self._log_modification(db, db_user, "update", "Roles asignados")
         return True
 
-    def update_password(self, username: str, new_pass: str) -> bool:
-        db_user = self.get_username(username)
-        hashed_password = bcrypt.hashpw(new_pass.encode("utf-8"), bcrypt.gensalt())
-        db_user.password = hashed_password
-        details = "Password actualizado"
-        self._log_modification(db_user, "update", details)
+    async def update_password(self, db: AsyncSession, username: str, new_pass: str) -> bool:
+        db_user = await user_repository.get_by_username(db, username)
+        if not db_user:
+            return False
+        
+        db_user.password = pwd_context.hash(new_pass)
+        await self._log_modification(db, db_user, "update", "Password actualizado")
         return True
 
-    def state_user(self, user: UserModel, state: bool) -> bool:
+    async def set_user_state(self, db: AsyncSession, user: User, state: bool) -> User:
         user.is_active = state
         details = f'El estado actual es {"habilitado" if state else "deshabilitado"}'
-        self._log_modification(user, "update", details)
+        await self._log_modification(db, user, "update", details)
+        return user
+
+    async def delete_user(self, db: AsyncSession, username: str) -> bool:
+        db_user = await user_repository.get_by_username(db, username)
+        if not db_user:
+            return False
+        
+        details = f"Usuario eliminado. {jsonable_encoder(db_user)}"
+        await self._log_modification(db, db_user, "update", details)
+        await db.delete(db_user)
         return True
 
-    def delete_user(self, username: str):
-        db_user = self.get_username(username)
-        details = f"Usuario eliminado. {jsonable_encoder(db_user)}"
-        self._log_modification(db_user, "update", details)
-        self.db.delete(db_user)
-        self.db.commit()
-        return True
+user_service = UserService()
