@@ -1,25 +1,25 @@
 # FastAPI Starter Project (Movie API)
 
-Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre esta potente herramienta para construir APIs modernas y de alto rendimiento. El objetivo de este proyecto es ir implementando características paso a paso, comenzando con una API básica y, en el futuro, avanzando a una arquitectura más robusta con MariaDB y contenedores.
+Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre esta potente herramienta para construir APIs modernas y de alto rendimiento. El objetivo de este proyecto es ir implementando características paso a paso, comenzando con una API básica y avanzando a una arquitectura más robusta con MariaDB y contenedores.
 
 ## Características
 
-- **FastAPI**: Marco web moderno y rápido para construir APIs con Python 3.7+ basado en estándares abiertos (OpenAPI y JSON Schema).
+- **FastAPI**: Marco web moderno y rápido para construir APIs basado en estándares abiertos (OpenAPI y JSON Schema). Actualizado a la versión **0.135.3**.
+- **Python 3.12+**: Proyecto actualizado para utilizar las versiones más recientes y optimizadas de Python.
 - **Pydantic**: Para validación de datos a través de modelos eficientes.
 - **SQLAlchemy**: ORM utilizado para interactuar con la base de datos.
 - **JWT Authentication**: Implementación de autenticación basada en JSON Web Tokens (JWT) con **PyJWT**.
-- **SQLite**: Base de datos local para el desarrollo inicial, con planes de migración a **MariaDB** usando contenedores Docker.
-- **Docker y Docker Compose**: Preparado para la implementación en entornos de contenedores utilizando **MariaDB** en futuras fases.
+- **Base de Datos**: Utiliza SQLite para el desarrollo inicial rápido, y una integración completa con **MariaDB (v11.4 LTS)** en el entorno de contenedores Docker.
+- **Docker y Docker Compose**: Configuración lista para la implementación en entornos de contenedores, con buenas prácticas de seguridad (usuario no root) y monitoreo.
 
 ## Librerías utilizadas
 
 - **FastAPI**: [FastAPI documentation](https://fastapi.tiangolo.com/)
+- **FastAPI CLI**: Herramienta de línea de comandos oficial para ejecutar la aplicación.
 - **Pydantic**: Para la validación de modelos de datos.
 - **PyJWT**: Manejo de autenticación basada en tokens JWT.
-- **Uvicorn**: Servidor ASGI para ejecutar la aplicación FastAPI.
 - **python-dotenv**: Para gestionar variables de entorno.
 - **SQLAlchemy**: ORM para la interacción con la base de datos.
-- **SQLite**: Base de datos utilizada para desarrollo local (con planes de migración a MariaDB en producción).
 
 ## Instalación y Ejecución
 
@@ -27,11 +27,11 @@ Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre e
 
 Asegúrate de tener instalado:
 
-- **Python 3.7+**
+- **Python 3.10+** (Recomendado 3.12)
 - **pip** para la gestión de paquetes de Python
-- **Docker** (opcional, para la configuración de contenedores y bases de datos)
+- **Docker** y **Docker Compose** para la ejecución del stack completo
 
-### Instalación del entorno
+### Instalación del entorno local
 
 1. Clona el repositorio:
 
@@ -51,7 +51,6 @@ Asegúrate de tener instalado:
 3. Instala las dependencias del proyecto:
 
     ```bash
-    cd src
     pip install -r requirements.txt
     ```
 
@@ -59,33 +58,32 @@ Asegúrate de tener instalado:
 
 1. Crea un archivo `.env` en la raíz del proyecto para configurar las variables de entorno (como claves JWT, base de datos, etc.).
 
-2. Inicia el servidor de desarrollo:
+2. Inicia el servidor de desarrollo utilizando la CLI oficial de FastAPI:
 
     ```bash
-    uvicorn main:app --reload --port 5000 --host 0.0.0.0
+    fastapi dev src/main.py --port 8000 --host 0.0.0.0
     ```
 
-   La API estará disponible en `http://127.0.0.1:5000`.
-   La documentacion estará disponible en `http://127.0.0.1:5000/docs` o `http://127.0.0.1:5000/redoc` .
+   La API estará disponible en `http://127.0.0.1:8000`.
+   La documentacion estará disponible en `http://127.0.0.1:8000/docs` o `http://127.0.0.1:8000/redoc`.
 
-### Uso de Docker (próximos pasos)
+### Ejecución con Docker
 
-El proyecto está preparado para ser ejecutado en contenedores Docker con **MariaDB** como base de datos en lugar de SQLite. Estos son los pasos para el próximo despliegue:
+El proyecto está completamente preparado para ser ejecutado en contenedores Docker con **MariaDB** como base de datos y un stack de monitoreo completo (Prometheus, Grafana, Loki).
 
 1. Asegúrate de tener Docker y Docker Compose instalados.
 
-2. Modifica el archivo `docker-compose.yml` con las configuraciones necesarias para MariaDB.
+2. Modifica el archivo `.env` con las configuraciones necesarias para MariaDB (revisa `compose.yml` para ver las variables esperadas).
 
-3. Construye y levanta los contenedores:
+3. Construye y levanta los contenedores en segundo plano:
 
     ```bash
-    docker-compose up --build
+    docker compose up -d --build
     ```
 
 ### Próximos pasos
 
-- Migrar de **SQLite** a **MariaDB** utilizando Docker.
-- Implementar una configuración más robusta para producción.
+- Implementar una configuración más robusta para producción en Kubernetes.
 - Mejorar el sistema de autenticación y autorización.
 - Crear más rutas y añadir funcionalidad adicional a la API.
 

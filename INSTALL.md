@@ -1,4 +1,4 @@
-pip install "fastapi[standard]"
+pip install "fastapi[standard]==0.135.3"
 pip install sqlmodel
 pip install "passlib[bcrypt]"
 pip install pydantic-settings

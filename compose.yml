@@ -5,21 +5,23 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     env_file:
       - .env
-    command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    command: ["fastapi", "run", "src/main.py", "--host", "0.0.0.0", "--port", "8000"]
     volumes:
       - ./src:/app/src
       - .env:/app/.env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health-check/"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health-check/')"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   mariadb:
-    image: mariadb:10.5
+    image: mariadb:11.4
     container_name: mariadb
     restart: always
     environment:
@@ -33,10 +35,16 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 # Monitoring
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: cadvisor
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
@@ -48,14 +56,17 @@ services:
     restart: unless-stopped
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.54.1
+    container_name: prometheus
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
+    restart: unless-stopped
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.2.2
+    container_name: grafana
     volumes:
       - ./monitoring/grafana/:/etc/grafana/provisioning
     ports:
@@ -65,19 +76,23 @@ services:
       GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
       GF_AUTH_DISABLE_SIGNOUT_MENU: "true"
       GF_AUTH_DISABLE_LOGIN_FORM: "true"
+    restart: unless-stopped
 
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:3.2.0
+    container_name: loki
     ports:
       - 3100:3100
     command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
 
   promtail:
-    image: grafana/promtail:latest
+    image: grafana/promtail:3.2.0
+    container_name: promtail
     volumes:
       - /var/log:/var/log
     command: -config.file=/etc/promtail/config.yml
-
+    restart: unless-stopped
 
 volumes:
   mariadb_data:
