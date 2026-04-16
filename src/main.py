@@ -44,7 +44,7 @@ async def redirect_to_status() -> RedirectResponse:
 async def _status() -> dict:
     from sqlmodel import select
     from .core.database import engine
-    
+
     db_status = "OK"
     try:
         async with engine.connect() as conn:
