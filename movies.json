@@ -498,5 +498,65 @@
         "director": "Todd Phillips",
         "studio": "Warner Bros.",
         "box_office": 1074251311
+    },
+    {
+        "title": "The Big Lebowski",
+        "overview": "Un hombre común se ve envuelto en una complicada trama de secuestro debido a una confusión de identidad.",
+        "year": 1998,
+        "rating": 8.1,
+        "category": "Comedy",
+        "director": "Joel Coen, Ethan Coen",
+        "studio": "Gramercy Pictures",
+        "box_office": 46000000
+    },
+    {
+        "title": "The Martian",
+        "overview": "Un astronauta queda atrapado en Marte y debe usar su ingenio para sobrevivir mientras la NASA intenta rescatarlo.",
+        "year": 2015,
+        "rating": 8.0,
+        "category": "Sci-Fi",
+        "director": "Ridley Scott",
+        "studio": "20th Century Fox",
+        "box_office": 630161890
+    },
+    {
+        "title": "The Hateful Eight",
+        "overview": "Ocho extraños se refugian en una cabaña durante una tormenta de nieve, pero no todos son lo que parecen.",
+        "year": 2015,
+        "rating": 7.8,
+        "category": "Western",
+        "director": "Quentin Tarantino",
+        "studio": "The Weinstein Company",
+        "box_office": 155760117
+    },
+    {
+        "title": "The Shape of Water",
+        "overview": "Una mujer muda se enamora de una criatura anfibia que está siendo mantenida en cautiverio en un laboratorio gubernamental.",
+        "year": 2017,
+        "rating": 7.3,
+        "category": "Fantasy",
+        "director": "Guillermo del Toro",
+        "studio": "Fox Searchlight Pictures",
+        "box_office": 195243111
+    },
+    {
+        "title": "The Babadook",
+        "overview": "Una madre soltera y su hijo se enfrentan a una presencia siniestra que emerge de un libro infantil.",
+        "year": 2014,
+        "rating": 6.8,
+        "category": "Horror",
+        "director": "Jennifer Kent",
+        "studio": "Entertainment One",
+        "box_office": 10000000
+    },
+    {
+        "title": "The Witch",
+        "overview": "Una familia puritana en la Nueva Inglaterra del siglo XVII enfrenta la amenaza de una bruja en el bosque cercano.",
+        "year": 2015,
+        "rating": 6.9,
+        "category": "Horror",
+        "director": "Robert Eggers",
+        "studio": "A24",
+        "box_office": 4000000
     }
 ]

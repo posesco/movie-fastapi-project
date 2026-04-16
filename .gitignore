@@ -210,3 +210,7 @@ pyrightconfig.json
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/python,linux,visualstudiocode
+GEMINI.md
+.agents/
+skills-lock.json
+conductor/

@@ -23,10 +23,10 @@ class UserCreate(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "name": "Manuel",
-                "surname": "Turizo",
-                "username": "manutur",
-                "email": "joe@doe.com",
+                "name": "John",
+                "surname": "Doe",
+                "username": "johndoe",
+                "email": "johndoe@example.com",
                 "password": "password123",
             }
         }

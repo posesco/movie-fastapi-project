@@ -1,65 +1,71 @@
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, status
+from fastapi.responses import RedirectResponse, JSONResponse
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
-from config.db import (
-    engine,
-    Base,
-)
-from middlewares.error_handler import ErrorHandler
-from routers.movie import movie_router
-from routers.user import user_router
-from schemas.health_check import HealthCheck
-from services.db import check_db
-from models import init_db
+import socket
+
+from .core.database import init_db
+from .core.config import settings, tags_metadata
+from .middlewares.error_handler import ErrorHandler
+from .services.metrics import custom_metrics
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+from .api.v1.router import api_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db()
+    await init_db()
     yield
 
 
 app = FastAPI(
-    title="Movie API with FastApi",
-    version="0.0.1",
-    description="""
-    This is my initial project with FastAPI, in which I explore and learn
-    about this powerful tool for building modern, high-performance APIs.
-    """,
-    license_info={
-        "name": "GPL-3.0 license",
-        "url": "https://www.gnu.org/licenses/gpl-3.0.html",
-    },
-    terms_of_service="https://posesco.com/terms/",
-    contact={
-        "name": "Jesus Posada",
-        "url": "https://posesco.com/contact/",
-        "email": "info@posesco.com",
-    },
-    debug=False,
+    title=settings.project_title,
+    version=settings.project_version,
+    description=settings.project_desc,
+    debug=settings.project_debug_mode,
     lifespan=lifespan,
+    openapi_tags=tags_metadata,
 )
 
+FastAPIInstrumentor.instrument_app(app)
+custom_metrics.init()
 start_time = datetime.now(timezone.utc)
 app.add_middleware(ErrorHandler)
-app.include_router(user_router)
-app.include_router(movie_router)
+app.include_router(api_router, prefix="/api/v1")
 
 
-@app.get("/", tags=["health"], status_code=301)
-async def redirect_to_status():
-    return RedirectResponse(url="/_status/")
+@app.get("/", tags=["health"], status_code=status.HTTP_302_FOUND)
+async def redirect_to_status() -> RedirectResponse:
+    return RedirectResponse(url="/_status/", status_code=status.HTTP_302_FOUND)
 
 
-@app.get("/_status/", response_model=HealthCheck, tags=["health"], status_code=200)
-async def health_check():
-    db_status = check_db()
+@app.get("/_status/", tags=["health"], status_code=200)
+async def _status() -> dict:
+    from sqlmodel import select
+    from .core.database import engine
+
+    db_status = "OK"
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(select(1))
+    except Exception as e:
+        db_status = f"Error: {str(e)}"
+
     current_time = datetime.now(timezone.utc)
     uptime = current_time - start_time
-    return HealthCheck(
-        status="OK", version=app.version, db_status=db_status, uptime=str(uptime)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "status": "Live",
+            "version": app.version,
+            "db_status": db_status,
+            "uptime": str(uptime),
+            "server": socket.gethostname(),
+        },
     )
 
 
-Base.metadata.create_all(bind=engine)
+@app.get("/health-check/", tags=["health"], status_code=200)
+async def health_check() -> bool:
+    return True

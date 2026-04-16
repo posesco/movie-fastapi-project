@@ -1,44 +1,35 @@
-from models import Movie as MovieModel
-from schemas.movie import Movie
-
+from typing import List, Optional
+from sqlalchemy.ext.asyncio import AsyncSession
+from src.models.movie import Movie as MovieModel
+from src.repositories.movie import movie_repository
 
 class MovieService:
-    def __init__(self, db) -> None:
-        self.db = db
+    """Business logic for Movies."""
 
-    def get_movies(self):
-        result = self.db.query(MovieModel).all()
-        return result
+    async def get_movies(self, db: AsyncSession) -> List[MovieModel]:
+        return await movie_repository.get_multi(db)
 
-    def get_movie(self, id):
-        result = self.db.query(MovieModel).filter(MovieModel.id == id).first()
-        return result
+    async def get_movie(self, db: AsyncSession, id: int) -> Optional[MovieModel]:
+        return await movie_repository.get(db, id)
 
-    def get_movies_by_category(self, category):
-        result = self.db.query(MovieModel).filter(MovieModel.category == category).all()
-        return result
+    async def get_movies_by_category(self, db: AsyncSession, category: str) -> List[MovieModel]:
+        from sqlmodel import select
+        result = await db.execute(select(MovieModel).where(MovieModel.category == category))
+        return result.scalars().all()
 
-    def create_movies(self, movies: Movie):
-        new_movies = [MovieModel(**movie.model_dump()) for movie in movies]
-        self.db.add_all(new_movies)
-        self.db.commit()
-        return new_movies
+    async def create_movies(self, db: AsyncSession, movies_in: List[MovieModel]) -> List[MovieModel]:
+        for movie in movies_in:
+            db.add(movie)
+        await db.flush()
+        return movies_in
 
-    def update_movie(self, id, movie: Movie):
-        result = self.db.query(MovieModel).filter(MovieModel.id == id).first()
-        result.title = movie.title
-        result.overview = movie.overview
-        result.year = movie.year
-        result.rating = movie.rating
-        result.category = movie.category
-        result.director = movie.director
-        result.studio = movie.studio
-        result.box_office = movie.box_office
-        self.db.commit()
-        return result
+    async def update_movie(self, db: AsyncSession, id: int, movie_data: dict) -> Optional[MovieModel]:
+        db_obj = await movie_repository.get(db, id)
+        if not db_obj:
+            return None
+        return await movie_repository.update(db, db_obj, movie_data)
 
-    def delete_movie(self, id):
-        result = self.db.query(MovieModel).filter(MovieModel.id == id).first()
-        self.db.delete(result)
-        self.db.commit()
-        return result
+    async def delete_movie(self, db: AsyncSession, id: int) -> bool:
+        return await movie_repository.delete(db, id)
+
+movie_service = MovieService()
