@@ -1,32 +1,35 @@
-from sqlalchemy import Column, ForeignKey, DateTime, Integer, String, Float
-from src.config.db import Base
+from sqlmodel import SQLModel, Field
+from typing import Optional
 from datetime import datetime, timezone
+import uuid
 
 
-class MovieAuditLog(Base):
+class MovieAuditLog(SQLModel, table=True):
     __tablename__ = "movie_audit_logs"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    movie_id = Column(String, ForeignKey("movies.id"), nullable=False)
-    action_id = Column(String, ForeignKey("actions.id"), nullable=False)
-    description = Column(String(300))
-    date = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    movie_id: int = Field(foreign_key="movies.id", nullable=False)
+    action_id: uuid.UUID = Field(foreign_key="actions.id", nullable=False)
+    description: Optional[str] = Field(default=None, max_length=300)
+    date: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc), nullable=False
+    )
 
 
-class Movie(Base):
+class Movie(SQLModel, table=True):
     __tablename__ = "movies"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String(100), unique=True, nullable=False)
-    overview = Column(String(350), nullable=False)
-    year = Column(Integer, nullable=False)
-    rating = Column(Float, nullable=False)
-    category = Column(String(30), nullable=False)
-    director = Column(String(30), nullable=False)
-    studio = Column(String(60), nullable=False)
-    box_office = Column(Integer, nullable=False)
-    created_at = Column(
-        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str = Field(max_length=100, unique=True, nullable=False)
+    overview: str = Field(max_length=350, nullable=False)
+    year: int = Field(nullable=False)
+    rating: float = Field(nullable=False)
+    category: str = Field(max_length=30, nullable=False)
+    director: str = Field(max_length=30, nullable=False)
+    studio: str = Field(max_length=60, nullable=False)
+    box_office: int = Field(nullable=False)
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc), nullable=False
     )
 
     def log_modification(self, session, action_id, description):
