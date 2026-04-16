@@ -38,9 +38,21 @@ services:
       timeout: 5s
       retries: 5
 
+  pgweb:
+    image: sosedoff/pgweb:0.17.0
+    container_name: pgweb
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 # Monitoring
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    image: gcr.io/cadvisor/cadvisor:v0.54.1
     container_name: cadvisor
     volumes:
       - /:/rootfs:ro
@@ -53,19 +65,21 @@ services:
     restart: unless-stopped
 
   prometheus:
-    image: prom/prometheus:v2.54.1
+    image: prom/prometheus:v3
     container_name: prometheus
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
     ports:
       - 9090:9090
     restart: unless-stopped
 
   grafana:
-    image: grafana/grafana:11.2.2
+    image: grafana/grafana:13.0.0
     container_name: grafana
     volumes:
       - ./monitoring/grafana/:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
     ports:
       - 3000:3000
     environment:
@@ -76,11 +90,14 @@ services:
     restart: unless-stopped
 
   loki:
-    image: grafana/loki:3.2.0
+    image: grafana/loki:3.5.12
     container_name: loki
     ports:
       - 3100:3100
     command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./monitoring/loki/local-config.yaml:/etc/loki/local-config.yaml
+      - loki_data:/loki
     restart: unless-stopped
 
   promtail:
@@ -93,3 +110,6 @@ services:
 
 volumes:
   postgres_data:
+  grafana_data:
+  prometheus_data:
+  loki_data:
