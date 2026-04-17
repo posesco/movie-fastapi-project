@@ -7,6 +7,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+        restart: true
     environment:
       - POSTGRES_HOST=postgres
       - RUNNING_IN_DOCKER=true
@@ -22,9 +23,8 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-
   postgres:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     container_name: postgres
     restart: always
     environment:
@@ -48,68 +48,68 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+      - PGWEB_DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
     depends_on:
       postgres:
         condition: service_healthy
 
 # Monitoring
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.54.1
-    container_name: cadvisor
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-    ports:
-      - 8080:8080
-    restart: unless-stopped
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:v0.54.1
+  #   container_name: cadvisor
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:ro
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #     - /dev/disk/:/dev/disk:ro
+  #   ports:
+  #     - 8080:8080
+  #   restart: unless-stopped
 
-  prometheus:
-    image: prom/prometheus:v3
-    container_name: prometheus
-    volumes:
-      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    ports:
-      - 9090:9090
-    restart: unless-stopped
+  # prometheus:
+  #   image: prom/prometheus:v3
+  #   container_name: prometheus
+  #   volumes:
+  #     - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus_data:/prometheus
+  #   ports:
+  #     - 9090:9090
+  #   restart: unless-stopped
 
-  grafana:
-    image: grafana/grafana:13.1.0-24541505453-ubuntu
-    container_name: grafana
-    volumes:
-      - ./monitoring/grafana/:/etc/grafana/provisioning
-      - grafana_data:/var/lib/grafana
-    ports:
-      - 3000:3000
-    environment:
-      GF_AUTH_ANONYMOUS_ENABLED: true
-      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
-      GF_AUTH_DISABLE_SIGNOUT_MENU: "true"
-      GF_AUTH_DISABLE_LOGIN_FORM: "true"
-    restart: unless-stopped
+  # grafana:
+  #   image: grafana/grafana:13.1.0-24541505453-ubuntu
+  #   container_name: grafana
+  #   volumes:
+  #     - ./monitoring/grafana/:/etc/grafana/provisioning
+  #     - grafana_data:/var/lib/grafana
+  #   ports:
+  #     - 3000:3000
+  #   environment:
+  #     GF_AUTH_ANONYMOUS_ENABLED: true
+  #     GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+  #     GF_AUTH_DISABLE_SIGNOUT_MENU: "true"
+  #     GF_AUTH_DISABLE_LOGIN_FORM: "true"
+  #   restart: unless-stopped
 
-  loki:
-    image: grafana/loki:3.5.12
-    container_name: loki
-    ports:
-      - 3100:3100
-    command: -config.file=/etc/loki/local-config.yaml
-    volumes:
-      - ./monitoring/loki/local-config.yaml:/etc/loki/local-config.yaml
-      - loki_data:/loki
-    restart: unless-stopped
+  # loki:
+  #   image: grafana/loki:3.5.12
+  #   container_name: loki
+  #   ports:
+  #     - 3100:3100
+  #   command: -config.file=/etc/loki/local-config.yaml
+  #   volumes:
+  #     - ./monitoring/loki/local-config.yaml:/etc/loki/local-config.yaml
+  #     - loki_data:/loki
+  #   restart: unless-stopped
 
-  promtail:
-    image: grafana/promtail:3.2.0
-    container_name: promtail
-    volumes:
-      - /var/log:/var/log
-    command: -config.file=/etc/promtail/config.yml
-    restart: unless-stopped
+  # promtail:
+  #   image: grafana/promtail:3.2.0
+  #   container_name: promtail
+  #   volumes:
+  #     - /var/log:/var/log
+  #   command: -config.file=/etc/promtail/config.yml
+  #   restart: unless-stopped
 
 volumes:
   postgres_data:
