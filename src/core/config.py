@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
 
@@ -13,6 +14,14 @@ class Settings(BaseSettings):
     secret_key: str = "secret"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 15
+    
+    # PostgreSQL settings (MATCHES .env EXACTLY)
+    postgres_host: str = Field(default="localhost", validation_alias="POSTGRES_HOST")
+    postgres_port: int = Field(default=5432, validation_alias="POSTGRES_PORT")
+    postgres_db: str = Field(default="postgres", validation_alias="POSTGRES_DB")
+    postgres_user: str = Field(default="postgres", validation_alias="POSTGRES_USER")
+    postgres_password: str = Field(default="postgres", validation_alias="POSTGRES_PASSWORD")
+    
     database_url: Optional[str] = None
     async_database_url: Optional[str] = None
 
@@ -20,6 +29,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_ignore_empty=True,
         extra="allow",
+        env_prefix="",
     )
 
 
@@ -31,7 +41,7 @@ tags_metadata = [
         "description": "Operations with users. The **login** logic is also here.",
         "externalDocs": {
             "description": "Items external docs",
-            "url": "https://posesco.com/users",
+            "url": "https://jesusposada.website/users",
         },
     },
     {
@@ -39,7 +49,7 @@ tags_metadata = [
         "description": "Manage movies. So _fancy_ they have their own docs.",
         "externalDocs": {
             "description": "Movies external docs",
-            "url": "https://posesco.com/movies",
+            "url": "https://jesusposada.website/movies",
         },
     },
 ]
