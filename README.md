@@ -11,17 +11,18 @@ Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre e
 - **SQLModel**: Combinación de **SQLAlchemy** y **Pydantic** para modelos de datos elegantes y seguros.
 - **JWT Authentication**: Autenticación basada en JSON Web Tokens (JWT) con **PyJWT**.
 - **Base de Datos**: Soporte para **PostgreSQL**, **MariaDB** (v11.4 LTS) y **SQLite** mediante drivers asíncronos (`asyncpg`, `aiomysql`, `aiosqlite`).
-- **Docker Stack**: Configuración con **MariaDB**, **Prometheus v3**, **Grafana 13** y **Loki 3.5**.
+- **Docker Stack**: Configuración moderna con **PostgreSQL**, **Prometheus v3**, **Grafana 13**, **Loki 3.5**, **Tempo 2.7** y **Grafana Alloy v1.6**.
+- **Observabilidad Unificada**: Implementación de **Logs**, **Métricas** y **Trazabilidad Distribuida** mediante **OpenTelemetry** y **Grafana Alloy**.
 - **Pgweb**: Interfaz web integrada para la administración de bases de datos en el entorno Docker.
 
 ## Librerías utilizadas
 
 - **FastAPI**: [FastAPI documentation](https://fastapi.tiangolo.com/)
 - **SQLModel**: Para modelos de datos y ORM asíncrono.
-- **PyJWT**: Manejo de autenticación basada en tokens JWT.
+- **OpenTelemetry**: SDKs para instrumentación de trazas y métricas.
 - **python-dotenv**: Gestión de variables de entorno.
 - **Async Drivers**: `asyncpg`, `aiomysql`, `aiosqlite` para bases de datos asíncronas.
-- **Monitoring**: Prometheus, Grafana, Loki y cAdvisor.
+- **Monitoring**: Grafana Alloy (agente unificado), Prometheus, Grafana, Loki y Tempo.
 
 ## Instalación y Ejecución
 
