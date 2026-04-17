@@ -1,0 +1,105 @@
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v3
+    restart: unless-stopped
+    ports:
+      - 9090:9090
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - fastapi_net
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:13.1.0-24541505453-ubuntu
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_SIGNOUT_MENU: "true"
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+    volumes:
+      - ./monitoring/grafana/:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+    networks:
+      - fastapi_net
+
+  loki:
+    container_name: loki
+    image: grafana/loki:3.5.12
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki/local-config.yaml:/etc/loki/local-config.yaml
+      - loki_data:/loki
+    networks:
+      - fastapi_net
+
+  tempo:
+    container_name: tempo
+    image: grafana/tempo:2.10.4
+    command: [ "-config.file=/etc/tempo.yaml", "-target=all" ]
+    restart: unless-stopped
+    ports:
+      - "3200:3200"   # Tempo API
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+    volumes:
+      - ./monitoring/tempo/tempo.yaml:/etc/tempo.yaml
+      - tempo_data:/var/tempo
+    networks:
+      - fastapi_net
+
+  alloy:
+    container_name: alloy
+    image: grafana/alloy:v1.15.1
+    command: 
+      - run
+      - /etc/alloy/config.alloy
+      - --storage.path=/var/lib/alloy/data 
+      - --server.http.listen-address=0.0.0.0:12345
+    restart: unless-stopped
+    ports:
+      - "12345:12345"
+      - "4319:4317" 
+    environment:
+      ALLOY_OTLP: tempo:4317
+    volumes:
+      - ./monitoring/alloy/config.alloy:/etc/alloy/config.alloy
+    depends_on:
+      tempo:
+        condition: service_healthy
+    networks:
+      - fastapi_net
+
+  vulture:
+    container_name: vulture
+    image: grafana/tempo-vulture:latest
+    command:
+      [
+        "-prometheus-listen-address=:8080",
+        "-tempo-query-url=http://tempo:3200",
+        "-tempo-push-url=http://tempo:4317",
+        "-tempo-org-id=vulture-tenant",
+      ]
+    restart: always
+    depends_on:
+      - tempo
+    networks:
+      - fastapi_net
+
+volumes:
+  grafana_data:
+  prometheus_data:
+  loki_data:
+  tempo_data:
+
+networks:
+  fastapi_net:
+    external: true

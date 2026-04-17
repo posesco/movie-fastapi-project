@@ -1,25 +1,39 @@
-stream_over_http: true
+stream_over_http_enabled: true
+multitenancy_enabled: true
+
 server:
   http_listen_port: 3200
+  log_level: info
 
 distributor:
   receivers:
     otlp:
       protocols:
-        http:
         grpc:
-
-ingester:
-  max_block_duration: 5m
-
-compactor:
-  compaction:
-    block_retention: 1h
+          endpoint: "tempo:4317"
+        http:
+          endpoint: "tempo:4318"
+#  log_received_spans:
+#    enabled: true
+#  log_discarded_spans:
+#    enabled: true
+query_frontend:
+  mcp_server:
+    enabled: true
 
 storage:
   trace:
-    backend: local
-    local:
-      path: /var/tempo/traces
+    backend: local                     # backend configuration to use
     wal:
-      path: /var/tempo/wal
+      path: /var/tempo/wal             # where to store the wal locally
+    local:
+      path: /var/tempo/blocks
+
+overrides:
+  defaults:
+    metrics_generator:
+      processors: ["span-metrics", "service-graphs"]
+      generate_native_histograms: both
+
+usage_report:
+  reporting_enabled: false

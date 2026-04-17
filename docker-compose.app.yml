@@ -1,0 +1,71 @@
+services:
+  app:
+    container_name: fastapi_app
+    build: .
+    command: ["fastapi", "dev", "src/main.py", "--host", "0.0.0.0", "--port", "8000"]
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_HOST=postgres
+      - RUNNING_IN_DOCKER=true
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318
+      - OTEL_SERVICE_NAME=fastapi-service
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=development
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - .env:/app/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health-check/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fastapi_net
+
+  postgres:
+    container_name: postgres
+    image: postgres:18-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fastapi_net
+
+  pgweb:
+    container_name: pgweb
+    image: sosedoff/pgweb:0.17.0
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - PGWEB_DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - fastapi_net
+
+volumes:
+  postgres_data:
+
+networks:
+  fastapi_net:
+    external: true
