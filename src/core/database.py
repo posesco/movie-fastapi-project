@@ -1,4 +1,8 @@
 import os
+import asyncio
+import logging
+from datetime import datetime, timezone
+from urllib.parse import quote_plus
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel, select
@@ -10,16 +14,40 @@ from .security import pwd_context
 from src.models.actions import Action
 from src.models.user import Role, User, UserAuditLog, UserRole
 
-# Database configuration
-DATABASE_URL = settings.async_database_url
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-if not DATABASE_URL:
-    # Fallback to local sqlite if not provided (using aiosqlite for async)
-    base_dir = os.path.dirname(os.path.realpath(__file__))
-    sqlite_path = os.path.join(base_dir, "../../movie_api_db.sqlite")
-    DATABASE_URL = f"sqlite+aiosqlite:///{os.path.abspath(sqlite_path)}"
+def get_database_url():
+    url = settings.async_database_url
+    host = settings.postgres_host
+    # Reliable Docker detection using custom env var
+    is_docker = os.getenv("RUNNING_IN_DOCKER", "false").lower() == "true"
+    
+    if is_docker:
+        logger.info("DOCKER ENVIRONMENT DETECTED: Forcing host to 'postgres'")
+        password = quote_plus(settings.postgres_password)
+        host = "postgres"
+        url = f"postgresql+asyncpg://{settings.postgres_user}:{password}@{host}:{settings.postgres_port}/{settings.postgres_db}"
+    
+    # Fallback for non-docker or if URL is still empty/invalid
+    if not url or "localhost" in url or "${" in url:
+        if not host: host = "localhost"
+        password = quote_plus(settings.postgres_password)
+        url = f"postgresql+asyncpg://{settings.postgres_user}:{password}@{host}:{settings.postgres_port}/{settings.postgres_db}"
 
-# Async Engine
+    # Final fallback to sqlite
+    if not url:
+        base_dir = os.path.dirname(os.path.realpath(__file__))
+        sqlite_path = os.path.join(base_dir, "../../movie_api_db.sqlite")
+        url = f"sqlite+aiosqlite:///{os.path.abspath(sqlite_path)}"
+        
+    logger.info(f"Final Connection URL: {url.replace(settings.postgres_password, '****')}")
+    return url
+
+DATABASE_URL = get_database_url()
+
+# Initial Async Engine
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 
 # Async Session Factory
@@ -56,12 +84,16 @@ async def insert_super_user(session: AsyncSession):
     )
     user = result.scalars().first()
     if not user:
+        # Fix: Remove timezone globally for Postgres compatibility
+        current_time = datetime.now().replace(microsecond=0)
+        
         user_in = User(
             name="Super",
             surname="Admin",
             username=settings.admin_user,
             email=settings.admin_email,
             password=pwd_context.hash(settings.admin_pass),
+            created_at=current_time
         )
         session.add(user_in)
         await session.flush()
@@ -81,7 +113,8 @@ async def insert_super_user(session: AsyncSession):
             log_in = UserAuditLog(
                 user_id=user_in.id, 
                 action_id=action.id, 
-                description="Se creo super admin"
+                description="Se creo super admin",
+                date=current_time
             )
             session.add(role_in)
             session.add(log_in)
@@ -89,14 +122,34 @@ async def insert_super_user(session: AsyncSession):
 
 
 async def init_db():
-    async with engine.begin() as conn:
-        # Note: SQLModel.metadata.create_all works with async connection via run_sync
-        await conn.run_sync(SQLModel.metadata.create_all)
+    global engine, AsyncSessionLocal
+    max_retries = 10
+    retry_delay = 5
     
-    async with AsyncSessionLocal() as session:
-        await insert_default_actions(session)
-        await insert_default_roles(session)
-        await insert_super_user(session)
+    for attempt in range(1, max_retries + 1):
+        try:
+            url = get_database_url()
+            engine = create_async_engine(url, echo=True, future=True)
+            AsyncSessionLocal = sessionmaker(
+                engine, class_=AsyncSession, expire_on_commit=False
+            )
+
+            async with engine.begin() as conn:
+                await conn.run_sync(SQLModel.metadata.create_all)
+            
+            async with AsyncSessionLocal() as session:
+                await insert_default_actions(session)
+                await insert_default_roles(session)
+                await insert_super_user(session)
+            
+            logger.info("Database initialized successfully.")
+            return
+        except Exception as e:
+            if attempt == max_retries:
+                logger.error(f"Failed to initialize database after {max_retries} attempts: {e}")
+                raise
+            logger.warning(f"Database initialization attempt {attempt} failed: {e}. Retrying in {retry_delay} seconds...")
+            await asyncio.sleep(retry_delay)
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:

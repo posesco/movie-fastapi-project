@@ -49,11 +49,3 @@ class User(SQLModel, table=True):
     )
 
     roles: List[Role] = Relationship(back_populates="users", link_model=UserRole)
-
-    def log_modification(self, session, action_id: str, description: dict):
-        log_entry = UserAuditLog(
-            user_id=self.id,
-            action_id=action_id,
-            description=json.dumps(description),
-        )
-        session.add(log_entry)
