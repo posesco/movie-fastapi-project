@@ -19,8 +19,7 @@ class MovieService:
 
     async def create_movies(self, db: AsyncSession, movies_in: List[MovieModel]) -> List[MovieModel]:
         for movie in movies_in:
-            db.add(movie)
-        await db.flush()
+            await movie_repository.create(db, movie)
         return movies_in
 
     async def update_movie(self, db: AsyncSession, id: int, movie_data: dict) -> Optional[MovieModel]:
