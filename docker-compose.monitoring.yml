@@ -1,96 +1,134 @@
 services:
+  # Generador de carga de trazas para pruebas y simulaciones
+  k6-tracing:
+    container_name: k6-tracing
+    image: ghcr.io/grafana/xk6-client-tracing:v0.0.9
+    restart: always
+    environment:
+      - ENDPOINT=alloy:4317
+    depends_on:
+      - tempo
+      - alloy
+
+  # Base de datos para métricas (series temporales)
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v3
+    image: prom/prometheus:v3.3.1
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+      - --enable-feature=native-histograms
     restart: unless-stopped
     ports:
-      - 9090:9090
+      - "9090:9090"
     volumes:
-      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     networks:
       - fastapi_net
 
+  # Interfaz visual para dashboards y análisis de datos
   grafana:
     container_name: grafana
-    image: grafana/grafana:13.1.0-24541505453-ubuntu
+    image: grafana/grafana-oss:11.6.1
     restart: unless-stopped
     ports:
-      - 3000:3000
+      - "3000:3000"
     environment:
-      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
-      GF_AUTH_DISABLE_SIGNOUT_MENU: "true"
       GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_AUTH_DISABLE_SIGNOUT_MENU: "true"
+      GF_FEATURE_TOGGLES_ENABLE: traceqlEditor metricsSummary
     volumes:
-      - ./monitoring/grafana/:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
       - grafana_data:/var/lib/grafana
     networks:
       - fastapi_net
 
+  # Sistema de almacenamiento y consulta de logs (registros)
   loki:
     container_name: loki
-    image: grafana/loki:3.5.12
+    image: grafana/loki:3.5.1
     command: -config.file=/etc/loki/local-config.yaml
     restart: unless-stopped
     ports:
       - "3100:3100"
     volumes:
-      - ./monitoring/loki/local-config.yaml:/etc/loki/local-config.yaml
+      - ./monitoring/loki/local-config.yaml:/etc/loki/local-config.yaml:ro
       - loki_data:/loki
     networks:
       - fastapi_net
 
+  # Backend para almacenamiento y búsqueda de trazas (tracing)
   tempo:
     container_name: tempo
     image: grafana/tempo:2.10.4
-    command: [ "-config.file=/etc/tempo.yaml", "-target=all" ]
+    command: ["-config.file=/etc/tempo.yaml", "-target=all"]
     restart: unless-stopped
     ports:
-      - "3200:3200"   # Tempo API
-      - "4317:4317"   # OTLP gRPC
-      - "4318:4318"   # OTLP HTTP
+      - "3200:3200"
+      - "4317:4317"
+      - "4318:4318"
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://alloy:4318
     volumes:
-      - ./monitoring/tempo/tempo.yaml:/etc/tempo.yaml
+      - ./monitoring/tempo/tempo.yaml:/etc/tempo.yaml:ro
       - tempo_data:/var/tempo
+    # healthcheck:
+    #   test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3200/ready"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   start_period: 20s
+    #   retries: 5
     networks:
       - fastapi_net
 
+  # Colector central: recibe, procesa y reparte logs, métricas y trazas
   alloy:
     container_name: alloy
     image: grafana/alloy:v1.15.1
-    command: 
+    command:
       - run
       - /etc/alloy/config.alloy
-      - --storage.path=/var/lib/alloy/data 
-      - --server.http.listen-address=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --stability.level=experimental # Enable all functionality
     restart: unless-stopped
     ports:
       - "12345:12345"
-      - "4319:4317" 
+      # - "4319:4317"
     environment:
-      ALLOY_OTLP: tempo:4317
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      LOKI_HOST: loki:3100
+      TEMPO_HOST: tempo:4317
+      # ALLOY_OTLP: tempo:4317
     volumes:
-      - ./monitoring/alloy/config.alloy:/etc/alloy/config.alloy
-    depends_on:
-      tempo:
-        condition: service_healthy
+      - ./monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
+    # depends_on:
+    #   tempo:
+    #     condition: service_healthy
     networks:
       - fastapi_net
 
+  # Herramienta que valida y monitorea la salud/rendimiento de Tempo
   vulture:
     container_name: vulture
-    image: grafana/tempo-vulture:latest
+    image: grafana/tempo-vulture:2.10.4
     command:
-      [
-        "-prometheus-listen-address=:8080",
-        "-tempo-query-url=http://tempo:3200",
-        "-tempo-push-url=http://tempo:4317",
-        "-tempo-org-id=vulture-tenant",
-      ]
-    restart: always
+      - -prometheus-listen-address=:8080
+      - -tempo-query-url=http://tempo:3200
+      - -tempo-push-url=http://tempo:4317
+      - -tempo-org-id=vulture-tenant
+    restart: unless-stopped
     depends_on:
-      - tempo
+      tempo:
+        condition: service_healthy
     networks:
       - fastapi_net
 
