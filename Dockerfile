@@ -1,29 +1,74 @@
-FROM python:3.12-slim
-
-# Set environment variables for best practices
-# PYTHONDONTWRITEBYTECODE: Prevents Python from writing pyc files to disk
-# PYTHONUNBUFFERED: Prevents Python from buffering stdout and stderr
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+# ─── Build stage ────────────────────────────────────────────────────────────
+FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
-# Create a non-root user for security
-RUN addgroup --system app && adduser --system --group app
+# VIRTUAL_ENV es la forma canónica de "activar" un venv sin source
+RUN python -m venv /app/.venv
+ENV VIRTUAL_ENV="/app/.venv" \
+    PATH="/app/.venv/bin:$PATH"
 
-# Install dependencies
 COPY requirements.txt .
-RUN pip install --upgrade pip \
+RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Copy application source code
-COPY ./src src
+# ─── Dev stage ──────────────────────────────────────────────────────────────
+FROM python:3.12-slim AS dev
 
-# Change ownership to the non-root user
-RUN chown -R app:app /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    VIRTUAL_ENV="/app/.venv" \
+    PATH="/app/.venv/bin:$PATH" \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Switch to the non-root user
+WORKDIR /app
+
+RUN addgroup --system app && adduser --system --ingroup app --no-create-home app
+
+COPY --from=builder --chown=app:app /app/.venv /app/.venv
+
 USER app
 
-# Run the FastAPI application using the official CLI
+EXPOSE 8000
+
+# src llega montado por volumen en Compose — no se copia aquí
+CMD ["fastapi", "dev", "src/main.py", "--host", "0.0.0.0", "--port", "8000"]
+
+# ─── Runtime stage ──────────────────────────────────────────────────────────
+FROM python:3.12-slim AS runtime
+
+ARG BUILD_DATE
+ARG GIT_COMMIT
+ARG VERSION
+
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.revision="${GIT_COMMIT}" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.title="fastapi-app" \
+      org.opencontainers.image.base.name="python:3.12-slim"
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    VIRTUAL_ENV="/app/.venv" \
+    PATH="/app/.venv/bin:$PATH" \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    # Previene hash flooding DoS en producción
+    PYTHONHASHSEED=random
+
+WORKDIR /app
+
+RUN addgroup --system app && adduser --system --ingroup app --no-create-home app
+
+COPY --from=builder --chown=app:app /app/.venv /app/.venv
+COPY --chown=app:app ./src ./src
+
+USER app
+
+EXPOSE 8000
+
+# Endpoint unificado con el healthcheck del compose
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD python -c \
+    "import urllib.request; urllib.request.urlopen('http://localhost:8000/health-check/')"
+
 CMD ["fastapi", "run", "src/main.py", "--host", "0.0.0.0", "--port", "8000"]
