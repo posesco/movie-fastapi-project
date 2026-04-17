@@ -67,8 +67,8 @@ Asegúrate de tener instalado:
     fastapi dev src/main.py --port 8000 --host 0.0.0.0
     ```
 
-   La API estará disponible en `http://127.0.0.1:8000`.
-   La documentación estará disponible en `http://127.0.0.1:8000/docs` o `http://127.0.0.1:8000/redoc`.
+   La API estará disponible en `http://8000`.
+   La documentación estará disponible en `http://8000/docs` o `http://8000/redoc`.
 
 ### Ejecución con Docker
 
