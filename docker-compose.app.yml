@@ -1,22 +1,23 @@
 services:
   app:
     container_name: fastapi_app
-    build: .
+    build:
+      context: .
+      target: dev               # ← BUG FIX: sin esto construye el stage 'runtime'
     command: ["fastapi", "dev", "src/main.py", "--host", "0.0.0.0", "--port", "8000"]
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8000:8000"  # ← loopback: en dev no hay razón para exponer a la red
     environment:
-      - POSTGRES_HOST=postgres
-      - RUNNING_IN_DOCKER=true
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318
-      - OTEL_SERVICE_NAME=fastapi-service
-      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=development
+      POSTGRES_HOST: postgres
+      RUNNING_IN_DOCKER: "true"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://alloy:4318
+      OTEL_SERVICE_NAME: fastapi-service
+      OTEL_RESOURCE_ATTRIBUTES: deployment.environment=development
     env_file:
       - .env
     volumes:
-      - ./src:/app/src
-      - .env:/app/.env
+      - ./src:/app/src          # hot-reload — suficiente, sin montar .env como fichero
     depends_on:
       postgres:
         condition: service_healthy
@@ -25,13 +26,14 @@ services:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health-check/')"]
       interval: 10s
       timeout: 5s
+      start_period: 15s
       retries: 5
     networks:
       - fastapi_net
 
   postgres:
     container_name: postgres
-    image: postgres:18-alpine
+    image: postgres:17-alpine
     restart: always
     ports:
       - "5432:5432"
@@ -45,6 +47,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
+      start_period: 10s
       retries: 5
     networks:
       - fastapi_net
@@ -56,7 +59,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - PGWEB_DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+      PGWEB_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
     depends_on:
       postgres:
         condition: service_healthy

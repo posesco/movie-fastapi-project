@@ -1,7 +1,17 @@
+# Punto de entrada unificado para el stack de desarrollo.
+# Uso:
+#   docker compose up -d              → stack completo
+#   docker compose --profile app up   → solo app + postgres
+#
+# La red fastapi_net se crea aquí (authoritative) y los sub-ficheros
+# la referencian como external: true para evitar conflictos.
+name: fastapi_stack
+
 include:
-  - docker-compose.app.yml
-  - docker-compose.monitoring.yml
+  - path: docker-compose.app.yml
+  - path: docker-compose.monitoring.yml
 
 networks:
   fastapi_net:
     driver: bridge
+    name: fastapi_net   # nombre explícito; evita el prefijo del directorio
