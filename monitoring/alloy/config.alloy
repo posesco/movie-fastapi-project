@@ -1,0 +1,71 @@
+livedebugging {
+	enabled = true
+}
+
+// --- LOGS (OTEL) ---
+// Configuración simplificada: todo entra por OTLP
+// Send metrics to local Loki instance via  write.
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+// Send metrics to the local Prometheus instance via remote write.
+prometheus.remote_write "local" {
+	endpoint {
+		url = "http://prometheus:9090/api/v1/write"
+	}
+}
+
+// Expose PostgreSQL metrics using the built-in postgres exporter.
+
+//postgres.exporter.postgres "example" {
+//  data_source_names = ["postgresql://devdb_user:Nimda_20adc@postgres:5432/devdb?sslmode=disable"]
+//}
+
+// Scrape the postgres exporter targets.
+// prometheus.scrape "postgres" {
+// 	targets    = prometheus.exporter.postgres.example.targets
+// 	forward_to = [prometheus.remote_write.default.receiver]
+// 	scrape_interval = "15s"
+// }
+
+
+// --- TRACING (OpenTelemetry) ---
+
+// Receptor OTLP (recibe datos de la app)
+otelcol.receiver.otlp "otlp_receiver" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+
+  output {
+    metrics = [otelcol.exporter.prometheus.to_prometheus.input]
+    traces  = [otelcol.exporter.otlp.tempo.input]
+    logs    = [otelcol.exporter.loki.to_loki.input]
+  }
+}
+
+// Convertidor de OTLP a Loki
+otelcol.exporter.loki "to_loki" {
+  forward_to = [loki.write.local.receiver]
+}
+
+// Convertidor de OTLP a Prometheus
+otelcol.exporter.prometheus "to_prometheus" {
+  forward_to = [prometheus.remote_write.local.receiver]
+}
+
+// Exportador a Tempo
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = env("ALLOY_OTLP_UPSTREAM")
+    tls {
+			insecure = true
+		}
+  }
+}
+

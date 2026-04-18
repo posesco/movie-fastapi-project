@@ -11,17 +11,18 @@ Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre e
 - **SQLModel**: Combinación de **SQLAlchemy** y **Pydantic** para modelos de datos elegantes y seguros.
 - **JWT Authentication**: Autenticación basada en JSON Web Tokens (JWT) con **PyJWT**.
 - **Base de Datos**: Soporte para **PostgreSQL**, **MariaDB** (v11.4 LTS) y **SQLite** mediante drivers asíncronos (`asyncpg`, `aiomysql`, `aiosqlite`).
-- **Docker Stack**: Configuración con **MariaDB**, **Prometheus v3**, **Grafana 13** y **Loki 3.5**.
+- **Docker Stack**: Configuración moderna con **PostgreSQL**, **Prometheus v3**, **Grafana 13**, **Loki 3.5**, **Tempo 2.10** y **Grafana Alloy v1.15**.
+- **Observabilidad Unificada (OpenTelemetry)**: Implementación de **Logs**, **Métricas** y **Trazabilidad Distribuida** integrada directamente en el ciclo de vida de la aplicación.
 - **Pgweb**: Interfaz web integrada para la administración de bases de datos en el entorno Docker.
 
 ## Librerías utilizadas
 
 - **FastAPI**: [FastAPI documentation](https://fastapi.tiangolo.com/)
 - **SQLModel**: Para modelos de datos y ORM asíncrono.
-- **PyJWT**: Manejo de autenticación basada en tokens JWT.
+- **OpenTelemetry**: SDKs para instrumentación nativa de logs, trazas y métricas.
 - **python-dotenv**: Gestión de variables de entorno.
 - **Async Drivers**: `asyncpg`, `aiomysql`, `aiosqlite` para bases de datos asíncronas.
-- **Monitoring**: Prometheus, Grafana, Loki y cAdvisor.
+- **Monitoring**: Grafana Alloy (agente unificado), Prometheus (Remote Write), Grafana, Loki y Tempo.
 
 ## Instalación y Ejecución
 
@@ -66,19 +67,19 @@ Asegúrate de tener instalado:
     fastapi dev src/main.py --port 8000 --host 0.0.0.0
     ```
 
-   La API estará disponible en `http://127.0.0.1:8000`.
-   La documentación estará disponible en `http://127.0.0.1:8000/docs` o `http://127.0.0.1:8000/redoc`.
+   La API estará disponible en `http://localhost:8000`.
+   La documentación estará disponible en `http://localhost:8000/docs` o `http://localhost:8000/redoc`.
 
 ### Ejecución con Docker
 
-El proyecto está completamente preparado para ser ejecutado en contenedores Docker con **MariaDB** como base de datos y un stack de monitoreo completo.
+El proyecto está completamente preparado para ser ejecutado en contenedores Docker con **PostgreSQL** como base de datos por defecto y un stack de monitoreo completo.
 
 1. Asegúrate de tener Docker y Docker Compose instalados.
 2. Modifica el archivo `.env` con las configuraciones necesarias.
 3. Construye y levanta los contenedores:
 
     ```bash
-    docker compose up -d --build
+    docker compose -f compose.yml -f docker-compose.app.yml -f docker-compose.monitoring.yml up -d --build
     ```
 
 ## Estructura del Proyecto (Clean Architecture)
@@ -88,14 +89,13 @@ El proyecto está completamente preparado para ser ejecutado en contenedores Doc
     ├── api/             # Capa de entrada (Controladores/Endpoints)
     │   ├── deps.py      # Dependencias compartidas (Auth, DB)
     │   └── v1/          # Versionado de API
-    │       └── endpoints/
-    ├── core/            # Configuración global y seguridad
+    ├── core/            # Configuración global y seguridad (Settings, DB Engine)
     ├── models/          # Entidades de Base de Datos (SQLModel)
     ├── repositories/    # Capa de Acceso a Datos (Patrón Repository)
     ├── schemas/         # Modelos Pydantic para validación y DTOs
-    ├── services/        # Lógica de Negocio y Orquestación
+    ├── services/        # Lógica de Negocio, Orquestación y Métricas Custom
     ├── middlewares/     # Middlewares de FastAPI (Error handler)
-    └── main.py          # Punto de entrada de la aplicación
+    └── main.py          # Punto de entrada de la aplicación e init de OTel
     ```
 
 ## Licencia

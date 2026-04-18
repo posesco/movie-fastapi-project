@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 from datetime import datetime, timezone
+from sqlalchemy import DateTime, BigInteger
 import uuid
 
 
@@ -12,7 +13,9 @@ class MovieAuditLog(SQLModel, table=True):
     action_id: uuid.UUID = Field(foreign_key="actions.id", nullable=False)
     description: Optional[str] = Field(default=None, max_length=300)
     date: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc), nullable=False
+        sa_type=DateTime(timezone=True),
+        default_factory=lambda: datetime.now(timezone.utc),
+        nullable=False
     )
 
 
@@ -27,9 +30,11 @@ class Movie(SQLModel, table=True):
     category: str = Field(max_length=30, nullable=False)
     director: str = Field(max_length=30, nullable=False)
     studio: str = Field(max_length=60, nullable=False)
-    box_office: int = Field(nullable=False)
+    box_office: int = Field(sa_type=BigInteger, nullable=False)
     created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc), nullable=False
+        sa_type=DateTime(timezone=True),
+        default_factory=lambda: datetime.now(timezone.utc),
+        nullable=False
     )
 
     def log_modification(self, session, action_id, description):

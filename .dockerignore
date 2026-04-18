@@ -1,36 +1,43 @@
-# Git
+# ─── Git ─────────────────────────────────────────────────────────────────────
 .git
 .gitignore
 .gitattributes
 .github
 
-
-# CI
+# ─── CI / Config ─────────────────────────────────────────────────────────────
 .codeclimate.yml
 .travis.yml
 .taskcluster.yml
 
-# Docker
-docker-compose.yml
-compose.yml
+# ─── Docker ──────────────────────────────────────────────────────────────────
+docker-compose*.yml
+compose*.yml
 Dockerfile
 .docker
 .dockerignore
 
-# Byte-compiled / optimized / DLL files
-**/__pycache__/
-**/*.py[cod]
+# ─── Secrets — nunca en el build context ─────────────────────────────────────
+.env
+.env.*
+*.env
 
-# C extensions
+# ─── Python compiled / cache ─────────────────────────────────────────────────
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.py[cod]
 *.so
 
-# Distribution / packaging
+# ─── Packaging / distribución ────────────────────────────────────────────────
 .Python
 venv/
 env/
+.venv/
 build/
-develop-eggs/
 dist/
+*.egg-info/
+*.egg
+develop-eggs/
 downloads/
 eggs/
 lib/
@@ -38,21 +45,19 @@ lib64/
 parts/
 sdist/
 var/
-*.egg-info/
 .installed.cfg
-*.egg
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+# ─── PyInstaller ─────────────────────────────────────────────────────────────
 *.manifest
 *.spec
 
-# Installer logs
+# ─── Logs ────────────────────────────────────────────────────────────────────
 pip-log.txt
 pip-delete-this-directory.txt
+*.log
 
-# Unit test / coverage reports
+# ─── Tests / cobertura ───────────────────────────────────────────────────────
+tests/
 htmlcov/
 .tox/
 .coverage
@@ -60,32 +65,21 @@ htmlcov/
 nosetests.xml
 coverage.xml
 
-# Translations
-*.mo
-*.pot
+# ─── Monitoring stack ────────────────────────────────────────────────────────
+monitoring/
 
-# Django stuff:
-*.log
+# ─── Docs ────────────────────────────────────────────────────────────────────
+docs/
+*.md
 
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Virtual environment
-.venv/
-venv/
-
-# PyCharm
-.idea
-
-# Python mode for VIM
+# ─── IDEs ────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
 .ropeproject
 **/.ropeproject
-
-# Vim swap files
 **/*.swp
 
-# VS Code
-.vscode/
+# ─── Misc ────────────────────────────────────────────────────────────────────
+*.mo
+*.pot
+target/

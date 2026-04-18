@@ -1,9 +1,10 @@
+import json
 from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from fastapi.encoders import jsonable_encoder
 
-from src.models.user import User, Role
+from src.models.user import User, Role, UserAuditLog
 from src.repositories.user import user_repository
 from src.repositories.action import action_repository
 from src.core.security import pwd_context, create_token
@@ -20,12 +21,12 @@ class UserService:
             "action": user_action,
             "details": details,
         }
-        user.log_modification(
-            session=db,
+        log_entry = UserAuditLog(
+            user_id=user.id,
             action_id=action.id,
-            description=description_data,
+            description=json.dumps(description_data),
         )
-        # We don't commit here, we rely on the caller or middleware
+        db.add(log_entry)
 
     async def get_token(self, user_data: dict) -> str:
         return create_token(user_data)
@@ -38,6 +39,9 @@ class UserService:
             return None
         if not pwd_context.verify(password, user.password):
             return None
+        
+        # Load roles asynchronously to avoid greenlet_spawn error
+        await db.refresh(user, ["roles"])
         return user
 
     async def get_users(self, db: AsyncSession) -> List[User]:

@@ -8,6 +8,7 @@ from src.api.deps import get_db, get_current_active_user
 from src.services.movie import movie_service
 from src.schemas.movie import Movie
 from src.models.movie import Movie as MovieModel
+from src.models.user import User as UserModel
 
 router = APIRouter()
 
@@ -42,7 +43,7 @@ async def get_movie_by_category(
 async def create_movies(
     movies: List[Movie], 
     db: AsyncSession = Depends(get_db),
-    # current_user = Depends(get_current_active_user)
+    current_user: UserModel = Depends(get_current_active_user)
 ):
     models = [MovieModel(**movie.model_dump()) for movie in movies]
     new_movies = await movie_service.create_movies(db, models)
@@ -53,7 +54,7 @@ async def update_movie(
     id: int, 
     movie: Movie, 
     db: AsyncSession = Depends(get_db),
-    # current_user = Depends(get_current_active_user)
+    current_user = Depends(get_current_active_user)
 ):
     result = await movie_service.update_movie(db, id, movie.model_dump())
     if not result:
@@ -64,7 +65,7 @@ async def update_movie(
 async def delete_movie(
     id: int, 
     db: AsyncSession = Depends(get_db),
-    # current_user = Depends(get_current_active_user)
+    current_user = Depends(get_current_active_user)
 ):
     result = await movie_service.delete_movie(db, id)
     if not result:

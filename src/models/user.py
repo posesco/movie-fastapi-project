@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from datetime import datetime, timezone
+from sqlalchemy import DateTime, Column
 
 import uuid
 import json
@@ -30,7 +31,9 @@ class UserAuditLog(SQLModel, table=True):
     action_id: uuid.UUID = Field(foreign_key="actions.id", nullable=False)
     description: str = Field(nullable=False)
     date: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc), nullable=False
+        sa_type=DateTime(timezone=True),
+        default_factory=lambda: datetime.now(timezone.utc),
+        nullable=False
     )
 
 
@@ -45,15 +48,9 @@ class User(SQLModel, table=True):
     password: str = Field(max_length=100, nullable=False)
     is_active: bool = Field(default=True)
     created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc), nullable=False
+        sa_type=DateTime(timezone=True),
+        default_factory=lambda: datetime.now(timezone.utc),
+        nullable=False
     )
 
     roles: List[Role] = Relationship(back_populates="users", link_model=UserRole)
-
-    def log_modification(self, session, action_id: str, description: dict):
-        log_entry = UserAuditLog(
-            user_id=self.id,
-            action_id=action_id,
-            description=json.dumps(description),
-        )
-        session.add(log_entry)
