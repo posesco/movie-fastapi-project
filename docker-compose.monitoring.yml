@@ -1,15 +1,4 @@
 services:
-  # Generador de carga de trazas para pruebas y simulaciones
-  k6-tracing:
-    container_name: k6-tracing
-    image: ghcr.io/grafana/xk6-client-tracing:v0.0.9
-    restart: always
-    environment:
-      - ENDPOINT=alloy:4317
-    depends_on:
-      - tempo
-      - alloy
-
   # Base de datos para métricas (series temporales)
   prometheus:
     container_name: prometheus
@@ -107,7 +96,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       LOKI_HOST: loki:3100
       TEMPO_HOST: tempo:4317
-      # ALLOY_OTLP: tempo:4317
+      ALLOY_OTLP_UPSTREAM: tempo:4317
     volumes:
       - ./monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
     # depends_on:

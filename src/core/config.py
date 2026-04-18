@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     postgres_user: str = Field(default="postgres", validation_alias="POSTGRES_USER")
     postgres_password: str = Field(default="postgres", validation_alias="POSTGRES_PASSWORD", repr=False)
 
+    # OTEL
+    otel_collector_endpoint: str = Field(default="http://alloy:4317", validation_alias="OTEL_COLLECTOR_ENDPOINT")
     # Runtime
     running_in_docker: bool = Field(default=False, validation_alias="RUNNING_IN_DOCKER")
 

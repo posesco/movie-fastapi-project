@@ -1,25 +1,9 @@
 livedebugging {
 	enabled = true
 }
-// --- LOGS ---
-discovery.docker "linux" {
-  host = "unix:///var/run/docker.sock"
-}
 
-discovery.relabel "fastapi_logs" {
-  targets = discovery.docker.linux.targets
-  rule {
-    source_labels = ["__meta_docker_container_name"]
-    regex         = "/fastapi_app"
-    action        = "keep"
-  }
-}
-
-loki.source.docker "app_logs" {
-  host    = "unix:///var/run/docker.sock"
-  targets = discovery.relabel.fastapi_logs.output
-  forward_to = [loki.write.local.receiver]
-}
+// --- LOGS (OTEL) ---
+// Configuración simplificada: todo entra por OTLP
 // Send metrics to local Loki instance via  write.
 loki.write "local" {
   endpoint {
@@ -59,8 +43,20 @@ otelcol.receiver.otlp "otlp_receiver" {
   }
 
   output {
-    traces = [otelcol.exporter.otlp.tempo.input,]
+    metrics = [otelcol.exporter.prometheus.to_prometheus.input]
+    traces  = [otelcol.exporter.otlp.tempo.input]
+    logs    = [otelcol.exporter.loki.to_loki.input]
   }
+}
+
+// Convertidor de OTLP a Loki
+otelcol.exporter.loki "to_loki" {
+  forward_to = [loki.write.local.receiver]
+}
+
+// Convertidor de OTLP a Prometheus
+otelcol.exporter.prometheus "to_prometheus" {
+  forward_to = [prometheus.remote_write.local.receiver]
 }
 
 // Exportador a Tempo

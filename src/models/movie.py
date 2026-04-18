@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 from datetime import datetime, timezone
-from sqlalchemy import DateTime
+from sqlalchemy import DateTime, BigInteger
 import uuid
 
 
@@ -30,7 +30,7 @@ class Movie(SQLModel, table=True):
     category: str = Field(max_length=30, nullable=False)
     director: str = Field(max_length=30, nullable=False)
     studio: str = Field(max_length=60, nullable=False)
-    box_office: int = Field(nullable=False)
+    box_office: int = Field(sa_type=BigInteger, nullable=False)
     created_at: datetime = Field(
         sa_type=DateTime(timezone=True),
         default_factory=lambda: datetime.now(timezone.utc),

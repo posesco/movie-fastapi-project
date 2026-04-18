@@ -1,7 +1,7 @@
 [
     {
         "title": "Avatar",
-        "overview": "En un exuberante planeta llamado Pandora viven los Na'vi, seres que...",
+        "overview": "En un exuberante planeta alienígena, un ex-marine parapléjico se une a una misión que lo lleva a través de un proceso de transformación física y mental para convertirse en parte de la cultura local, solo para encontrarse dividido entre su lealtad a su especie y su amor por una nativa.",
         "year": 2009,
         "rating": 7.8,
         "category": "Action",
@@ -11,7 +11,7 @@
     },
     {
         "title": "Titanic",
-        "overview": "Una tragedia de amor en un barco que se hunde...",
+        "overview": "Un joven artista pobre y una mujer rica se enamoran a bordo del lujoso pero desafortunado transatlántico Titanic, que se hunde en su viaje inaugural después de chocar con un iceberg.",
         "year": 1997,
         "rating": 7.8,
         "category": "Drama",
@@ -21,7 +21,7 @@
     },
     {
         "title": "Gorillaz",
-        "overview": "Cualquier cosa puedo ir aca y los Na'vi, seres que...",
+        "overview": "Una historia épica sobre Gorillaz que explora los límites de la realidad y la ambición humana.",
         "year": 2021,
         "rating": 9.8,
         "category": "Fiction",
@@ -558,5 +558,2115 @@
         "director": "Robert Eggers",
         "studio": "A24",
         "box_office": 4000000
-    }
+    },
+    {
+        "title": "Electric Ghost",
+        "overview": "Una historia épica sobre electric ghost que explora los límites de la realidad y la ambición humana.",
+        "year": 2003,
+        "rating": 9.2,
+        "category": "Action",
+        "director": "James Cameron",
+        "studio": "Sony Pictures",
+        "box_office": 1616244269
+    },
+    {
+        "title": "Silent Kingdom",
+        "overview": "Una historia épica sobre silent kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 2010,
+        "rating": 9.0,
+        "category": "Musical",
+        "director": "Steven Spielberg",
+        "studio": "Miramax",
+        "box_office": 1589422470
+    },
+    {
+        "title": "Lost Empire",
+        "overview": "Una historia épica sobre lost empire que explora los límites de la realidad y la ambición humana.",
+        "year": 2014,
+        "rating": 6.2,
+        "category": "Horror",
+        "director": "Hayao Miyazaki",
+        "studio": "Universal Pictures",
+        "box_office": 1676478354
+    },
+    {
+        "title": "Eternal Path",
+        "overview": "Una historia épica sobre eternal path que explora los límites de la realidad y la ambición humana.",
+        "year": 2009,
+        "rating": 6.8,
+        "category": "Thriller",
+        "director": "James Cameron",
+        "studio": "Studio Ghibli",
+        "box_office": 151703478
+    },
+    {
+        "title": "Crimson Legacy",
+        "overview": "Una historia épica sobre crimson legacy que explora los límites de la realidad y la ambición humana.",
+        "year": 1997,
+        "rating": 6.9,
+        "category": "Action",
+        "director": "Ridley Scott",
+        "studio": "Marvel Studios",
+        "box_office": 930839233
+    },
+    {
+        "title": "The Last Storm",
+        "overview": "Una historia épica sobre the last storm que explora los límites de la realidad y la ambición humana.",
+        "year": 1960,
+        "rating": 6.4,
+        "category": "War",
+        "director": "Peter Jackson",
+        "studio": "Miramax",
+        "box_office": 109920439
+    },
+    {
+        "title": "Neon Dream",
+        "overview": "Una historia épica sobre neon dream que explora los límites de la realidad y la ambición humana.",
+        "year": 2015,
+        "rating": 6.9,
+        "category": "Mystery",
+        "director": "Greta Gerwig",
+        "studio": "Sony Pictures",
+        "box_office": 946862856
+    },
+    {
+        "title": "Infinite Silence",
+        "overview": "Una historia épica sobre infinite silence que explora los límites de la realidad y la ambición humana.",
+        "year": 2016,
+        "rating": 8.6,
+        "category": "Adventure",
+        "director": "Guillermo del Toro",
+        "studio": "Walt Disney Pictures",
+        "box_office": 538815948
+    },
+    {
+        "title": "Infinite Dream",
+        "overview": "Una historia épica sobre infinite dream que explora los límites de la realidad y la ambición humana.",
+        "year": 1979,
+        "rating": 8.2,
+        "category": "War",
+        "director": "Wes Anderson",
+        "studio": "Marvel Studios",
+        "box_office": 290725245
+    },
+    {
+        "title": "Eternal Voyage",
+        "overview": "Una historia épica sobre eternal voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 1980,
+        "rating": 9.0,
+        "category": "Horror",
+        "director": "Christopher Nolan",
+        "studio": "A24",
+        "box_office": 668445847
+    },
+    {
+        "title": "Golden Echo",
+        "overview": "Una historia épica sobre golden echo que explora los límites de la realidad y la ambición humana.",
+        "year": 2021,
+        "rating": 7.4,
+        "category": "Crime",
+        "director": "Peter Jackson",
+        "studio": "Paramount Pictures",
+        "box_office": 1172036950
+    },
+    {
+        "title": "Blue Storm",
+        "overview": "Una historia épica sobre blue storm que explora los límites de la realidad y la ambición humana.",
+        "year": 1995,
+        "rating": 6.5,
+        "category": "Sci-Fi",
+        "director": "James Cameron",
+        "studio": "Walt Disney Pictures",
+        "box_office": 1024238714
+    },
+    {
+        "title": "Lost Labyrinth",
+        "overview": "Una historia épica sobre lost labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 1977,
+        "rating": 7.6,
+        "category": "Crime",
+        "director": "David Fincher",
+        "studio": "Paramount Pictures",
+        "box_office": 1694263702
+    },
+    {
+        "title": "Broken Ghost",
+        "overview": "Una historia épica sobre broken ghost que explora los límites de la realidad y la ambición humana.",
+        "year": 1982,
+        "rating": 9.3,
+        "category": "Drama",
+        "director": "James Cameron",
+        "studio": "Paramount Pictures",
+        "box_office": 1078989840
+    },
+    {
+        "title": "Neon Kingdom",
+        "overview": "Una historia épica sobre neon kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 1985,
+        "rating": 8.3,
+        "category": "Thriller",
+        "director": "Christopher Nolan",
+        "studio": "New Line Cinema",
+        "box_office": 1371954743
+    },
+    {
+        "title": "Crimson Horizon",
+        "overview": "Una historia épica sobre crimson horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 1986,
+        "rating": 9.1,
+        "category": "Western",
+        "director": "David Fincher",
+        "studio": "20th Century Fox",
+        "box_office": 249921923
+    },
+    {
+        "title": "Broken Storm",
+        "overview": "Una historia épica sobre broken storm que explora los límites de la realidad y la ambición humana.",
+        "year": 1981,
+        "rating": 7.2,
+        "category": "Thriller",
+        "director": "Hayao Miyazaki",
+        "studio": "DreamWorks Pictures",
+        "box_office": 76220952
+    },
+    {
+        "title": "Golden Star",
+        "overview": "Una historia épica sobre golden star que explora los límites de la realidad y la ambición humana.",
+        "year": 2007,
+        "rating": 7.7,
+        "category": "Musical",
+        "director": "Peter Jackson",
+        "studio": "Studio Ghibli",
+        "box_office": 1276145565
+    },
+    {
+        "title": "Blue Ocean",
+        "overview": "Una historia épica sobre blue ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 1972,
+        "rating": 7.5,
+        "category": "Biography",
+        "director": "Greta Gerwig",
+        "studio": "Marvel Studios",
+        "box_office": 721301696
+    },
+    {
+        "title": "Shadow Empire",
+        "overview": "Una historia épica sobre shadow empire que explora los límites de la realidad y la ambición humana.",
+        "year": 2017,
+        "rating": 7.8,
+        "category": "Animation",
+        "director": "Steven Spielberg",
+        "studio": "Marvel Studios",
+        "box_office": 767406493
+    },
+    {
+        "title": "Eternal Light",
+        "overview": "Una historia épica sobre eternal light que explora los límites de la realidad y la ambición humana.",
+        "year": 1977,
+        "rating": 7.3,
+        "category": "Animation",
+        "director": "Ridley Scott",
+        "studio": "Warner Bros.",
+        "box_office": 1246221142
+    },
+    {
+        "title": "The Last Silence",
+        "overview": "Una historia épica sobre the last silence que explora los límites de la realidad y la ambición humana.",
+        "year": 2014,
+        "rating": 6.9,
+        "category": "Thriller",
+        "director": "Quentin Tarantino",
+        "studio": "Paramount Pictures",
+        "box_office": 255150402
+    },
+    {
+        "title": "Hidden Warrior",
+        "overview": "Una historia épica sobre hidden warrior que explora los límites de la realidad y la ambición humana.",
+        "year": 1978,
+        "rating": 6.3,
+        "category": "Crime",
+        "director": "Greta Gerwig",
+        "studio": "A24",
+        "box_office": 1345018225
+    },
+    {
+        "title": "Broken Labyrinth",
+        "overview": "Una historia épica sobre broken labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 2015,
+        "rating": 8.9,
+        "category": "Biography",
+        "director": "Greta Gerwig",
+        "studio": "Sony Pictures",
+        "box_office": 963538322
+    },
+    {
+        "title": "Falling Ocean",
+        "overview": "Una historia épica sobre falling ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 2004,
+        "rating": 9.1,
+        "category": "Action",
+        "director": "Steven Spielberg",
+        "studio": "Warner Bros.",
+        "box_office": 1507769145
+    },
+    {
+        "title": "Blue Kingdom",
+        "overview": "Una historia épica sobre blue kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 2009,
+        "rating": 8.3,
+        "category": "Mystery",
+        "director": "Wes Anderson",
+        "studio": "DreamWorks Pictures",
+        "box_office": 321720380
+    },
+    {
+        "title": "Fallen Ocean",
+        "overview": "Una historia épica sobre fallen ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 1976,
+        "rating": 8.1,
+        "category": "Sci-Fi",
+        "director": "Stanley Kubrick",
+        "studio": "Universal Pictures",
+        "box_office": 20135854
+    },
+    {
+        "title": "Fallen Kingdom",
+        "overview": "Una historia épica sobre fallen kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 1975,
+        "rating": 6.7,
+        "category": "Comedy",
+        "director": "David Fincher",
+        "studio": "New Line Cinema",
+        "box_office": 1953323665
+    },
+    {
+        "title": "Ancient Silence",
+        "overview": "Una historia épica sobre ancient silence que explora los límites de la realidad y la ambición humana.",
+        "year": 1977,
+        "rating": 9.0,
+        "category": "Action",
+        "director": "Peter Jackson",
+        "studio": "DreamWorks Pictures",
+        "box_office": 1312447803
+    },
+    {
+        "title": "Blue Echo",
+        "overview": "Una historia épica sobre blue echo que explora los límites de la realidad y la ambición humana.",
+        "year": 2010,
+        "rating": 7.9,
+        "category": "Western",
+        "director": "Peter Jackson",
+        "studio": "Sony Pictures",
+        "box_office": 1754119006
+    },
+    {
+        "title": "Golden Legacy",
+        "overview": "Una historia épica sobre golden legacy que explora los límites de la realidad y la ambición humana.",
+        "year": 1997,
+        "rating": 7.0,
+        "category": "Western",
+        "director": "Christopher Nolan",
+        "studio": "Lionsgate",
+        "box_office": 377149595
+    },
+    {
+        "title": "Dark Kingdom",
+        "overview": "Una historia épica sobre dark kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 1983,
+        "rating": 7.4,
+        "category": "Thriller",
+        "director": "David Fincher",
+        "studio": "Warner Bros.",
+        "box_office": 1357261304
+    },
+    {
+        "title": "Ancient Labyrinth",
+        "overview": "Una historia épica sobre ancient labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 1968,
+        "rating": 6.4,
+        "category": "Mystery",
+        "director": "Christopher Nolan",
+        "studio": "Lionsgate",
+        "box_office": 765648134
+    },
+    {
+        "title": "Hidden Light",
+        "overview": "Una historia épica sobre hidden light que explora los límites de la realidad y la ambición humana.",
+        "year": 2025,
+        "rating": 8.3,
+        "category": "Comedy",
+        "director": "Peter Jackson",
+        "studio": "A24",
+        "box_office": 936716643
+    },
+    {
+        "title": "Lost Storm",
+        "overview": "Una historia épica sobre lost storm que explora los límites de la realidad y la ambición humana.",
+        "year": 2003,
+        "rating": 9.0,
+        "category": "Sci-Fi",
+        "director": "Guillermo del Toro",
+        "studio": "Sony Pictures",
+        "box_office": 328534550
+    },
+    {
+        "title": "Final Silence",
+        "overview": "Una historia épica sobre final silence que explora los límites de la realidad y la ambición humana.",
+        "year": 2024,
+        "rating": 6.7,
+        "category": "Sci-Fi",
+        "director": "Christopher Nolan",
+        "studio": "Sony Pictures",
+        "box_office": 1040917239
+    },
+    {
+        "title": "Rising Echo",
+        "overview": "Una historia épica sobre rising echo que explora los límites de la realidad y la ambición humana.",
+        "year": 1967,
+        "rating": 9.3,
+        "category": "Western",
+        "director": "Peter Jackson",
+        "studio": "Universal Pictures",
+        "box_office": 917177248
+    },
+    {
+        "title": "Falling City",
+        "overview": "Una historia épica sobre falling city que explora los límites de la realidad y la ambición humana.",
+        "year": 2026,
+        "rating": 8.7,
+        "category": "Fantasy",
+        "director": "Guillermo del Toro",
+        "studio": "Walt Disney Pictures",
+        "box_office": 1516702615
+    },
+    {
+        "title": "Rising Path",
+        "overview": "Una historia épica sobre rising path que explora los límites de la realidad y la ambición humana.",
+        "year": 2002,
+        "rating": 6.5,
+        "category": "Adventure",
+        "director": "Ridley Scott",
+        "studio": "Pixar",
+        "box_office": 1222530182
+    },
+    {
+        "title": "The Last City",
+        "overview": "Una historia épica sobre the last city que explora los límites de la realidad y la ambición humana.",
+        "year": 1965,
+        "rating": 8.1,
+        "category": "Crime",
+        "director": "Denis Villeneuve",
+        "studio": "New Line Cinema",
+        "box_office": 1628597813
+    },
+    {
+        "title": "Final Labyrinth",
+        "overview": "Una historia épica sobre final labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 1964,
+        "rating": 8.4,
+        "category": "Animation",
+        "director": "Denis Villeneuve",
+        "studio": "A24",
+        "box_office": 221314475
+    },
+    {
+        "title": "Infinite Horizon",
+        "overview": "Una historia épica sobre infinite horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 2023,
+        "rating": 7.7,
+        "category": "Biography",
+        "director": "Christopher Nolan",
+        "studio": "Paramount Pictures",
+        "box_office": 1886017009
+    },
+    {
+        "title": "Rising Kingdom",
+        "overview": "Una historia épica sobre rising kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 2010,
+        "rating": 6.1,
+        "category": "Thriller",
+        "director": "Quentin Tarantino",
+        "studio": "DreamWorks Pictures",
+        "box_office": 1133728105
+    },
+    {
+        "title": "Shadow Planet",
+        "overview": "Una historia épica sobre shadow planet que explora los límites de la realidad y la ambición humana.",
+        "year": 1967,
+        "rating": 6.1,
+        "category": "Adventure",
+        "director": "Wes Anderson",
+        "studio": "DreamWorks Pictures",
+        "box_office": 1485629065
+    },
+    {
+        "title": "Dark Planet",
+        "overview": "Una historia épica sobre dark planet que explora los límites de la realidad y la ambición humana.",
+        "year": 1960,
+        "rating": 7.0,
+        "category": "Western",
+        "director": "Denis Villeneuve",
+        "studio": "Studio Ghibli",
+        "box_office": 1388668359
+    },
+    {
+        "title": "Broken Silence",
+        "overview": "Una historia épica sobre broken silence que explora los límites de la realidad y la ambición humana.",
+        "year": 1967,
+        "rating": 8.9,
+        "category": "Western",
+        "director": "David Fincher",
+        "studio": "Warner Bros.",
+        "box_office": 1272114211
+    },
+    {
+        "title": "Dark Silence",
+        "overview": "Una historia épica sobre dark silence que explora los límites de la realidad y la ambición humana.",
+        "year": 1984,
+        "rating": 7.3,
+        "category": "Mystery",
+        "director": "Christopher Nolan",
+        "studio": "A24",
+        "box_office": 1133028331
+    },
+    {
+        "title": "Broken Planet",
+        "overview": "Una historia épica sobre broken planet que explora los límites de la realidad y la ambición humana.",
+        "year": 1976,
+        "rating": 6.5,
+        "category": "Adventure",
+        "director": "Denis Villeneuve",
+        "studio": "Lionsgate",
+        "box_office": 653936524
+    },
+    {
+        "title": "Falling Prophecy",
+        "overview": "Una historia épica sobre falling prophecy que explora los límites de la realidad y la ambición humana.",
+        "year": 2000,
+        "rating": 6.8,
+        "category": "Drama",
+        "director": "Denis Villeneuve",
+        "studio": "DreamWorks Pictures",
+        "box_office": 176729267
+    },
+    {
+        "title": "Eternal Storm",
+        "overview": "Una historia épica sobre eternal storm que explora los límites de la realidad y la ambición humana.",
+        "year": 2009,
+        "rating": 9.1,
+        "category": "Fantasy",
+        "director": "Ridley Scott",
+        "studio": "Pixar",
+        "box_office": 367259404
+    },
+    {
+        "title": "Final Star",
+        "overview": "Una historia épica sobre final star que explora los límites de la realidad y la ambición humana.",
+        "year": 1999,
+        "rating": 6.1,
+        "category": "Crime",
+        "director": "Denis Villeneuve",
+        "studio": "Paramount Pictures",
+        "box_office": 414424013
+    },
+    {
+        "title": "Dark Ocean",
+        "overview": "Una historia épica sobre dark ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 1963,
+        "rating": 9.2,
+        "category": "Animation",
+        "director": "Martin Scorsese",
+        "studio": "Paramount Pictures",
+        "box_office": 1197148838
+    },
+    {
+        "title": "Final Ocean",
+        "overview": "Una historia épica sobre final ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 1997,
+        "rating": 8.5,
+        "category": "Drama",
+        "director": "Wes Anderson",
+        "studio": "Warner Bros.",
+        "box_office": 885986108
+    },
+    {
+        "title": "Falling Star",
+        "overview": "Una historia épica sobre falling star que explora los límites de la realidad y la ambición humana.",
+        "year": 2025,
+        "rating": 7.7,
+        "category": "Thriller",
+        "director": "Wes Anderson",
+        "studio": "Sony Pictures",
+        "box_office": 1413658523
+    },
+    {
+        "title": "Crimson Voyage",
+        "overview": "Una historia épica sobre crimson voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 2011,
+        "rating": 7.1,
+        "category": "Drama",
+        "director": "James Cameron",
+        "studio": "A24",
+        "box_office": 1021741663
+    },
+    {
+        "title": "Rising Legacy",
+        "overview": "Una historia épica sobre rising legacy que explora los límites de la realidad y la ambición humana.",
+        "year": 2004,
+        "rating": 8.1,
+        "category": "Comedy",
+        "director": "Stanley Kubrick",
+        "studio": "Paramount Pictures",
+        "box_office": 639996762
+    },
+    {
+        "title": "Hidden Ocean",
+        "overview": "Una historia épica sobre hidden ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 1977,
+        "rating": 7.4,
+        "category": "Horror",
+        "director": "Hayao Miyazaki",
+        "studio": "20th Century Fox",
+        "box_office": 666961108
+    },
+    {
+        "title": "Fallen Horizon",
+        "overview": "Una historia épica sobre fallen horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 1977,
+        "rating": 9.5,
+        "category": "Biography",
+        "director": "Greta Gerwig",
+        "studio": "20th Century Fox",
+        "box_office": 72587652
+    },
+    {
+        "title": "Falling Path",
+        "overview": "Una historia épica sobre falling path que explora los límites de la realidad y la ambición humana.",
+        "year": 2021,
+        "rating": 9.0,
+        "category": "Mystery",
+        "director": "Steven Spielberg",
+        "studio": "Walt Disney Pictures",
+        "box_office": 617811848
+    },
+    {
+        "title": "Deep Silence",
+        "overview": "Una historia épica sobre deep silence que explora los límites de la realidad y la ambición humana.",
+        "year": 1963,
+        "rating": 7.8,
+        "category": "War",
+        "director": "Hayao Miyazaki",
+        "studio": "Warner Bros.",
+        "box_office": 1008602919
+    },
+    {
+        "title": "Dark Path",
+        "overview": "Una historia épica sobre dark path que explora los límites de la realidad y la ambición humana.",
+        "year": 1984,
+        "rating": 6.9,
+        "category": "Animation",
+        "director": "Denis Villeneuve",
+        "studio": "Universal Pictures",
+        "box_office": 1485356944
+    },
+    {
+        "title": "Broken Dream",
+        "overview": "Una historia épica sobre broken dream que explora los límites de la realidad y la ambición humana.",
+        "year": 1966,
+        "rating": 8.5,
+        "category": "War",
+        "director": "Stanley Kubrick",
+        "studio": "20th Century Fox",
+        "box_office": 853069162
+    },
+    {
+        "title": "Silent City",
+        "overview": "Una historia épica sobre silent city que explora los límites de la realidad y la ambición humana.",
+        "year": 1969,
+        "rating": 7.9,
+        "category": "Action",
+        "director": "Wes Anderson",
+        "studio": "Sony Pictures",
+        "box_office": 1762112782
+    },
+    {
+        "title": "Falling Planet",
+        "overview": "Una historia épica sobre falling planet que explora los límites de la realidad y la ambición humana.",
+        "year": 1973,
+        "rating": 7.4,
+        "category": "Fantasy",
+        "director": "Hayao Miyazaki",
+        "studio": "Universal Pictures",
+        "box_office": 1279936012
+    },
+    {
+        "title": "Hidden Path",
+        "overview": "Una historia épica sobre hidden path que explora los límites de la realidad y la ambición humana.",
+        "year": 2004,
+        "rating": 9.0,
+        "category": "Action",
+        "director": "Ridley Scott",
+        "studio": "Paramount Pictures",
+        "box_office": 269726467
+    },
+    {
+        "title": "Shadow Ocean",
+        "overview": "Una historia épica sobre shadow ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 2005,
+        "rating": 6.6,
+        "category": "Thriller",
+        "director": "Steven Spielberg",
+        "studio": "Studio Ghibli",
+        "box_office": 212576596
+    },
+    {
+        "title": "Hidden Ghost",
+        "overview": "Una historia épica sobre hidden ghost que explora los límites de la realidad y la ambición humana.",
+        "year": 2004,
+        "rating": 8.1,
+        "category": "Drama",
+        "director": "Stanley Kubrick",
+        "studio": "Sony Pictures",
+        "box_office": 1628629316
+    },
+    {
+        "title": "Shadow Voyage",
+        "overview": "Una historia épica sobre shadow voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 1981,
+        "rating": 6.2,
+        "category": "Thriller",
+        "director": "Steven Spielberg",
+        "studio": "DreamWorks Pictures",
+        "box_office": 1608252568
+    },
+    {
+        "title": "Golden Empire",
+        "overview": "Una historia épica sobre golden empire que explora los límites de la realidad y la ambición humana.",
+        "year": 2003,
+        "rating": 9.2,
+        "category": "Sci-Fi",
+        "director": "Hayao Miyazaki",
+        "studio": "Paramount Pictures",
+        "box_office": 533804199
+    },
+    {
+        "title": "Deep Star",
+        "overview": "Una historia épica sobre deep star que explora los límites de la realidad y la ambición humana.",
+        "year": 1962,
+        "rating": 7.0,
+        "category": "Musical",
+        "director": "Denis Villeneuve",
+        "studio": "New Line Cinema",
+        "box_office": 687183339
+    },
+    {
+        "title": "Hidden Heart",
+        "overview": "Una historia épica sobre hidden heart que explora los límites de la realidad y la ambición humana.",
+        "year": 1973,
+        "rating": 6.1,
+        "category": "Musical",
+        "director": "Francis Ford Coppola",
+        "studio": "Miramax",
+        "box_office": 593951131
+    },
+    {
+        "title": "Infinite Labyrinth",
+        "overview": "Una historia épica sobre infinite labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 1963,
+        "rating": 9.5,
+        "category": "Crime",
+        "director": "Steven Spielberg",
+        "studio": "Paramount Pictures",
+        "box_office": 1172007646
+    },
+    {
+        "title": "Crimson Prophecy",
+        "overview": "Una historia épica sobre crimson prophecy que explora los límites de la realidad y la ambición humana.",
+        "year": 1968,
+        "rating": 8.5,
+        "category": "War",
+        "director": "Quentin Tarantino",
+        "studio": "Pixar",
+        "box_office": 1418520908
+    },
+    {
+        "title": "Crimson Light",
+        "overview": "Una historia épica sobre crimson light que explora los límites de la realidad y la ambición humana.",
+        "year": 2008,
+        "rating": 8.6,
+        "category": "Drama",
+        "director": "Greta Gerwig",
+        "studio": "Walt Disney Pictures",
+        "box_office": 1984305311
+    },
+    {
+        "title": "Eternal Dream",
+        "overview": "Una historia épica sobre eternal dream que explora los límites de la realidad y la ambición humana.",
+        "year": 2002,
+        "rating": 6.7,
+        "category": "Animation",
+        "director": "Christopher Nolan",
+        "studio": "New Line Cinema",
+        "box_office": 1364645887
+    },
+    {
+        "title": "Blue Warrior",
+        "overview": "Una historia épica sobre blue warrior que explora los límites de la realidad y la ambición humana.",
+        "year": 1967,
+        "rating": 6.2,
+        "category": "Horror",
+        "director": "Wes Anderson",
+        "studio": "A24",
+        "box_office": 636189042
+    },
+    {
+        "title": "Ancient Legacy",
+        "overview": "Una historia épica sobre ancient legacy que explora los límites de la realidad y la ambición humana.",
+        "year": 1980,
+        "rating": 6.6,
+        "category": "Mystery",
+        "director": "Greta Gerwig",
+        "studio": "Pixar",
+        "box_office": 1691357455
+    },
+    {
+        "title": "Electric Voyage",
+        "overview": "Una historia épica sobre electric voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 2012,
+        "rating": 6.5,
+        "category": "Animation",
+        "director": "Francis Ford Coppola",
+        "studio": "Studio Ghibli",
+        "box_office": 1507014159
+    },
+    {
+        "title": "Neon Storm",
+        "overview": "Una historia épica sobre neon storm que explora los límites de la realidad y la ambición humana.",
+        "year": 1962,
+        "rating": 7.8,
+        "category": "Mystery",
+        "director": "Martin Scorsese",
+        "studio": "Sony Pictures",
+        "box_office": 1176976855
+    },
+    {
+        "title": "Rising Planet",
+        "overview": "Una historia épica sobre rising planet que explora los límites de la realidad y la ambición humana.",
+        "year": 2018,
+        "rating": 7.3,
+        "category": "Crime",
+        "director": "Guillermo del Toro",
+        "studio": "A24",
+        "box_office": 1345844700
+    },
+    {
+        "title": "Neon Prophecy",
+        "overview": "Una historia épica sobre neon prophecy que explora los límites de la realidad y la ambición humana.",
+        "year": 1975,
+        "rating": 7.0,
+        "category": "War",
+        "director": "Stanley Kubrick",
+        "studio": "DreamWorks Pictures",
+        "box_office": 1801639565
+    },
+    {
+        "title": "Shadow Storm",
+        "overview": "Una historia épica sobre shadow storm que explora los límites de la realidad y la ambición humana.",
+        "year": 1999,
+        "rating": 8.4,
+        "category": "Action",
+        "director": "Bong Joon-ho",
+        "studio": "New Line Cinema",
+        "box_office": 1997447626
+    },
+    {
+        "title": "Electric Kingdom",
+        "overview": "Una historia épica sobre electric kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 1976,
+        "rating": 7.5,
+        "category": "Crime",
+        "director": "Wes Anderson",
+        "studio": "Universal Pictures",
+        "box_office": 420846787
+    },
+    {
+        "title": "Rising Dream",
+        "overview": "Una historia épica sobre rising dream que explora los límites de la realidad y la ambición humana.",
+        "year": 2003,
+        "rating": 8.5,
+        "category": "Musical",
+        "director": "Wes Anderson",
+        "studio": "Walt Disney Pictures",
+        "box_office": 338312087
+    },
+    {
+        "title": "Lost Dream",
+        "overview": "Una historia épica sobre lost dream que explora los límites de la realidad y la ambición humana.",
+        "year": 1993,
+        "rating": 7.8,
+        "category": "Sci-Fi",
+        "director": "Hayao Miyazaki",
+        "studio": "New Line Cinema",
+        "box_office": 47515314
+    },
+    {
+        "title": "Broken Kingdom",
+        "overview": "Una historia épica sobre broken kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 1974,
+        "rating": 7.7,
+        "category": "Crime",
+        "director": "Steven Spielberg",
+        "studio": "Walt Disney Pictures",
+        "box_office": 1778840390
+    },
+    {
+        "title": "Rising Prophecy",
+        "overview": "Una historia épica sobre rising prophecy que explora los límites de la realidad y la ambición humana.",
+        "year": 1970,
+        "rating": 7.5,
+        "category": "Crime",
+        "director": "Quentin Tarantino",
+        "studio": "Studio Ghibli",
+        "box_office": 1805400727
+    },
+    {
+        "title": "Crimson Empire",
+        "overview": "Una historia épica sobre crimson empire que explora los límites de la realidad y la ambición humana.",
+        "year": 1968,
+        "rating": 6.4,
+        "category": "Animation",
+        "director": "Bong Joon-ho",
+        "studio": "20th Century Fox",
+        "box_office": 1586525282
+    },
+    {
+        "title": "Dark Empire",
+        "overview": "Una historia épica sobre dark empire que explora los límites de la realidad y la ambición humana.",
+        "year": 2009,
+        "rating": 8.3,
+        "category": "Western",
+        "director": "Hayao Miyazaki",
+        "studio": "Universal Pictures",
+        "box_office": 539388409
+    },
+    {
+        "title": "Eternal City",
+        "overview": "Una historia épica sobre eternal city que explora los límites de la realidad y la ambición humana.",
+        "year": 1998,
+        "rating": 6.5,
+        "category": "Biography",
+        "director": "Greta Gerwig",
+        "studio": "A24",
+        "box_office": 761515817
+    },
+    {
+        "title": "Ancient Planet",
+        "overview": "Una historia épica sobre ancient planet que explora los límites de la realidad y la ambición humana.",
+        "year": 1969,
+        "rating": 8.5,
+        "category": "Adventure",
+        "director": "Ridley Scott",
+        "studio": "Walt Disney Pictures",
+        "box_office": 810105572
+    },
+    {
+        "title": "Blue Labyrinth",
+        "overview": "Una historia épica sobre blue labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 1995,
+        "rating": 7.8,
+        "category": "Fantasy",
+        "director": "Quentin Tarantino",
+        "studio": "Pixar",
+        "box_office": 909892913
+    },
+    {
+        "title": "The Last Path",
+        "overview": "Una historia épica sobre the last path que explora los límites de la realidad y la ambición humana.",
+        "year": 2021,
+        "rating": 9.0,
+        "category": "Action",
+        "director": "Steven Spielberg",
+        "studio": "Lionsgate",
+        "box_office": 1580877409
+    },
+    {
+        "title": "Silent Storm",
+        "overview": "Una historia épica sobre silent storm que explora los límites de la realidad y la ambición humana.",
+        "year": 1982,
+        "rating": 9.0,
+        "category": "Drama",
+        "director": "Peter Jackson",
+        "studio": "A24",
+        "box_office": 1273168632
+    },
+    {
+        "title": "Final Ghost",
+        "overview": "Una historia épica sobre final ghost que explora los límites de la realidad y la ambición humana.",
+        "year": 2005,
+        "rating": 8.7,
+        "category": "Adventure",
+        "director": "Stanley Kubrick",
+        "studio": "New Line Cinema",
+        "box_office": 1964402062
+    },
+    {
+        "title": "Crimson Dream",
+        "overview": "Una historia épica sobre crimson dream que explora los límites de la realidad y la ambición humana.",
+        "year": 2003,
+        "rating": 8.9,
+        "category": "War",
+        "director": "Denis Villeneuve",
+        "studio": "Miramax",
+        "box_office": 595976834
+    },
+    {
+        "title": "Rising Storm",
+        "overview": "Una historia épica sobre rising storm que explora los límites de la realidad y la ambición humana.",
+        "year": 1974,
+        "rating": 6.2,
+        "category": "Sci-Fi",
+        "director": "Peter Jackson",
+        "studio": "Marvel Studios",
+        "box_office": 45904523
+    },
+    {
+        "title": "Eternal Star",
+        "overview": "Una historia épica sobre eternal star que explora los límites de la realidad y la ambición humana.",
+        "year": 2021,
+        "rating": 8.5,
+        "category": "Drama",
+        "director": "Stanley Kubrick",
+        "studio": "Marvel Studios",
+        "box_office": 1589717145
+    },
+    {
+        "title": "Crimson Labyrinth",
+        "overview": "Una historia épica sobre crimson labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 1993,
+        "rating": 8.9,
+        "category": "Adventure",
+        "director": "Stanley Kubrick",
+        "studio": "20th Century Fox",
+        "box_office": 1289498001
+    },
+    {
+        "title": "Shadow Warrior",
+        "overview": "Una historia épica sobre shadow warrior que explora los límites de la realidad y la ambición humana.",
+        "year": 2008,
+        "rating": 8.0,
+        "category": "Animation",
+        "director": "Hayao Miyazaki",
+        "studio": "Miramax",
+        "box_office": 1450144395
+    },
+    {
+        "title": "Shadow Path",
+        "overview": "Una historia épica sobre shadow path que explora los límites de la realidad y la ambición humana.",
+        "year": 1972,
+        "rating": 8.2,
+        "category": "Horror",
+        "director": "Bong Joon-ho",
+        "studio": "Miramax",
+        "box_office": 101463126
+    },
+    {
+        "title": "Broken Empire",
+        "overview": "Una historia épica sobre broken empire que explora los límites de la realidad y la ambición humana.",
+        "year": 1982,
+        "rating": 9.2,
+        "category": "Mystery",
+        "director": "Martin Scorsese",
+        "studio": "Studio Ghibli",
+        "box_office": 1366047549
+    },
+    {
+        "title": "Fallen Heart",
+        "overview": "Una historia épica sobre fallen heart que explora los límites de la realidad y la ambición humana.",
+        "year": 1973,
+        "rating": 7.8,
+        "category": "Musical",
+        "director": "Guillermo del Toro",
+        "studio": "Universal Pictures",
+        "box_office": 1672539884
+    },
+    {
+        "title": "Broken Legacy",
+        "overview": "Una historia épica sobre broken legacy que explora los límites de la realidad y la ambición humana.",
+        "year": 2007,
+        "rating": 9.0,
+        "category": "Comedy",
+        "director": "Steven Spielberg",
+        "studio": "New Line Cinema",
+        "box_office": 689388716
+    },
+    {
+        "title": "Deep Dream",
+        "overview": "Una historia épica sobre deep dream que explora los límites de la realidad y la ambición humana.",
+        "year": 1962,
+        "rating": 7.0,
+        "category": "Comedy",
+        "director": "James Cameron",
+        "studio": "Paramount Pictures",
+        "box_office": 75314988
+    },
+    {
+        "title": "Neon Echo",
+        "overview": "Una historia épica sobre neon echo que explora los límites de la realidad y la ambición humana.",
+        "year": 1978,
+        "rating": 6.7,
+        "category": "Action",
+        "director": "Martin Scorsese",
+        "studio": "20th Century Fox",
+        "box_office": 725957992
+    },
+    {
+        "title": "Golden Kingdom",
+        "overview": "Una historia épica sobre golden kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 1992,
+        "rating": 8.6,
+        "category": "Crime",
+        "director": "James Cameron",
+        "studio": "A24",
+        "box_office": 1643685228
+    },
+    {
+        "title": "Golden Labyrinth",
+        "overview": "Una historia épica sobre golden labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 1994,
+        "rating": 7.6,
+        "category": "Crime",
+        "director": "Guillermo del Toro",
+        "studio": "Pixar",
+        "box_office": 896816275
+    },
+    {
+        "title": "The Last Dream",
+        "overview": "Una historia épica sobre the last dream que explora los límites de la realidad y la ambición humana.",
+        "year": 1971,
+        "rating": 8.3,
+        "category": "Adventure",
+        "director": "Quentin Tarantino",
+        "studio": "Miramax",
+        "box_office": 1406764946
+    },
+    {
+        "title": "Broken Warrior",
+        "overview": "Una historia épica sobre broken warrior que explora los límites de la realidad y la ambición humana.",
+        "year": 1960,
+        "rating": 6.1,
+        "category": "War",
+        "director": "Wes Anderson",
+        "studio": "Lionsgate",
+        "box_office": 1511647985
+    },
+    {
+        "title": "Golden Light",
+        "overview": "Una historia épica sobre golden light que explora los límites de la realidad y la ambición humana.",
+        "year": 2000,
+        "rating": 8.7,
+        "category": "Horror",
+        "director": "Ridley Scott",
+        "studio": "Universal Pictures",
+        "box_office": 788757503
+    },
+    {
+        "title": "Neon City",
+        "overview": "Una historia épica sobre neon city que explora los límites de la realidad y la ambición humana.",
+        "year": 1991,
+        "rating": 6.9,
+        "category": "Adventure",
+        "director": "Greta Gerwig",
+        "studio": "Pixar",
+        "box_office": 1941389736
+    },
+    {
+        "title": "Shadow Horizon",
+        "overview": "Una historia épica sobre shadow horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 2008,
+        "rating": 6.6,
+        "category": "Thriller",
+        "director": "Greta Gerwig",
+        "studio": "Lionsgate",
+        "box_office": 1295008468
+    },
+    {
+        "title": "Infinite Star",
+        "overview": "Una historia épica sobre infinite star que explora los límites de la realidad y la ambición humana.",
+        "year": 1998,
+        "rating": 7.3,
+        "category": "War",
+        "director": "Martin Scorsese",
+        "studio": "20th Century Fox",
+        "box_office": 546955434
+    },
+    {
+        "title": "Lost Echo",
+        "overview": "Una historia épica sobre lost echo que explora los límites de la realidad y la ambición humana.",
+        "year": 1983,
+        "rating": 9.3,
+        "category": "Crime",
+        "director": "Ridley Scott",
+        "studio": "Warner Bros.",
+        "box_office": 661697450
+    },
+    {
+        "title": "Electric Echo",
+        "overview": "Una historia épica sobre electric echo que explora los límites de la realidad y la ambición humana.",
+        "year": 1970,
+        "rating": 9.3,
+        "category": "Sci-Fi",
+        "director": "Guillermo del Toro",
+        "studio": "Studio Ghibli",
+        "box_office": 690562783
+    },
+    {
+        "title": "Blue Legacy",
+        "overview": "Una historia épica sobre blue legacy que explora los límites de la realidad y la ambición humana.",
+        "year": 2012,
+        "rating": 9.4,
+        "category": "Crime",
+        "director": "Greta Gerwig",
+        "studio": "A24",
+        "box_office": 405396449
+    },
+    {
+        "title": "Silent Dream",
+        "overview": "Una historia épica sobre silent dream que explora los límites de la realidad y la ambición humana.",
+        "year": 2008,
+        "rating": 6.3,
+        "category": "War",
+        "director": "Christopher Nolan",
+        "studio": "Sony Pictures",
+        "box_office": 300744611
+    },
+    {
+        "title": "Broken Star",
+        "overview": "Una historia épica sobre broken star que explora los límites de la realidad y la ambición humana.",
+        "year": 2026,
+        "rating": 9.2,
+        "category": "Crime",
+        "director": "David Fincher",
+        "studio": "Paramount Pictures",
+        "box_office": 1595680402
+    },
+    {
+        "title": "The Last Ocean",
+        "overview": "Una historia épica sobre the last ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 2019,
+        "rating": 6.1,
+        "category": "Sci-Fi",
+        "director": "Hayao Miyazaki",
+        "studio": "Lionsgate",
+        "box_office": 1459034720
+    },
+    {
+        "title": "Golden Planet",
+        "overview": "Una historia épica sobre golden planet que explora los límites de la realidad y la ambición humana.",
+        "year": 2005,
+        "rating": 8.6,
+        "category": "Mystery",
+        "director": "Wes Anderson",
+        "studio": "Sony Pictures",
+        "box_office": 998914997
+    },
+    {
+        "title": "Golden Dream",
+        "overview": "Una historia épica sobre golden dream que explora los límites de la realidad y la ambición humana.",
+        "year": 1985,
+        "rating": 7.7,
+        "category": "Thriller",
+        "director": "Christopher Nolan",
+        "studio": "Sony Pictures",
+        "box_office": 655554153
+    },
+    {
+        "title": "Neon Planet",
+        "overview": "Una historia épica sobre neon planet que explora los límites de la realidad y la ambición humana.",
+        "year": 1987,
+        "rating": 6.1,
+        "category": "Mystery",
+        "director": "James Cameron",
+        "studio": "DreamWorks Pictures",
+        "box_office": 1811809120
+    },
+    {
+        "title": "Hidden Silence",
+        "overview": "Una historia épica sobre hidden silence que explora los límites de la realidad y la ambición humana.",
+        "year": 2002,
+        "rating": 7.3,
+        "category": "Biography",
+        "director": "Peter Jackson",
+        "studio": "Marvel Studios",
+        "box_office": 622777039
+    },
+    {
+        "title": "Falling Legacy",
+        "overview": "Una historia épica sobre falling legacy que explora los límites de la realidad y la ambición humana.",
+        "year": 2024,
+        "rating": 9.1,
+        "category": "War",
+        "director": "Guillermo del Toro",
+        "studio": "20th Century Fox",
+        "box_office": 874823769
+    },
+    {
+        "title": "Crimson Kingdom",
+        "overview": "Una historia épica sobre crimson kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 1996,
+        "rating": 8.0,
+        "category": "War",
+        "director": "Stanley Kubrick",
+        "studio": "A24",
+        "box_office": 328734135
+    },
+    {
+        "title": "Neon Star",
+        "overview": "Una historia épica sobre neon star que explora los límites de la realidad y la ambición humana.",
+        "year": 1968,
+        "rating": 9.1,
+        "category": "Biography",
+        "director": "Martin Scorsese",
+        "studio": "Lionsgate",
+        "box_office": 37629082
+    },
+    {
+        "title": "Dark Heart",
+        "overview": "Una historia épica sobre dark heart que explora los límites de la realidad y la ambición humana.",
+        "year": 1970,
+        "rating": 6.9,
+        "category": "Biography",
+        "director": "Greta Gerwig",
+        "studio": "20th Century Fox",
+        "box_office": 546894198
+    },
+    {
+        "title": "Ancient Heart",
+        "overview": "Una historia épica sobre ancient heart que explora los límites de la realidad y la ambición humana.",
+        "year": 1998,
+        "rating": 8.7,
+        "category": "Adventure",
+        "director": "Francis Ford Coppola",
+        "studio": "Warner Bros.",
+        "box_office": 1444201212
+    },
+    {
+        "title": "Eternal Kingdom",
+        "overview": "Una historia épica sobre eternal kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 2002,
+        "rating": 8.2,
+        "category": "Comedy",
+        "director": "David Fincher",
+        "studio": "Sony Pictures",
+        "box_office": 689051100
+    },
+    {
+        "title": "Fallen Ghost",
+        "overview": "Una historia épica sobre fallen ghost que explora los límites de la realidad y la ambición humana.",
+        "year": 1978,
+        "rating": 9.0,
+        "category": "Adventure",
+        "director": "Guillermo del Toro",
+        "studio": "Miramax",
+        "box_office": 1182596796
+    },
+    {
+        "title": "Dark Ghost",
+        "overview": "Una historia épica sobre dark ghost que explora los límites de la realidad y la ambición humana.",
+        "year": 1971,
+        "rating": 6.3,
+        "category": "Drama",
+        "director": "Martin Scorsese",
+        "studio": "Studio Ghibli",
+        "box_office": 581409019
+    },
+    {
+        "title": "Fallen Prophecy",
+        "overview": "Una historia épica sobre fallen prophecy que explora los límites de la realidad y la ambición humana.",
+        "year": 2005,
+        "rating": 6.9,
+        "category": "Drama",
+        "director": "Ridley Scott",
+        "studio": "New Line Cinema",
+        "box_office": 378206014
+    },
+    {
+        "title": "Lost Heart",
+        "overview": "Una historia épica sobre lost heart que explora los límites de la realidad y la ambición humana.",
+        "year": 1970,
+        "rating": 7.3,
+        "category": "Horror",
+        "director": "Guillermo del Toro",
+        "studio": "DreamWorks Pictures",
+        "box_office": 929748535
+    },
+    {
+        "title": "Crimson Heart",
+        "overview": "Una historia épica sobre crimson heart que explora los límites de la realidad y la ambición humana.",
+        "year": 1997,
+        "rating": 9.1,
+        "category": "Comedy",
+        "director": "Francis Ford Coppola",
+        "studio": "Paramount Pictures",
+        "box_office": 1684841032
+    },
+    {
+        "title": "Fallen Labyrinth",
+        "overview": "Una historia épica sobre fallen labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 1964,
+        "rating": 6.4,
+        "category": "Thriller",
+        "director": "Steven Spielberg",
+        "studio": "Studio Ghibli",
+        "box_office": 1967897476
+    },
+    {
+        "title": "Blue Dream",
+        "overview": "Una historia épica sobre blue dream que explora los límites de la realidad y la ambición humana.",
+        "year": 1972,
+        "rating": 8.8,
+        "category": "Animation",
+        "director": "Guillermo del Toro",
+        "studio": "Lionsgate",
+        "box_office": 135301956
+    },
+    {
+        "title": "Eternal Horizon",
+        "overview": "Una historia épica sobre eternal horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 2004,
+        "rating": 6.8,
+        "category": "Musical",
+        "director": "James Cameron",
+        "studio": "Studio Ghibli",
+        "box_office": 1823424755
+    },
+    {
+        "title": "Rising Horizon",
+        "overview": "Una historia épica sobre rising horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 1974,
+        "rating": 9.5,
+        "category": "Adventure",
+        "director": "Greta Gerwig",
+        "studio": "New Line Cinema",
+        "box_office": 829014266
+    },
+    {
+        "title": "Fallen City",
+        "overview": "Una historia épica sobre fallen city que explora los límites de la realidad y la ambición humana.",
+        "year": 2005,
+        "rating": 7.8,
+        "category": "Horror",
+        "director": "Francis Ford Coppola",
+        "studio": "A24",
+        "box_office": 1078589690
+    },
+    {
+        "title": "Dark Warrior",
+        "overview": "Una historia épica sobre dark warrior que explora los límites de la realidad y la ambición humana.",
+        "year": 2021,
+        "rating": 7.3,
+        "category": "Musical",
+        "director": "Quentin Tarantino",
+        "studio": "DreamWorks Pictures",
+        "box_office": 82212036
+    },
+    {
+        "title": "Deep Voyage",
+        "overview": "Una historia épica sobre deep voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 1979,
+        "rating": 7.9,
+        "category": "Animation",
+        "director": "Steven Spielberg",
+        "studio": "A24",
+        "box_office": 835721412
+    },
+    {
+        "title": "Hidden Horizon",
+        "overview": "Una historia épica sobre hidden horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 1969,
+        "rating": 9.1,
+        "category": "Western",
+        "director": "Guillermo del Toro",
+        "studio": "Walt Disney Pictures",
+        "box_office": 43065719
+    },
+    {
+        "title": "Silent Legacy",
+        "overview": "Una historia épica sobre silent legacy que explora los límites de la realidad y la ambición humana.",
+        "year": 2024,
+        "rating": 8.4,
+        "category": "Animation",
+        "director": "Francis Ford Coppola",
+        "studio": "Marvel Studios",
+        "box_office": 1392636222
+    },
+    {
+        "title": "Deep Echo",
+        "overview": "Una historia épica sobre deep echo que explora los límites de la realidad y la ambición humana.",
+        "year": 1982,
+        "rating": 6.9,
+        "category": "Musical",
+        "director": "James Cameron",
+        "studio": "Universal Pictures",
+        "box_office": 830175264
+    },
+    {
+        "title": "Crimson Ocean",
+        "overview": "Una historia épica sobre crimson ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 1991,
+        "rating": 9.0,
+        "category": "Adventure",
+        "director": "Bong Joon-ho",
+        "studio": "Lionsgate",
+        "box_office": 1410139528
+    },
+    {
+        "title": "Shadow Star",
+        "overview": "Una historia épica sobre shadow star que explora los límites de la realidad y la ambición humana.",
+        "year": 2024,
+        "rating": 6.7,
+        "category": "Crime",
+        "director": "Ridley Scott",
+        "studio": "Paramount Pictures",
+        "box_office": 434417070
+    },
+    {
+        "title": "Neon Empire",
+        "overview": "Una historia épica sobre neon empire que explora los límites de la realidad y la ambición humana.",
+        "year": 2004,
+        "rating": 6.5,
+        "category": "Adventure",
+        "director": "James Cameron",
+        "studio": "Walt Disney Pictures",
+        "box_office": 77483428
+    },
+    {
+        "title": "Ancient Warrior",
+        "overview": "Una historia épica sobre ancient warrior que explora los límites de la realidad y la ambición humana.",
+        "year": 2006,
+        "rating": 8.6,
+        "category": "Drama",
+        "director": "Guillermo del Toro",
+        "studio": "Universal Pictures",
+        "box_office": 1878899443
+    },
+    {
+        "title": "Dark Voyage",
+        "overview": "Una historia épica sobre dark voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 1980,
+        "rating": 6.8,
+        "category": "Biography",
+        "director": "Stanley Kubrick",
+        "studio": "Studio Ghibli",
+        "box_office": 376960600
+    },
+    {
+        "title": "Infinite Warrior",
+        "overview": "Una historia épica sobre infinite warrior que explora los límites de la realidad y la ambición humana.",
+        "year": 2025,
+        "rating": 9.4,
+        "category": "Thriller",
+        "director": "Bong Joon-ho",
+        "studio": "Paramount Pictures",
+        "box_office": 575821088
+    },
+    {
+        "title": "Falling Horizon",
+        "overview": "Una historia épica sobre falling horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 2019,
+        "rating": 8.8,
+        "category": "Western",
+        "director": "Steven Spielberg",
+        "studio": "DreamWorks Pictures",
+        "box_office": 1770171376
+    },
+    {
+        "title": "The Last Echo",
+        "overview": "Una historia épica sobre the last echo que explora los límites de la realidad y la ambición humana.",
+        "year": 1967,
+        "rating": 7.7,
+        "category": "Drama",
+        "director": "Francis Ford Coppola",
+        "studio": "DreamWorks Pictures",
+        "box_office": 1175071269
+    },
+    {
+        "title": "Dark Labyrinth",
+        "overview": "Una historia épica sobre dark labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 1965,
+        "rating": 7.1,
+        "category": "Comedy",
+        "director": "Steven Spielberg",
+        "studio": "Paramount Pictures",
+        "box_office": 1000278172
+    },
+    {
+        "title": "Ancient Light",
+        "overview": "Una historia épica sobre ancient light que explora los límites de la realidad y la ambición humana.",
+        "year": 2022,
+        "rating": 8.1,
+        "category": "Thriller",
+        "director": "Christopher Nolan",
+        "studio": "Universal Pictures",
+        "box_office": 1635129178
+    },
+    {
+        "title": "The Last Planet",
+        "overview": "Una historia épica sobre the last planet que explora los límites de la realidad y la ambición humana.",
+        "year": 1968,
+        "rating": 7.1,
+        "category": "Action",
+        "director": "Christopher Nolan",
+        "studio": "DreamWorks Pictures",
+        "box_office": 817268428
+    },
+    {
+        "title": "Rising Warrior",
+        "overview": "Una historia épica sobre rising warrior que explora los límites de la realidad y la ambición humana.",
+        "year": 1979,
+        "rating": 9.4,
+        "category": "Horror",
+        "director": "Bong Joon-ho",
+        "studio": "Sony Pictures",
+        "box_office": 136825846
+    },
+    {
+        "title": "Hidden Dream",
+        "overview": "Una historia épica sobre hidden dream que explora los límites de la realidad y la ambición humana.",
+        "year": 2019,
+        "rating": 9.3,
+        "category": "War",
+        "director": "David Fincher",
+        "studio": "A24",
+        "box_office": 1417323144
+    },
+    {
+        "title": "Blue Light",
+        "overview": "Una historia épica sobre blue light que explora los límites de la realidad y la ambición humana.",
+        "year": 1963,
+        "rating": 8.0,
+        "category": "Adventure",
+        "director": "Martin Scorsese",
+        "studio": "New Line Cinema",
+        "box_office": 38358470
+    },
+    {
+        "title": "Crimson Star",
+        "overview": "Una historia épica sobre crimson star que explora los límites de la realidad y la ambición humana.",
+        "year": 1994,
+        "rating": 7.8,
+        "category": "Musical",
+        "director": "Martin Scorsese",
+        "studio": "Warner Bros.",
+        "box_office": 1871761027
+    },
+    {
+        "title": "Deep Labyrinth",
+        "overview": "Una historia épica sobre deep labyrinth que explora los límites de la realidad y la ambición humana.",
+        "year": 1984,
+        "rating": 9.2,
+        "category": "Biography",
+        "director": "Guillermo del Toro",
+        "studio": "New Line Cinema",
+        "box_office": 1052537335
+    },
+    {
+        "title": "Falling Kingdom",
+        "overview": "Una historia épica sobre falling kingdom que explora los límites de la realidad y la ambición humana.",
+        "year": 2017,
+        "rating": 8.9,
+        "category": "Animation",
+        "director": "Peter Jackson",
+        "studio": "Walt Disney Pictures",
+        "box_office": 550167971
+    },
+    {
+        "title": "Silent Voyage",
+        "overview": "Una historia épica sobre silent voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 1984,
+        "rating": 8.8,
+        "category": "Crime",
+        "director": "Stanley Kubrick",
+        "studio": "20th Century Fox",
+        "box_office": 359825564
+    },
+    {
+        "title": "Fallen Light",
+        "overview": "Una historia épica sobre fallen light que explora los límites de la realidad y la ambición humana.",
+        "year": 1995,
+        "rating": 8.9,
+        "category": "Animation",
+        "director": "Denis Villeneuve",
+        "studio": "Marvel Studios",
+        "box_office": 757896435
+    },
+    {
+        "title": "Rising Star",
+        "overview": "Una historia épica sobre rising star que explora los límites de la realidad y la ambición humana.",
+        "year": 1982,
+        "rating": 7.1,
+        "category": "Horror",
+        "director": "James Cameron",
+        "studio": "Walt Disney Pictures",
+        "box_office": 1755714609
+    },
+    {
+        "title": "Infinite City",
+        "overview": "Una historia épica sobre infinite city que explora los límites de la realidad y la ambición humana.",
+        "year": 2007,
+        "rating": 6.3,
+        "category": "Adventure",
+        "director": "Peter Jackson",
+        "studio": "Sony Pictures",
+        "box_office": 1856712629
+    },
+    {
+        "title": "The Last Prophecy",
+        "overview": "Una historia épica sobre the last prophecy que explora los límites de la realidad y la ambición humana.",
+        "year": 1985,
+        "rating": 7.1,
+        "category": "Action",
+        "director": "Hayao Miyazaki",
+        "studio": "Studio Ghibli",
+        "box_office": 1830399516
+    },
+    {
+        "title": "Ancient Ocean",
+        "overview": "Una historia épica sobre ancient ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 2007,
+        "rating": 9.2,
+        "category": "Biography",
+        "director": "Christopher Nolan",
+        "studio": "A24",
+        "box_office": 1878290512
+    },
+    {
+        "title": "Deep Ghost",
+        "overview": "Una historia épica sobre deep ghost que explora los límites de la realidad y la ambición humana.",
+        "year": 2025,
+        "rating": 7.8,
+        "category": "Biography",
+        "director": "Ridley Scott",
+        "studio": "Studio Ghibli",
+        "box_office": 1340356350
+    },
+    {
+        "title": "Final Heart",
+        "overview": "Una historia épica sobre final heart que explora los límites de la realidad y la ambición humana.",
+        "year": 1973,
+        "rating": 9.4,
+        "category": "Animation",
+        "director": "Steven Spielberg",
+        "studio": "20th Century Fox",
+        "box_office": 1314918364
+    },
+    {
+        "title": "Blue Ghost",
+        "overview": "Una historia épica sobre blue ghost que explora los límites de la realidad y la ambición humana.",
+        "year": 1994,
+        "rating": 7.9,
+        "category": "Thriller",
+        "director": "Christopher Nolan",
+        "studio": "Paramount Pictures",
+        "box_office": 242989076
+    },
+    {
+        "title": "Crimson Warrior",
+        "overview": "Una historia épica sobre crimson warrior que explora los límites de la realidad y la ambición humana.",
+        "year": 1987,
+        "rating": 9.3,
+        "category": "Horror",
+        "director": "Ridley Scott",
+        "studio": "Warner Bros.",
+        "box_office": 1318417445
+    },
+    {
+        "title": "Lost Horizon",
+        "overview": "Una historia épica sobre lost horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 2006,
+        "rating": 7.3,
+        "category": "Action",
+        "director": "Wes Anderson",
+        "studio": "Miramax",
+        "box_office": 594864956
+    },
+    {
+        "title": "Electric Horizon",
+        "overview": "Una historia épica sobre electric horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 1972,
+        "rating": 7.8,
+        "category": "Thriller",
+        "director": "Christopher Nolan",
+        "studio": "Universal Pictures",
+        "box_office": 1358402664
+    },
+    {
+        "title": "Final Voyage",
+        "overview": "Una historia épica sobre final voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 1969,
+        "rating": 6.9,
+        "category": "Drama",
+        "director": "Quentin Tarantino",
+        "studio": "Sony Pictures",
+        "box_office": 191583878
+    },
+    {
+        "title": "Broken Path",
+        "overview": "Una historia épica sobre broken path que explora los límites de la realidad y la ambición humana.",
+        "year": 2014,
+        "rating": 7.5,
+        "category": "War",
+        "director": "Martin Scorsese",
+        "studio": "Paramount Pictures",
+        "box_office": 756409695
+    },
+    {
+        "title": "Ancient Path",
+        "overview": "Una historia épica sobre ancient path que explora los límites de la realidad y la ambición humana.",
+        "year": 1966,
+        "rating": 9.2,
+        "category": "Action",
+        "director": "Hayao Miyazaki",
+        "studio": "Studio Ghibli",
+        "box_office": 1659301086
+    },
+    {
+        "title": "Hidden Planet",
+        "overview": "Una historia épica sobre hidden planet que explora los límites de la realidad y la ambición humana.",
+        "year": 1995,
+        "rating": 7.5,
+        "category": "Drama",
+        "director": "Hayao Miyazaki",
+        "studio": "Studio Ghibli",
+        "box_office": 1460233280
+    },
+    {
+        "title": "Eternal Heart",
+        "overview": "Una historia épica sobre eternal heart que explora los límites de la realidad y la ambición humana.",
+        "year": 2022,
+        "rating": 6.9,
+        "category": "Biography",
+        "director": "Quentin Tarantino",
+        "studio": "Paramount Pictures",
+        "box_office": 1470564878
+    },
+    {
+        "title": "Final Echo",
+        "overview": "Una historia épica sobre final echo que explora los límites de la realidad y la ambición humana.",
+        "year": 1983,
+        "rating": 6.1,
+        "category": "Sci-Fi",
+        "director": "Hayao Miyazaki",
+        "studio": "A24",
+        "box_office": 255679594
+    },
+    {
+        "title": "Silent Empire",
+        "overview": "Una historia épica sobre silent empire que explora los límites de la realidad y la ambición humana.",
+        "year": 2018,
+        "rating": 9.5,
+        "category": "Crime",
+        "director": "Peter Jackson",
+        "studio": "A24",
+        "box_office": 1569575135
+    },
+    {
+        "title": "Final Horizon",
+        "overview": "Una historia épica sobre final horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 1962,
+        "rating": 6.8,
+        "category": "Mystery",
+        "director": "Christopher Nolan",
+        "studio": "Marvel Studios",
+        "box_office": 1474591211
+    },
+    {
+        "title": "Falling Voyage",
+        "overview": "Una historia épica sobre falling voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 1977,
+        "rating": 8.5,
+        "category": "War",
+        "director": "Peter Jackson",
+        "studio": "Lionsgate",
+        "box_office": 625763719
+    },
+    {
+        "title": "Broken Voyage",
+        "overview": "Una historia épica sobre broken voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 1988,
+        "rating": 7.1,
+        "category": "War",
+        "director": "Stanley Kubrick",
+        "studio": "Studio Ghibli",
+        "box_office": 34999996
+    },
+    {
+        "title": "Hidden Voyage",
+        "overview": "Una historia épica sobre hidden voyage que explora los límites de la realidad y la ambición humana.",
+        "year": 1980,
+        "rating": 9.5,
+        "category": "Animation",
+        "director": "Ridley Scott",
+        "studio": "Universal Pictures",
+        "box_office": 769529591
+    },
+    {
+        "title": "Ancient Empire",
+        "overview": "Una historia épica sobre ancient empire que explora los límites de la realidad y la ambición humana.",
+        "year": 2008,
+        "rating": 8.6,
+        "category": "Horror",
+        "director": "Hayao Miyazaki",
+        "studio": "Lionsgate",
+        "box_office": 572194776
+    },
+    {
+        "title": "Shadow City",
+        "overview": "Una historia épica sobre shadow city que explora los límites de la realidad y la ambición humana.",
+        "year": 1963,
+        "rating": 7.2,
+        "category": "War",
+        "director": "Quentin Tarantino",
+        "studio": "New Line Cinema",
+        "box_office": 1062853413
+    },
+    {
+        "title": "Blue Horizon",
+        "overview": "Una historia épica sobre blue horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 2022,
+        "rating": 8.8,
+        "category": "Musical",
+        "director": "James Cameron",
+        "studio": "Universal Pictures",
+        "box_office": 1244265164
+    },
+    {
+        "title": "Dark Prophecy",
+        "overview": "Una historia épica sobre dark prophecy que explora los límites de la realidad y la ambición humana.",
+        "year": 1989,
+        "rating": 8.1,
+        "category": "Biography",
+        "director": "Steven Spielberg",
+        "studio": "Universal Pictures",
+        "box_office": 1665333860
+    },
+    {
+        "title": "Ancient Ghost",
+        "overview": "Una historia épica sobre ancient ghost que explora los límites de la realidad y la ambición humana.",
+        "year": 2010,
+        "rating": 6.4,
+        "category": "War",
+        "director": "Quentin Tarantino",
+        "studio": "Sony Pictures",
+        "box_office": 921740121
+    },
+    {
+        "title": "Hidden Star",
+        "overview": "Una historia épica sobre hidden star que explora los límites de la realidad y la ambición humana.",
+        "year": 2001,
+        "rating": 7.7,
+        "category": "Animation",
+        "director": "Ridley Scott",
+        "studio": "DreamWorks Pictures",
+        "box_office": 1851959266
+    },
+    {
+        "title": "Silent Echo",
+        "overview": "Una historia épica sobre silent echo que explora los límites de la realidad y la ambición humana.",
+        "year": 2023,
+        "rating": 9.0,
+        "category": "Animation",
+        "director": "Quentin Tarantino",
+        "studio": "Marvel Studios",
+        "box_office": 249685665
+    },
+    {
+        "title": "Lost Ocean",
+        "overview": "Una historia épica sobre lost ocean que explora los límites de la realidad y la ambición humana.",
+        "year": 2022,
+        "rating": 6.9,
+        "category": "Comedy",
+        "director": "Wes Anderson",
+        "studio": "Marvel Studios",
+        "box_office": 1704796316
+    },
+    {
+        "title": "Crimson Echo",
+        "overview": "Una historia épica sobre crimson echo que explora los límites de la realidad y la ambición humana.",
+        "year": 1986,
+        "rating": 8.5,
+        "category": "Thriller",
+        "director": "Bong Joon-ho",
+        "studio": "A24",
+        "box_office": 1646484528
+    },
+    {
+        "title": "Dark Light",
+        "overview": "Una historia épica sobre dark light que explora los límites de la realidad y la ambición humana.",
+        "year": 1980,
+        "rating": 9.3,
+        "category": "Sci-Fi",
+        "director": "Christopher Nolan",
+        "studio": "20th Century Fox",
+        "box_office": 1979613401
+    },
+    {
+        "title": "Broken Horizon",
+        "overview": "Una historia épica sobre broken horizon que explora los límites de la realidad y la ambición humana.",
+        "year": 2001,
+        "rating": 7.3,
+        "category": "War",
+        "director": "Martin Scorsese",
+        "studio": "Miramax",
+        "box_office": 1948191264
+    },
+    {
+        "title": "Hidden City",
+        "overview": "Una historia épica sobre hidden city que explora los límites de la realidad y la ambición humana.",
+        "year": 2003,
+        "rating": 8.9,
+        "category": "Animation",
+        "director": "Hayao Miyazaki",
+        "studio": "Pixar",
+        "box_office": 366191427
+    },
+    {
+        "title": "Deep Planet",
+        "overview": "Una historia épica sobre deep planet que explora los límites de la realidad y la ambición humana.",
+        "year": 1993,
+        "rating": 7.0,
+        "category": "Musical",
+        "director": "James Cameron",
+        "studio": "A24",
+        "box_office": 92120350
+    },
+    {
+        "title": "Electric Storm",
+        "overview": "Una historia épica sobre electric storm que explora los límites de la realidad y la ambición humana.",
+        "year": 1971,
+        "rating": 6.5,
+        "category": "Thriller",
+        "director": "Stanley Kubrick",
+        "studio": "Studio Ghibli",
+        "box_office": 1649142879
+    },
+    {
+        "title": "Falling Silence",
+        "overview": "Una historia épica sobre falling silence que explora los límites de la realidad y la ambición humana.",
+        "year": 1972,
+        "rating": 8.5,
+        "category": "Horror",
+        "director": "Bong Joon-ho",
+        "studio": "20th Century Fox",
+        "box_office": 1118694954
+    },
+  {
+    "title": "El laberinto del fauno",
+    "overview": "Una historia mágica y oscura ambientada en la posguerra española que mezcla fantasía y realidad.",
+    "year": 2006,
+    "rating": 8.2,
+    "category": "Fantasy",
+    "director": "Guillermo del Toro",
+    "studio": "Estudios Picasso",
+    "box_office": 83400000
+  },
+  {
+    "title": "Mar adentro",
+    "overview": "Un drama emotivo sobre la dignidad, la libertad y el derecho a decidir sobre la propia vida.",
+    "year": 2004,
+    "rating": 8.0,
+    "category": "Drama",
+    "director": "Alejandro Amenábar",
+    "studio": "Sogecine",
+    "box_office": 42500000
+  },
+  {
+    "title": "Volver",
+    "overview": "Una historia de secretos familiares, pérdidas y vínculos entre mujeres en un pueblo de La Mancha.",
+    "year": 2006,
+    "rating": 7.6,
+    "category": "Drama",
+    "director": "Pedro Almodóvar",
+    "studio": "El Deseo",
+    "box_office": 85000000
+  },
+  {
+    "title": "Ocho apellidos vascos",
+    "overview": "Una comedia romántica sobre un sevillano que viaja al País Vasco y termina envuelto en enredos inesperados.",
+    "year": 2014,
+    "rating": 6.8,
+    "category": "Comedy",
+    "director": "Emilio Martínez-Lázaro",
+    "studio": "Telecinco Cinema",
+    "box_office": 77000000
+  },
+  {
+    "title": "Tesis",
+    "overview": "Un thriller universitario sobre una estudiante que descubre una trama inquietante relacionada con material prohibido.",
+    "year": 1996,
+    "rating": 7.4,
+    "category": "Thriller",
+    "director": "Alejandro Amenábar",
+    "studio": "Las Producciones del Escorpión",
+    "box_office": 1800000
+  },
+    {
+        "title": "El secreto de sus ojos",
+        "overview": "Un thriller de misterio sobre un caso sin resolver que afecta profundamente a un ex investigador judicial y a una jueza.",
+        "year": 2009,
+        "rating": 8.2,
+        "category": "Mystery",
+        "director": "Juan José Campanella",
+        "studio": "Telefe",
+        "box_office": 34000000
+    },
+    {
+        "title": "Relatos salvajes",
+        "overview": "Una serie de historias cortas que exploran la violencia, la venganza y la locura en la sociedad contemporánea.",
+        "year": 2014,
+        "rating": 8.1,
+        "category": "Dark Comedy",
+        "director": "Damián Szifron",
+        "studio": "K&S Films",
+        "box_office": 25000000
+    },
+    {
+        "title": "La historia oficial",
+        "overview": "Un drama político sobre una mujer que descubre la verdad detrás de la adopción de su hija durante la dictadura argentina.",
+        "year": 1985,
+        "rating": 8.0,
+        "category": "Political Drama",
+        "director": "Luis Puenzo",
+        "studio": "Argentina Sono Film",
+        "box_office": 5000000
+    },
+    {
+        "title": "El hijo de la novia",
+        "overview": "Una comedia dramática sobre un hombre que enfrenta una crisis personal mientras su madre quiere casarse por la iglesia a pesar de su enfermedad.",
+        "year": 2001,
+        "rating": 7.8,
+        "category": "Comedy Drama",
+        "director": "Juan José Campanella",
+        "studio": "Telefe",
+        "box_office": 15000000
+    },
+    {
+        "title": "Nueve reinas",
+        "overview": "Un thriller de estafadores sobre dos timadores que se unen para vender unas valiosas estampillas falsificadas, pero las cosas no salen como planean.",
+        "year": 2000,
+        "rating": 8.3,
+        "category": "Crime Thriller",
+        "director": "Fabián Bielinsky",
+        "studio": "K&S Films",
+        "box_office": 20000000
+    },
+    {
+        "title": "Carancho",
+        "overview": "Un thriller sobre un abogado que se especializa en casos de accidentes de tráfico y se ve envuelto en una red de corrupción y violencia.",
+        "year": 2010,
+        "rating": 7.5,
+        "category": "Thriller",
+        "director": "Pablo Trapero",
+        "studio": "Matanza Cine",
+        "box_office": 30000000
+    }         
 ]
