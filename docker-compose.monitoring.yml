@@ -1,5 +1,5 @@
 services:
-  # Base de datos para métricas (series temporales)
+  # Database for metrics (time series)
   prometheus:
     container_name: prometheus
     image: prom/prometheus:v3.3.1
@@ -17,7 +17,7 @@ services:
     networks:
       - fastapi_net
 
-  # Interfaz visual para dashboards y análisis de datos
+  # Visual interface for dashboards and data analysis
   grafana:
     container_name: grafana
     image: grafana/grafana-oss:11.6.1
@@ -38,7 +38,7 @@ services:
     networks:
       - fastapi_net
 
-  # Sistema de almacenamiento y consulta de logs (registros)
+  # Storage and query system for logs
   loki:
     container_name: loki
     image: grafana/loki:3.5.1
@@ -52,7 +52,7 @@ services:
     networks:
       - fastapi_net
 
-  # Backend para almacenamiento y búsqueda de trazas (tracing)
+  # Backend for trace storage and search (tracing)
   tempo:
     container_name: tempo
     image: grafana/tempo:2.10.4
@@ -76,7 +76,7 @@ services:
     networks:
       - fastapi_net
 
-  # Colector central: recibe, procesa y reparte logs, métricas y trazas
+  # Central collector: receives, processes and distributes logs, metrics and traces
   alloy:
     container_name: alloy
     image: grafana/alloy:v1.15.1
@@ -105,7 +105,7 @@ services:
     networks:
       - fastapi_net
 
-  # Herramienta que valida y monitorea la salud/rendimiento de Tempo
+  # Tool that validates and monitors the health/performance of Tempo
   vulture:
     container_name: vulture
     image: grafana/tempo-vulture:2.10.4

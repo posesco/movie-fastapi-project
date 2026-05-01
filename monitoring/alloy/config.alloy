@@ -3,8 +3,8 @@ livedebugging {
 }
 
 // --- LOGS (OTEL) ---
-// Configuración simplificada: todo entra por OTLP
-// Send metrics to local Loki instance via  write.
+// Simplified configuration: everything enters via OTLP
+// Send metrics to local Loki instance via write.
 loki.write "local" {
   endpoint {
     url = "http://loki:3100/loki/api/v1/push"
@@ -33,7 +33,7 @@ prometheus.remote_write "local" {
 
 // --- TRACING (OpenTelemetry) ---
 
-// Receptor OTLP (recibe datos de la app)
+// OTLP Receiver (receives data from the app)
 otelcol.receiver.otlp "otlp_receiver" {
   grpc {
     endpoint = "0.0.0.0:4317"
@@ -49,17 +49,17 @@ otelcol.receiver.otlp "otlp_receiver" {
   }
 }
 
-// Convertidor de OTLP a Loki
+// OTLP to Loki converter
 otelcol.exporter.loki "to_loki" {
   forward_to = [loki.write.local.receiver]
 }
 
-// Convertidor de OTLP a Prometheus
+// OTLP to Prometheus converter
 otelcol.exporter.prometheus "to_prometheus" {
   forward_to = [prometheus.remote_write.local.receiver]
 }
 
-// Exportador a Tempo
+// Exporter to Tempo
 otelcol.exporter.otlp "tempo" {
   client {
     endpoint = env("ALLOY_OTLP_UPSTREAM")
@@ -68,4 +68,3 @@ otelcol.exporter.otlp "tempo" {
 		}
   }
 }
-

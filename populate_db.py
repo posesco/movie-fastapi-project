@@ -4,10 +4,10 @@ import urllib.parse
 import os
 from dotenv import load_dotenv
 
-# Cargar variables de entorno desde .env
+# Load environment variables from .env
 load_dotenv()
 
-# Configuración
+# Configuration
 BASE_URL = "http://localhost:8000/api/v1"
 MOVIES_FILE = "movies.json"
 BATCH_SIZE = 10
@@ -38,29 +38,29 @@ def make_request(url, data=None, headers=None, method="POST", is_form=False):
         return {"detail": str(e)}, 500
 
 def populate():
-    print(f"Iniciando población con usuario: {USERNAME}...")
+    print(f"Starting population with user: {USERNAME}...")
     
     try:
         with open(MOVIES_FILE, "r", encoding="utf-8") as f:
             movies = json.load(f)
-        print(f"Cargadas {len(movies)} películas.")
+        print(f"Loaded {len(movies)} movies.")
     except Exception as e:
-        print(f"Error al leer {MOVIES_FILE}: {e}"); return
+        print(f"Error reading {MOVIES_FILE}: {e}"); return
 
     # Login
-    print("Obteniendo token...")
+    print("Obtaining token...")
     res, code = make_request(f"{BASE_URL}/user/login", data={"username": USERNAME, "password": PASSWORD}, is_form=True)
     
     if code != 200:
-        print(f"Error en login ({code}): {res.get('detail')}"); return
+        print(f"Login error ({code}): {res.get('detail')}"); return
     
     headers = {"Authorization": f"Bearer {res.get('access_token')}"}
     
-    # Subir en bloques
+    # Upload in batches
     total = 0
     for i in range(0, len(movies), BATCH_SIZE):
         batch = movies[i:i + BATCH_SIZE]
-        print(f"Subiendo bloque {i//BATCH_SIZE + 1}...")
+        print(f"Uploading batch {i//BATCH_SIZE + 1}...")
         res, code = make_request(f"{BASE_URL}/movies/", data=batch, headers=headers)
         if code in [200, 201]:
             total += len(batch)
@@ -68,7 +68,7 @@ def populate():
         else:
             print(f"Error ({code}): {res.get('detail')}"); break
             
-    print(f"\n¡Población finalizada! Total subido: {total} películas.")
+    print(f"\nPopulation finished! Total uploaded: {total} movies.")
 
 if __name__ == "__main__":
     populate()

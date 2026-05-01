@@ -1,13 +1,13 @@
 # Project Overview
 
-This is a **FastAPI** starter project designed for building high-performance, modern REST APIs using **Clean Architecture** and **Asynchronous** patterns.
+This project is a **Docker-First** application. The primary and mandatory runtime environment for all integrations (especially observability and database) is **Docker Compose**.
 
 **Key Technologies:**
 - **Framework:** FastAPI (0.135.3)
 - **Language:** Python 3.12 (Standardized via Dockerfile)
 - **Data Validation & ORM:** SQLModel (SQLAlchemy + Pydantic)
 - **Database:** Support for MariaDB (v11.4 LTS), PostgreSQL, and SQLite via async drivers.
-- **Authentication:** JSON Web Tokens (JWT) using PyJWT.
+- **Authentication:** **OAuth2 (Password Flow)** for the security scheme and **JWT** (PyJWT) for the token content.
 - **Containerization:** Docker and Docker Compose (Rootless setups enabled in Dockerfile).
 - **Full Observability (OTel):** Unified implementation of **Logs**, **Metrics**, and **Tracing** using **OpenTelemetry SDK**.
 - **Monitoring Stack:** Prometheus v3, Grafana 13, Loki 3.5, Tempo 2.10, and **Grafana Alloy v1.15** as the OTLP collector.
@@ -40,27 +40,37 @@ docker compose up -d --build
 
 - **Architecture:** Clean Architecture with separate layers:
   - `src/api/`: Controllers and endpoint definitions (versioned).
-  - `src/core/`: Global settings, database engine, and security.
+  - `src/core/`: Global settings, database engine, security, and **observability setup**.
   - `src/models/`: Database entities using SQLModel.
   - `src/repositories/`: Data access logic (Repository pattern).
   - `src/schemas/`: Pydantic models for request/response validation.
   - `src/services/`: Core business logic and service orchestration.
-  - `src/middlewares/`: Global exception handling and logging.
+  - `src/middlewares/`: **Idiomatic exception handlers** (replacing legacy BaseHTTPMiddleware).
 
 - **Observability:** 
+  - Centralized setup in `src/core/observability.py`.
   - All telemetry is exported via **OTLP (gRPC)** to Alloy.
   - Metrics: Custom metrics defined in `src/services/metrics.py` (OTel Meter).
   - Logs: Standard Python logging redirected to OTel LoggingHandler.
   - Traces: Automatic FastAPI instrumentation via `FastAPIInstrumentor`.
+  - **Configuration:** Set `OTEL_ENABLED=True` in your `.env` file to activate the telemetry export (default is `False` for local development).
 
-- **Quality:** `ruff` for linting and formatting. Async execution for all I/O operations.
-- **Testing:** `pytest` with `pytest-asyncio`. Coverage for both unit and integration tests.
+- **Database & Migrations:**
+  - **Alembic** is used for schema versioning (async support).
+  - Schema creation is decoupled from API startup.
+  - Migrations live in `migrations/`.
+
+- **Quality & Security:** 
+  - `ruff` for linting and formatting. 
+  - **Bandit** and **Safety** integrated into CI for security auditing.
+  - `pytest` with `pytest-asyncio` and **coverage reporting**.
+  - **Language:** All code (comments, docstrings, variable names) and technical documentation (excluding `README.md`) MUST be in **English**.
 
 ## Git & Release Management
 
-Este proyecto sigue estrictamente la estrategia de desarrollo **GitFlow** y el versionado semántico **SemVer**.
+This project strictly follows the **GitFlow** development strategy and **SemVer** semantic versioning.
 
-- **Workflow:** Consultar siempre `conductor/workflow.md` para la gestión de ramas (`feat/*`, `release/*`, `hotfix/*`).
-- **Ramas Principales:** `master` para producción y `develop` para integración.
-- **Versionado:** Las versiones se etiquetan en `master` siguiendo el formato `vMAJOR.MINOR.PATCH`.
-- **Commits:** Obligatorio el uso de *Conventional Commits* (`feat:`, `fix:`, `docs:`, etc.).
+- **Workflow:** Always refer to `conductor/workflow.md` for branch management (`feat/*`, `release/*`, `hotfix/*`).
+- **Main Branches:** `master` for production and `develop` for integration.
+- **Versioning:** Versions are tagged on `master` following the `vMAJOR.MINOR.PATCH` format.
+- **Commits:** The use of *Conventional Commits* (`feat:`, `fix:`, `docs:`, etc.) is mandatory.

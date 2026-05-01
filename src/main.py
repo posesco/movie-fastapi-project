@@ -6,19 +6,9 @@ import socket
 
 from .core.database import init_db
 from .core.config import settings, tags_metadata
-from .middlewares.error_handler import ErrorHandler
+from .core.observability import setup_observability
+from .middlewares.handlers import setup_exception_handlers
 from .services.metrics import custom_metrics
-from opentelemetry import metrics, trace, _logs
-from opentelemetry.sdk.metrics import MeterProvider
-from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
-from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
-from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
-from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 import logging
 
 from .api.v1.router import api_router
@@ -26,28 +16,6 @@ from .api.v1.router import api_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    otel_collector_endpoint = "http://alloy:4317"
-
-    # Setup Tracing
-    trace_exporter = OTLPSpanExporter(endpoint=otel_collector_endpoint, insecure=True)
-    trace.set_tracer_provider(TracerProvider())
-    trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(trace_exporter))
-
-    # Setup Metrics
-    metric_exporter = OTLPMetricExporter(endpoint=otel_collector_endpoint, insecure=True)
-    reader = PeriodicExportingMetricReader(metric_exporter)
-    metrics.set_meter_provider(MeterProvider(metric_readers=[reader]))
-
-    # Setup Logging
-    log_exporter = OTLPLogExporter(endpoint=otel_collector_endpoint, insecure=True)
-    logger_provider = LoggerProvider()
-    _logs.set_logger_provider(logger_provider)
-    logger_provider.add_log_record_processor(BatchLogRecordProcessor(log_exporter))
-
-    # Attach OTel handler to standard logging
-    handler = LoggingHandler(level=logging.INFO, logger_provider=logger_provider)
-    logging.getLogger().addHandler(handler)
-
     await init_db()
     yield
 
@@ -61,10 +29,13 @@ app = FastAPI(
     openapi_tags=tags_metadata,
 )
 
-# Instrument FastAPI
-FastAPIInstrumentor.instrument_app(app)
+# Setup Observability
+setup_observability(app)
 custom_metrics.init()
-app.add_middleware(ErrorHandler)
+
+# Setup Exception Handlers
+setup_exception_handlers(app)
+
 app.include_router(api_router, prefix="/api/v1")
 
 start_time = datetime.now(timezone.utc)

@@ -1,6 +1,6 @@
-# FastAPI Starter Project (Movie API)
+# FastAPI Review Project (Movie API)
 
-Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre esta potente herramienta para construir APIs modernas y de alto rendimiento. El proyecto utiliza una arquitectura **Clean Architecture** y está completamente **asincronizado**.
+Proyecto con **FastAPI**, en el que exploro y aprendo sobre esta potente herramienta para construir APIs modernas y de alto rendimiento. El proyecto utiliza una arquitectura **Clean Architecture** y está completamente **asincronizado**.
 
 ## Características
 
@@ -9,16 +9,17 @@ Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre e
 - **Clean Architecture**: Separación de responsabilidades en capas (API, Services, Repositories, Core, Models, Schemas).
 - **Asincronía Completa**: Operaciones de base de datos y endpoints asíncronos para mayor rendimiento.
 - **SQLModel**: Combinación de **SQLAlchemy** y **Pydantic** para modelos de datos elegantes y seguros.
-- **JWT Authentication**: Autenticación basada en JSON Web Tokens (JWT) con **PyJWT**.
+- **Auth (OAuth2 + JWT)**: Implementación de **OAuth2 (Password Flow)** con tokens **JWT** (PyJWT) para una autenticación segura y estándar.
 - **Base de Datos**: Soporte para **PostgreSQL**, **MariaDB** (v11.4 LTS) y **SQLite** mediante drivers asíncronos (`asyncpg`, `aiomysql`, `aiosqlite`).
 - **Docker Stack**: Configuración moderna con **PostgreSQL**, **Prometheus v3**, **Grafana 13**, **Loki 3.5**, **Tempo 2.10** y **Grafana Alloy v1.15**.
-- **Observabilidad Unificada (OpenTelemetry)**: Implementación de **Logs**, **Métricas** y **Trazabilidad Distribuida** integrada directamente en el ciclo de vida de la aplicación.
+- **Observabilidad Unificada (OpenTelemetry)**: Implementación de **Logs**, **Métricas** y **Trazabilidad Distribuida**. *Nota: Desactivado por defecto. Activar con `OTEL_ENABLED=True`.*
 - **Pgweb**: Interfaz web integrada para la administración de bases de datos en el entorno Docker.
 
 ## Librerías utilizadas
 
 - **FastAPI**: [FastAPI documentation](https://fastapi.tiangolo.com/)
 - **SQLModel**: Para modelos de datos y ORM asíncrono.
+- **Alembic**: Herramienta de migraciones para SQLAlchemy/SQLModel.
 - **OpenTelemetry**: SDKs para instrumentación nativa de logs, trazas y métricas.
 - **python-dotenv**: Gestión de variables de entorno.
 - **Async Drivers**: `asyncpg`, `aiomysql`, `aiosqlite` para bases de datos asíncronas.
@@ -26,15 +27,23 @@ Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre e
 
 ## Instalación y Ejecución
 
+## Arquitectura Docker-First
+
+Este proyecto está diseñado bajo una filosofía **Docker-First**. Toda la infraestructura, dependencias y el entorno de ejecución están estandarizados mediante contenedores para garantizar:
+- **Consistencia**: El mismo entorno en desarrollo, staging y producción.
+- **Aislamiento**: Dependencias del sistema (drivers de DB, librerías OTel) encapsuladas.
+- **Simplicidad**: Un solo comando para levantar todo el stack de observabilidad y persistencia.
+
+Se recomienda **no ejecutar la aplicación directamente en el host** para evitar conflictos de versiones y asegurar que las integraciones de red (como el exportador de OTel a Alloy) funcionen correctamente.
+
 ### Requisitos previos
 
 Asegúrate de tener instalado:
 
-- **Python 3.12+**
-- **pip** para la gestión de paquetes de Python
-- **Docker** y **Docker Compose** para la ejecución del stack completo
+- **Docker** y **Docker Compose** (Indispensable).
+- **Python 3.12+** (Opcional, solo para soporte de IDE local).
 
-### Instalación del entorno local
+### Guía de Inicio Rápido (Docker)
 
 1. Clona el repositorio:
 
@@ -43,12 +52,24 @@ Asegúrate de tener instalado:
     cd fastapi-project
     ```
 
-2. Crea un entorno virtual (opcional pero recomendado):
+2. Configura tu entorno:
+    ```bash
+    cp .env.example .env
+    ```
+
+3. Levanta el stack completo:
+    ```bash
+    docker compose up -d --build
+    ```
+
+### Instalación del entorno local (Solo para desarrollo de código)
+
+1. Crea un entorno virtual:
 
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # En Linux/macOS
-    venv\Scripts\activate     # En Windows
+    python -m venv .venv
+    source .venv/bin/activate  # En Linux/macOS
+    .venv\Scripts\activate     # En Windows
     ```
 
 3. Instala las dependencias del proyecto:
@@ -105,3 +126,4 @@ Este proyecto está licenciado bajo los términos de la [GNU General Public Lice
 ---
 
 ¡Gracias por revisar mi proyecto! Estoy aprendiendo y abierto a sugerencias y contribuciones.
+ abierto a sugerencias y contribuciones.
