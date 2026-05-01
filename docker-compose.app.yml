@@ -3,7 +3,7 @@ services:
     container_name: fastapi_app
     build:
       context: .
-      target: dev               # ← BUG FIX: without this it builds the 'runtime' stage
+      target: dev # Use the 'dev' stage from the Dockerfile
     command: bash -c "alembic upgrade head && fastapi dev src/main.py --host 0.0.0.0 --port 8000"
     restart: unless-stopped
     ports:
@@ -53,14 +53,20 @@ services:
     networks:
       - fastapi_net
 
-  pgweb:
-    container_name: pgweb
-    image: sosedoff/pgweb:0.17.0
+  dbgate:
+    container_name: dbgate
+    image: dbgate/dbgate:alpine
     restart: unless-stopped
     ports:
-      - "8081:8081"
+      - "18581:3000"
     environment:
-      PGWEB_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+      CONNECTIONS: con1
+      LABEL_con1: "FastAPI Project"
+      SERVER_con1: postgres
+      USER_con1: ${POSTGRES_USER}
+      PASSWORD_con1: ${POSTGRES_PASSWORD}
+      PORT_con1: ${POSTGRES_PORT}
+      ENGINE_con1: postgres@dbgate-plugin-postgres
     depends_on:
       postgres:
         condition: service_healthy
