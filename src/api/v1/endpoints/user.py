@@ -7,16 +7,16 @@ from typing import Annotated, List
 from src.schemas.user import UserCreate
 from src.schemas.token import Token
 from src.services.user import user_service
-from src.api.deps import get_db, get_current_active_user
+from src.api.deps import SessionDep, CurrentUserDep
 from src.models.user import User as UserModel
 
-router = APIRouter()
+router = APIRouter(prefix="/user", tags=["Users"])
 
 @router.post("/login", response_model=Token)
 async def login(
     request: Request,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    db: AsyncSession = Depends(get_db),
+    db: SessionDep,
 ) -> Token:
     user = await user_service.authenticate(db, form_data.username, form_data.password)
     if not user:
@@ -42,9 +42,9 @@ async def login(
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(
     user_in: Annotated[UserCreate, Form()],
-    db: AsyncSession = Depends(get_db),
-    current_user: UserModel = Depends(get_current_active_user),
-):
+    db: SessionDep,
+    current_user: CurrentUserDep,
+) -> dict:
     # Note: registration usually requires some permission or is public. 
     # Current logic requires active user.
     check_user = await user_service.authenticate(db, user_in.username, "") # Simplified check
@@ -61,6 +61,6 @@ async def create_user(
 
 @router.get("/me", response_model=UserModel)
 async def read_users_me(
-    current_user: Annotated[UserModel, Depends(get_current_active_user)],
-):
+    current_user: CurrentUserDep,
+) -> UserModel:
     return current_user
