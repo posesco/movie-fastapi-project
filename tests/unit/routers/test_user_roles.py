@@ -77,4 +77,4 @@ async def test_delete_super_admin_forbidden(client):
     
     assert response.status_code == status.HTTP_403_FORBIDDEN
     # The project uses "error" key for HTTPException details
-    assert response.json()["error"] == "Cannot delete a user with super_admin role"
+    assert response.json()["error"] == "Cannot delete the primary super_admin account"

@@ -110,9 +110,9 @@ class UserService:
         if not db_user:
             return False
         
-        details = f"User deleted. {jsonable_encoder(db_user)}"
-        await self._log_modification(db, db_user, "update", details)
-        await db.delete(db_user)
+        db_user.is_active = False
+        details = f"User soft-deleted. {jsonable_encoder(db_user)}"
+        await self._log_modification(db, db_user, "delete", details)
         return True
 
 user_service = UserService()

@@ -75,6 +75,13 @@ async def delete_user(
     username: str,
     db: SessionDep,
 ) -> dict:
+    from src.core.config import settings
+    if username == settings.admin_user:
+        raise HTTPException(
+            status_code=403, 
+            detail="Cannot delete the primary super_admin account"
+        )
+
     from src.repositories.user import user_repository
     db_user = await user_repository.get_by_username(db, username)
     if not db_user:
