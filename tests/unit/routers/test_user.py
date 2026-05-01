@@ -1,14 +1,10 @@
-from fastapi.testclient import TestClient
+import pytest
 from src.core.config import settings
 from fastapi import status
-from src.main import app
 
-
-client = TestClient(app)
-
-
-def test_login_admin():
-    response = client.post(
+@pytest.mark.asyncio
+async def test_login_admin(client):
+    response = await client.post(
         "/api/v1/user/login",
         data={"username": settings.admin_user, "password": settings.admin_pass},
     )

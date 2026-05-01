@@ -33,14 +33,17 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     details = get_request_details(request)
+    # Sanitize detail for response
+    safe_detail = exc.detail if isinstance(exc.detail, str) else "An error occurred"
+    
     logger.error(
-        f"HTTP Exception: {exc.status_code} - {exc.detail}",
+        f"HTTP Exception: {exc.status_code} - {safe_detail}",
         extra={"request_details": details},
     )
     return JSONResponse(
         status_code=exc.status_code,
         content={
-            "error": str(exc.detail),
+            "error": safe_detail,
             "type": "HTTPException",
             "request": details,
         },

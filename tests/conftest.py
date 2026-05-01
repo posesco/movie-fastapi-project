@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 
 from src.main import app
-from src.core.database import get_db
+from src.core.database import get_db, insert_super_user
 import src.core.database as db_module
 
 # Use an in-memory SQLite for testing to avoid loop conflicts with real Postgres
@@ -34,6 +34,11 @@ async def test_engine():
         await conn.run_sync(SQLModel.metadata.create_all)
     yield engine
     await engine.dispose()
+
+@pytest_asyncio.fixture(autouse=True)
+async def seed_db(db_session):
+    await insert_super_user(db_session)
+    await db_session.commit()
 
 @pytest_asyncio.fixture
 async def db_session(test_engine):

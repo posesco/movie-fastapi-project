@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     # OTEL
     otel_collector_endpoint: str = Field(default="http://alloy:4317", validation_alias="OTEL_COLLECTOR_ENDPOINT")
     otel_service_name: str = Field(default="fastapi-app", validation_alias="OTEL_SERVICE_NAME")
-    otel_enabled: bool = Field(default=True, validation_alias="OTEL_ENABLED")
+    otel_enabled: bool = Field(default=False, validation_alias="OTEL_ENABLED")
     # Runtime
     running_in_docker: bool = Field(default=False, validation_alias="RUNNING_IN_DOCKER")
 

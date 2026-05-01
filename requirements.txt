@@ -1,5 +1,4 @@
-[33mWARNING: The directory '/nonexistent/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.[0m[33m
-[0maiomysql==0.2.0
+aiomysql==0.2.0
 aiosqlite==0.21.0
 annotated-doc==0.0.4
 annotated-types==0.7.0

@@ -1,6 +1,6 @@
 # Project Overview
 
-This is a **FastAPI** starter project designed for building high-performance, modern REST APIs using **Clean Architecture** and **Asynchronous** patterns.
+This project is a **Docker-First** application. The primary and mandatory runtime environment for all integrations (especially observability and database) is **Docker Compose**.
 
 **Key Technologies:**
 - **Framework:** FastAPI (0.135.3)
@@ -53,6 +53,7 @@ docker compose up -d --build
   - Metrics: Custom metrics defined in `src/services/metrics.py` (OTel Meter).
   - Logs: Standard Python logging redirected to OTel LoggingHandler.
   - Traces: Automatic FastAPI instrumentation via `FastAPIInstrumentor`.
+  - **Configuration:** Set `OTEL_ENABLED=True` in your `.env` file to activate the telemetry export (default is `False` for local development).
 
 - **Database & Migrations:**
   - **Alembic** is used for schema versioning (async support).
