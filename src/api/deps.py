@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 import jwt
@@ -8,9 +8,11 @@ from src.core.security import oauth2_scheme
 from src.models.user import User
 from src.repositories.user import user_repository
 
+SessionDep = Annotated[AsyncSession, Depends(get_db)]
+
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)], 
-    db: AsyncSession = Depends(get_db)
+    db: SessionDep
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -41,5 +43,23 @@ async def get_current_active_user(
         )
     return current_user
 
-SessionDep = Annotated[AsyncSession, Depends(get_db)]
 CurrentUserDep = Annotated[User, Depends(get_current_active_user)]
+
+class RoleChecker:
+    def __init__(self, allowed_roles: List[str]):
+        self.allowed_roles = allowed_roles
+
+    async def __call__(
+        self, 
+        user: CurrentUserDep,
+        db: SessionDep
+    ) -> User:
+        await db.refresh(user, ["roles"])
+        user_roles = [role.name for role in user.roles]
+        for role in self.allowed_roles:
+            if role in user_roles:
+                return user
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="The user doesn't have enough privileges",
+        )

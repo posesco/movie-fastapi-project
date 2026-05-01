@@ -4,10 +4,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, List
 
-from src.schemas.user import UserCreate
+from src.schemas.user import UserCreate, UserRoleAssign
 from src.schemas.token import Token
 from src.services.user import user_service
-from src.api.deps import SessionDep, CurrentUserDep
+from src.api.deps import SessionDep, CurrentUserDep, RoleChecker
 from src.models.user import User as UserModel
 
 router = APIRouter(prefix="/user", tags=["Users"])
@@ -43,12 +43,7 @@ async def login(
 async def create_user(
     user_in: Annotated[UserCreate, Form()],
     db: SessionDep,
-    current_user: CurrentUserDep,
 ) -> dict:
-    # Note: registration usually requires some permission or is public. 
-    # Current logic requires active user.
-    check_user = await user_service.authenticate(db, user_in.username, "") # Simplified check
-    # Actually better check by username/email directly
     from src.repositories.user import user_repository
     if await user_repository.get_by_username(db, user_in.username):
         raise HTTPException(status_code=409, detail="Username already exists")
@@ -56,8 +51,24 @@ async def create_user(
         raise HTTPException(status_code=409, detail="Email already exists")
 
     user_model = UserModel(**user_in.model_dump())
-    await user_service.create_user(db, user_model)
+    await user_service.create_user(db, user_model, default_role="user")
     return {"success": "User created successfully"}
+
+@router.post("/assign-roles", dependencies=[Depends(RoleChecker(["super_admin", "admin"]))])
+async def assign_user_roles(
+    data: UserRoleAssign,
+    db: SessionDep,
+) -> dict:
+    from src.repositories.user import user_repository
+    db_user = await user_repository.get_by_username(db, data.username)
+    if not db_user:
+        raise HTTPException(status_code=404, detail=f"User {data.username} not found")
+    
+    success = await user_service.assign_roles(db, data.username, data.roles)
+    if not success:
+        raise HTTPException(status_code=400, detail="One or more roles do not exist in database")
+        
+    return {"success": f"Roles {data.roles} assigned to {data.username}"}
 
 @router.get("/me", response_model=UserModel)
 async def read_users_me(

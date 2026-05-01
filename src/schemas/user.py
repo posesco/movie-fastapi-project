@@ -4,7 +4,7 @@ from pydantic import (
     EmailStr,
     Field,
 )
-from typing import Optional
+from typing import Optional, List, Literal
 
 
 class UserLogin(BaseModel):
@@ -31,3 +31,8 @@ class UserCreate(BaseModel):
             }
         }
     )
+
+
+class UserRoleAssign(BaseModel):
+    username: str
+    roles: List[Literal["admin", "editor", "user"]]

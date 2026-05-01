@@ -64,7 +64,7 @@ async def insert_super_user(session: AsyncSession) -> None:
         session.add(UserAuditLog(
             user_id=user.id,
             action_id=action.id,
-            description="Se creó super admin",
+            description="Super user created",
             date=current_time,
         ))
 
