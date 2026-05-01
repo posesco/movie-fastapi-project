@@ -74,40 +74,26 @@ async def insert_super_user(session: AsyncSession) -> None:
 async def init_db() -> None:
     global engine, AsyncSessionLocal
 
-    max_retries = 10
-    retry_delay = 5
+    engine = create_async_engine(
+        settings.async_database_url,
+        echo=settings.project_debug_mode,
+        future=True,
+    )
+    AsyncSessionLocal = sessionmaker(
+        engine, class_=AsyncSession, expire_on_commit=False
+    )
 
-    for attempt in range(1, max_retries + 1):
-        try:
-            engine = create_async_engine(
-                settings.async_database_url,
-                echo=settings.project_debug_mode,
-                future=True,
-            )
-            AsyncSessionLocal = sessionmaker(
-                engine, class_=AsyncSession, expire_on_commit=False
-            )
-
-            async with engine.begin() as conn:
-                await conn.run_sync(SQLModel.metadata.create_all)
-
-            async with AsyncSessionLocal() as session:
-                await insert_default_actions(session)
-                await insert_default_roles(session)
-                await insert_super_user(session)
-
-            logger.info("Database initialized successfully.")
-            return
-
-        except Exception as e:
-            if attempt == max_retries:
-                logger.error("Failed to initialize database after %d attempts: %s", max_retries, e)
-                raise
-            logger.warning(
-                "Attempt %d/%d failed: %s. Retrying in %ds...",
-                attempt, max_retries, e, retry_delay,
-            )
-            await asyncio.sleep(retry_delay)
+    try:
+        async with AsyncSessionLocal() as session:
+            # Solo ejecutamos el seed si la base de datos está lista
+            await insert_default_actions(session)
+            await insert_default_roles(session)
+            await insert_super_user(session)
+        logger.info("Database connection and seed completed.")
+    except Exception as e:
+        logger.error("Failed to seed database: %s", e)
+        # En SRE preferimos que el pod falle si no puede inicializarse correctamente
+        raise
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:

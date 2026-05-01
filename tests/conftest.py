@@ -1,4 +1,5 @@
 import pytest
+import pytest_asyncio
 import asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
@@ -7,40 +8,50 @@ from sqlmodel import SQLModel
 
 from src.main import app
 from src.core.database import get_db
+import src.core.database as db_module
 
-# Use an in-memory SQLite for testing
+# Use an in-memory SQLite for testing to avoid loop conflicts with real Postgres
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 def event_loop():
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
 
-@pytest.fixture(scope="session")
-async def engine():
-    engine = create_async_engine(TEST_DATABASE_URL, echo=True)
+@pytest_asyncio.fixture(scope="session")
+async def test_engine():
+    # Motor independiente para tests
+    engine = create_async_engine(TEST_DATABASE_URL, echo=False)
+    
+    # IMPORTANTE: Inicializar el módulo de base de datos para que AsyncSessionLocal no sea None
+    db_module.engine = engine
+    db_module.AsyncSessionLocal = sessionmaker(
+        engine, class_=AsyncSession, expire_on_commit=False
+    )
+    
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
     yield engine
     await engine.dispose()
 
-@pytest.fixture
-async def db_session(engine):
-    AsyncSessionLocal = sessionmaker(
-        engine, class_=AsyncSession, expire_on_commit=False
-    )
-    async with AsyncSessionLocal() as session:
+@pytest_asyncio.fixture
+async def db_session(test_engine):
+    async with db_module.AsyncSessionLocal() as session:
         yield session
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def client(db_session):
     async def override_get_db():
         yield db_session
 
     app.dependency_overrides[get_db] = override_get_db
     
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+    # Desactivar OTel para tests para evitar errores de conexión a alloy
+    from src.core.config import settings
+    settings.otel_enabled = False
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         yield client
     
     app.dependency_overrides.clear()

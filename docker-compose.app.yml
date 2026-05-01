@@ -17,7 +17,10 @@ services:
     env_file:
       - .env
     volumes:
-      - ./src:/app/src 
+      - ./src:/app/src
+      - ./migrations:/app/migrations
+      - ./alembic.ini:/app/alembic.ini
+      - ./tests:/app/tests
     depends_on:
       postgres:
         condition: service_healthy

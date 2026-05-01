@@ -1,6 +1,6 @@
-# FastAPI Starter Project (Movie API)
+# FastAPI Review Project (Movie API)
 
-Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre esta potente herramienta para construir APIs modernas y de alto rendimiento. El proyecto utiliza una arquitectura **Clean Architecture** y está completamente **asincronizado**.
+Proyecto con **FastAPI**, en el que exploro y aprendo sobre esta potente herramienta para construir APIs modernas y de alto rendimiento. El proyecto utiliza una arquitectura **Clean Architecture** y está completamente **asincronizado**.
 
 ## Características
 
@@ -19,6 +19,7 @@ Este es mi proyecto inicial con **FastAPI**, en el que exploro y aprendo sobre e
 
 - **FastAPI**: [FastAPI documentation](https://fastapi.tiangolo.com/)
 - **SQLModel**: Para modelos de datos y ORM asíncrono.
+- **Alembic**: Herramienta de migraciones para SQLAlchemy/SQLModel.
 - **OpenTelemetry**: SDKs para instrumentación nativa de logs, trazas y métricas.
 - **python-dotenv**: Gestión de variables de entorno.
 - **Async Drivers**: `asyncpg`, `aiomysql`, `aiosqlite` para bases de datos asíncronas.
@@ -46,9 +47,9 @@ Asegúrate de tener instalado:
 2. Crea un entorno virtual (opcional pero recomendado):
 
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # En Linux/macOS
-    venv\Scripts\activate     # En Windows
+    python -m venv .venv
+    source .venv/bin/activate  # En Linux/macOS
+    .venv\Scripts\activate     # En Windows
     ```
 
 3. Instala las dependencias del proyecto:
@@ -105,3 +106,4 @@ Este proyecto está licenciado bajo los términos de la [GNU General Public Lice
 ---
 
 ¡Gracias por revisar mi proyecto! Estoy aprendiendo y abierto a sugerencias y contribuciones.
+ abierto a sugerencias y contribuciones.

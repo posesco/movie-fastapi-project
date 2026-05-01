@@ -209,8 +209,13 @@ pyrightconfig.json
 .history
 .ionide
 
+# Alembic
+migrations/*.pyc
+
+# Local Development
+.env
+.env.local
+
 # End of https://www.toptal.com/developers/gitignore/api/python,linux,visualstudiocode
-GEMINI.md
 .agents/
 skills-lock.json
-conductor/
