@@ -16,7 +16,7 @@ Dockerfile
 .docker
 .dockerignore
 
-# ─── Secrets — nunca en el build context ─────────────────────────────────────
+# ─── Secrets — never in build context ────────────────────────────────────────
 .env
 .env.*
 *.env
@@ -28,7 +28,7 @@ Dockerfile
 **/*.py[cod]
 *.so
 
-# ─── Packaging / distribución ────────────────────────────────────────────────
+# ─── Packaging / distribution ────────────────────────────────────────────────
 .Python
 venv/
 env/
@@ -56,7 +56,7 @@ pip-log.txt
 pip-delete-this-directory.txt
 *.log
 
-# ─── Tests / cobertura ───────────────────────────────────────────────────────
+# ─── Tests / coverage ────────────────────────────────────────────────────────
 tests/
 htmlcov/
 .tox/

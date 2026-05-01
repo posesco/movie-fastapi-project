@@ -3,16 +3,14 @@ services:
     container_name: fastapi_app
     build:
       context: .
-      target: dev               # ← BUG FIX: sin esto construye el stage 'runtime'
+      target: dev               # ← BUG FIX: without this it builds the 'runtime' stage
     command: bash -c "alembic upgrade head && fastapi dev src/main.py --host 0.0.0.0 --port 8000"
     restart: unless-stopped
     ports:
       - "8000:8000"  
     environment:
-      POSTGRES_HOST: postgres
       RUNNING_IN_DOCKER: "true"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://alloy:4318
-      OTEL_SERVICE_NAME: fastapi-service
       OTEL_RESOURCE_ATTRIBUTES: deployment.environment=development
     env_file:
       - .env

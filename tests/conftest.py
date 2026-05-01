@@ -21,10 +21,10 @@ def event_loop():
 
 @pytest_asyncio.fixture(scope="session")
 async def test_engine():
-    # Motor independiente para tests
+    # Independent engine for tests
     engine = create_async_engine(TEST_DATABASE_URL, echo=False)
     
-    # IMPORTANTE: Inicializar el módulo de base de datos para que AsyncSessionLocal no sea None
+    # IMPORTANT: Initialize the database module so AsyncSessionLocal is not None
     db_module.engine = engine
     db_module.AsyncSessionLocal = sessionmaker(
         engine, class_=AsyncSession, expire_on_commit=False

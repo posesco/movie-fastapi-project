@@ -7,7 +7,7 @@ This project is a **Docker-First** application. The primary and mandatory runtim
 - **Language:** Python 3.12 (Standardized via Dockerfile)
 - **Data Validation & ORM:** SQLModel (SQLAlchemy + Pydantic)
 - **Database:** Support for MariaDB (v11.4 LTS), PostgreSQL, and SQLite via async drivers.
-- **Authentication:** JSON Web Tokens (JWT) using PyJWT.
+- **Authentication:** **OAuth2 (Password Flow)** for the security scheme and **JWT** (PyJWT) for the token content.
 - **Containerization:** Docker and Docker Compose (Rootless setups enabled in Dockerfile).
 - **Full Observability (OTel):** Unified implementation of **Logs**, **Metrics**, and **Tracing** using **OpenTelemetry SDK**.
 - **Monitoring Stack:** Prometheus v3, Grafana 13, Loki 3.5, Tempo 2.10, and **Grafana Alloy v1.15** as the OTLP collector.
@@ -64,6 +64,7 @@ docker compose up -d --build
   - `ruff` for linting and formatting. 
   - **Bandit** and **Safety** integrated into CI for security auditing.
   - `pytest` with `pytest-asyncio` and **coverage reporting**.
+  - **Language:** All code (comments, docstrings, variable names) and technical documentation (excluding `README.md`) MUST be in **English**.
 
 ## Git & Release Management
 

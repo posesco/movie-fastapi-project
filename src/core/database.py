@@ -85,14 +85,14 @@ async def init_db() -> None:
 
     try:
         async with AsyncSessionLocal() as session:
-            # Solo ejecutamos el seed si la base de datos está lista
+            # We only run the seed if the database is ready
             await insert_default_actions(session)
             await insert_default_roles(session)
             await insert_super_user(session)
         logger.info("Database connection and seed completed.")
     except Exception as e:
         logger.error("Failed to seed database: %s", e)
-        # En SRE preferimos que el pod falle si no puede inicializarse correctamente
+        # In SRE we prefer the pod to fail if it cannot initialize correctly
         raise
 
 

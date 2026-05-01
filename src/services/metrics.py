@@ -17,7 +17,7 @@ class CustomMetrics:
         )
 
     def init(self):
-        # La inicialización de OTel se maneja en main.py
+        # OTel initialization is handled in main.py
         pass
 
 

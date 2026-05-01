@@ -9,7 +9,7 @@ Proyecto con **FastAPI**, en el que exploro y aprendo sobre esta potente herrami
 - **Clean Architecture**: Separación de responsabilidades en capas (API, Services, Repositories, Core, Models, Schemas).
 - **Asincronía Completa**: Operaciones de base de datos y endpoints asíncronos para mayor rendimiento.
 - **SQLModel**: Combinación de **SQLAlchemy** y **Pydantic** para modelos de datos elegantes y seguros.
-- **JWT Authentication**: Autenticación basada en JSON Web Tokens (JWT) con **PyJWT**.
+- **Auth (OAuth2 + JWT)**: Implementación de **OAuth2 (Password Flow)** con tokens **JWT** (PyJWT) para una autenticación segura y estándar.
 - **Base de Datos**: Soporte para **PostgreSQL**, **MariaDB** (v11.4 LTS) y **SQLite** mediante drivers asíncronos (`asyncpg`, `aiomysql`, `aiosqlite`).
 - **Docker Stack**: Configuración moderna con **PostgreSQL**, **Prometheus v3**, **Grafana 13**, **Loki 3.5**, **Tempo 2.10** y **Grafana Alloy v1.15**.
 - **Observabilidad Unificada (OpenTelemetry)**: Implementación de **Logs**, **Métricas** y **Trazabilidad Distribuida**. *Nota: Desactivado por defecto. Activar con `OTEL_ENABLED=True`.*

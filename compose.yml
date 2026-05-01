@@ -1,10 +1,10 @@
-# Punto de entrada unificado para el stack de desarrollo.
-# Uso:
-#   docker compose up -d              → stack completo
-#   docker compose --profile app up   → solo app + postgres
+# Unified entry point for the development stack.
+# Usage:
+#   docker compose up -d              → complete stack
+#   docker compose --profile app up   → only app + postgres
 #
-# La red fastapi_net se crea aquí (authoritative) y los sub-ficheros
-# la referencian como external: true para evitar conflictos.
+# The fastapi_net network is created here (authoritative) and sub-files
+# reference it as external: true to avoid conflicts.
 name: fastapi_stack
 
 include:
@@ -14,4 +14,4 @@ include:
 networks:
   fastapi_net:
     driver: bridge
-    name: fastapi_net   # nombre explícito; evita el prefijo del directorio
+    name: fastapi_net   # explicit name; avoids directory prefix

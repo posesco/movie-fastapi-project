@@ -1,15 +1,15 @@
 # Plan: Standardize and Isolate Compose Files
 
 ## Objective
-Dar consistencia a los archivos Docker Compose (`docker-compose.app.yml` y `docker-compose.monitoring.yml`) unificando el orden de las propiedades de cada servicio y agregando una red aislada para el proyecto.
+Provide consistency to the Docker Compose files (`docker-compose.app.yml` and `docker-compose.monitoring.yml`) by unifying the order of properties for each service and adding an isolated network for the project.
 
 ## Key Files & Context
-- `compose.yml`: Se le añadirá la declaración de la red aislada (`fastapi_net`).
-- `docker-compose.app.yml`: Se reordenarán las propiedades y se conectarán a `fastapi_net`.
-- `docker-compose.monitoring.yml`: Se reordenarán las propiedades y se conectarán a `fastapi_net`.
+- `compose.yml`: The isolated network declaration (`fastapi_net`) will be added.
+- `docker-compose.app.yml`: Properties will be reordered and connected to `fastapi_net`.
+- `docker-compose.monitoring.yml`: Properties will be reordered and connected to `fastapi_net`.
 
 ## Proposed Structure (Standard Order)
-Para cada servicio, se seguirá estrictamente el siguiente orden de propiedades:
+For each service, the following property order will be strictly followed:
 1. `container_name`
 2. `image` / `build`
 3. `command`
@@ -23,8 +23,8 @@ Para cada servicio, se seguirá estrictamente el siguiente orden de propiedades:
 11. `networks`
 
 ## Implementation Steps
-1. **Definir la Red:**
-   Añadir la red personalizada en `compose.yml`:
+1. **Define the Network:**
+   Add the custom network in `compose.yml`:
    ```yaml
    include:
      - docker-compose.app.yml
@@ -34,10 +34,10 @@ Para cada servicio, se seguirá estrictamente el siguiente orden de propiedades:
      fastapi_net:
        driver: bridge
    ```
-2. **Refactorizar `docker-compose.app.yml`:**
-   Aplicar el orden estándar a los servicios `app`, `postgres`, `pgweb` y añadir `networks: [fastapi_net]` a todos. Declarar la red al final.
-3. **Refactorizar `docker-compose.monitoring.yml`:**
-   Aplicar el orden estándar a `prometheus`, `grafana`, `loki`, `tempo`, `alloy`, `vulture` y añadir `networks: [fastapi_net]`. Declarar la red al final.
+2. **Refactor `docker-compose.app.yml`:**
+   Apply the standard order to the `app`, `postgres`, and `pgweb` services and add `networks: [fastapi_net]` to all. Declare the network at the end.
+3. **Refactor `docker-compose.monitoring.yml`:**
+   Apply the standard order to `prometheus`, `grafana`, `loki`, `tempo`, `alloy`, and `vulture` and add `networks: [fastapi_net]`. Declare the network at the end.
 
 ## Verification
-- Ejecutar `docker compose config` para validar que la sintaxis es correcta y que todos los servicios están en la red `fastapi_net`.
+- Run `docker compose config` to validate that the syntax is correct and that all services are on the `fastapi_net` network.
