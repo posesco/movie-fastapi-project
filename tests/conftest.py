@@ -32,6 +32,14 @@ async def test_engine():
     
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
+    
+    # Initialize default roles and actions
+    from src.core.database import insert_default_actions, insert_default_roles
+    async with db_module.AsyncSessionLocal() as session:
+        await insert_default_actions(session)
+        await insert_default_roles(session)
+        await session.commit()
+        
     yield engine
     await engine.dispose()
 

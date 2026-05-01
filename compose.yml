@@ -9,7 +9,7 @@ name: fastapi_stack
 
 include:
   - path: docker-compose.app.yml
-  - path: docker-compose.monitoring.yml
+  # - path: docker-compose.monitoring.yml
 
 networks:
   fastapi_net:

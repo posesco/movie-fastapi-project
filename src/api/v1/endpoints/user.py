@@ -54,7 +54,7 @@ async def create_user(
     await user_service.create_user(db, user_model, default_role="user")
     return {"success": "User created successfully"}
 
-@router.post("/assign-roles", dependencies=[Depends(RoleChecker(["super_admin", "admin"]))])
+@router.put("/assign-roles", dependencies=[Depends(RoleChecker(["super_admin", "admin"]))])
 async def assign_user_roles(
     data: UserRoleAssign,
     db: SessionDep,
@@ -69,6 +69,30 @@ async def assign_user_roles(
         raise HTTPException(status_code=400, detail="One or more roles do not exist in database")
         
     return {"success": f"Roles {data.roles} assigned to {data.username}"}
+
+@router.delete("/{username}", dependencies=[Depends(RoleChecker(["super_admin", "admin"]))])
+async def delete_user(
+    username: str,
+    db: SessionDep,
+) -> dict:
+    from src.repositories.user import user_repository
+    db_user = await user_repository.get_by_username(db, username)
+    if not db_user:
+        raise HTTPException(status_code=404, detail=f"User {username} not found")
+    
+    # Check if user has super_admin role
+    await db.refresh(db_user, ["roles"])
+    if any(role.name == "super_admin" for role in db_user.roles):
+        raise HTTPException(
+            status_code=403, 
+            detail="Cannot delete a user with super_admin role"
+        )
+
+    success = await user_service.delete_user(db, username)
+    if not success:
+        raise HTTPException(status_code=400, detail="Failed to delete user")
+
+    return {"success": f"User {username} deleted successfully"}
 
 @router.get("/me", response_model=UserModel)
 async def read_users_me(
