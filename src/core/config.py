@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     secret_key: str = Field(default="secret", validation_alias="SECRET_KEY", repr=False)
     algorithm: str = Field(default="HS256", validation_alias="ALGORITHM")
     access_token_expire_minutes: int = Field(default=15, validation_alias="ACCESS_TOKEN_EXPIRE_MINUTES")
+    refresh_token_expire_days: int = Field(default=7, validation_alias="REFRESH_TOKEN_EXPIRE_DAYS")
 
     # PostgreSQL
     postgres_host: str = Field(default="localhost", validation_alias="POSTGRES_HOST")
@@ -31,10 +32,26 @@ class Settings(BaseSettings):
     otel_collector_endpoint: str = Field(default="http://alloy:4317", validation_alias="OTEL_COLLECTOR_ENDPOINT")
     otel_service_name: str = Field(default="fastapi-app", validation_alias="OTEL_SERVICE_NAME")
     otel_enabled: bool = Field(default=False, validation_alias="OTEL_ENABLED")
+
+    # Redis
+    redis_host: str = Field(default="localhost", validation_alias="REDIS_HOST")
+    redis_port: int = Field(default=6379, validation_alias="REDIS_PORT")
+    redis_db: int = Field(default=0, validation_alias="REDIS_DB")
+
     # Runtime
     running_in_docker: bool = Field(default=False, validation_alias="RUNNING_IN_DOCKER")
 
     # Computed
+    @computed_field
+    @property
+    def effective_redis_host(self) -> str:
+        return "redis" if self.running_in_docker else self.redis_host
+
+    @computed_field
+    @property
+    def redis_url(self) -> str:
+        return f"redis://{self.effective_redis_host}:{self.redis_port}/{self.redis_db}"
+
     @computed_field
     @property
     def effective_postgres_host(self) -> str:

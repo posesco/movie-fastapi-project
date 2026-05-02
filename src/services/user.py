@@ -7,7 +7,7 @@ from fastapi.encoders import jsonable_encoder
 from src.models.user import User, Role, UserAuditLog
 from src.repositories.user import user_repository
 from src.repositories.action import action_repository
-from src.core.security import pwd_context, create_token
+from src.core.security import pwd_context, create_token, create_refresh_token
 
 class UserService:
     """Business logic for Users."""
@@ -36,8 +36,14 @@ class UserService:
         )
         db.add(log_entry)
 
-    async def get_token(self, user_data: dict) -> str:
-        return create_token(user_data)
+    async def get_tokens(self, user_data: dict) -> dict:
+        access_token = create_token(user_data)
+        refresh_token = create_refresh_token(user_data)
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer"
+        }
 
     async def authenticate(
         self, db: AsyncSession, username: str, password: str

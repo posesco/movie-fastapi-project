@@ -129,4 +129,3 @@ volumes:
 
 networks:
   fastapi_net:
-    external: true
