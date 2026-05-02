@@ -11,7 +11,9 @@ services:
       - "8000"
     environment:
       RUNNING_IN_DOCKER: "true"
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://alloy:4318
+      OTEL_ENABLED: ${OTEL_ENABLED}
+      OTEL_COLLECTOR_ENDPOINT: ${OTEL_COLLECTOR_ENDPOINT}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME}
       OTEL_RESOURCE_ATTRIBUTES: deployment.environment=development
     env_file:
       - .env
