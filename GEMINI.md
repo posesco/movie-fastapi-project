@@ -9,6 +9,7 @@ This project is a **Docker-First** application. The primary and mandatory runtim
 - **Database:** Support for MariaDB (v11.4 LTS), PostgreSQL, and SQLite via async drivers.
 - **Authentication:** **OAuth2 (Password Flow)** for the security scheme and **JWT** (PyJWT) for the token content.
 - **Containerization:** Docker and Docker Compose (Rootless setups enabled in Dockerfile).
+- **Horizontal Scaling:** Load balanced via **Nginx** (Round Robin) with state shared via **Redis**.
 - **Full Observability (OTel):** Unified implementation of **Logs**, **Metrics**, and **Tracing** using **OpenTelemetry SDK**.
 - **Monitoring Stack:** Prometheus v3, Grafana 13, Loki 3.5, Tempo 2.10, and **Grafana Alloy v1.15** as the OTLP collector.
 - **Tools:** pgweb for database administration.
@@ -54,6 +55,11 @@ docker compose up -d --build
   - Logs: Standard Python logging redirected to OTel LoggingHandler.
   - Traces: Automatic FastAPI instrumentation via `FastAPIInstrumentor`.
   - **Configuration:** Set `OTEL_ENABLED=True` in your `.env` file to activate the telemetry export (default is `False` for local development).
+
+- **Scaling & Session Management (Redis):**
+  - **Blacklisting:** Tokens are revoked via JTI stored in Redis upon logout.
+  - **Refresh Tokens:** Implemented for secure session persistence without re-authentication.
+  - **Rate Limiting:** Managed globally via Redis to prevent brute-force attacks across all instances.
 
 - **Database & Migrations:**
   - **Alembic** is used for schema versioning (async support).

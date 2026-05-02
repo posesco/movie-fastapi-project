@@ -1,16 +1,19 @@
 services:
   app:
-    container_name: fastapi_app
     build:
       context: .
       target: dev # Use the 'dev' stage from the Dockerfile
+    deploy:
+      replicas: 2
     command: bash -c "alembic upgrade head && fastapi dev src/main.py --host 0.0.0.0 --port 8000"
     restart: unless-stopped
-    ports:
-      - "8000:8000"  
+    expose:
+      - "8000"
     environment:
       RUNNING_IN_DOCKER: "true"
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://alloy:4318
+      OTEL_ENABLED: ${OTEL_ENABLED}
+      OTEL_COLLECTOR_ENDPOINT: ${OTEL_COLLECTOR_ENDPOINT}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME}
       OTEL_RESOURCE_ATTRIBUTES: deployment.environment=development
     env_file:
       - .env
@@ -23,11 +26,27 @@ services:
       postgres:
         condition: service_healthy
         restart: true
+      redis:
+        condition: service_started
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health-check/')"]
       interval: 10s
       timeout: 5s
       start_period: 15s
+      retries: 5
+    networks:
+      - fastapi_net
+
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
       retries: 5
     networks:
       - fastapi_net
@@ -78,4 +97,3 @@ volumes:
 
 networks:
   fastapi_net:
-    external: true

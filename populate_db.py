@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
-BASE_URL = "http://localhost:8000/api/v1"
+BASE_URL = "http://localhost/api/v1"
 MOVIES_FILE = "movies.json"
 BATCH_SIZE = 10
 USERNAME = os.getenv("ADMIN_USER", "admin")
