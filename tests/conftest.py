@@ -8,6 +8,7 @@ from sqlmodel import SQLModel
 
 from src.main import app
 from src.core.database import get_db, insert_super_user
+from src.core.redis import init_redis, close_redis
 import src.core.database as db_module
 
 # Use an in-memory SQLite for testing to avoid loop conflicts with real Postgres
@@ -47,6 +48,15 @@ async def test_engine():
 async def seed_db(db_session):
     await insert_super_user(db_session)
     await db_session.commit()
+
+@pytest_asyncio.fixture(autouse=True)
+async def setup_redis():
+    await init_redis()
+    from src.core.redis import redis_client
+    if redis_client:
+        await redis_client.flushdb()
+    yield
+    await close_redis()
 
 @pytest_asyncio.fixture
 async def db_session(test_engine):

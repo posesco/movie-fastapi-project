@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, List
 
-from src.schemas.user import UserCreate, UserRoleAssign
+from src.schemas.user import UserCreate, UserRoleAssign, UserUpdate
 from src.schemas.token import Token, RefreshTokenRequest
 from src.services.user import user_service
 from src.api.deps import SessionDep, CurrentUserDep, RoleChecker
@@ -181,3 +181,58 @@ async def read_users_me(
     current_user: CurrentUserDep,
 ) -> UserModel:
     return current_user
+
+
+@router.put("/{username}", response_model=UserModel)
+async def update_user(
+    username: str,
+    user_update: UserUpdate,
+    db: SessionDep,
+    current_user: CurrentUserDep,
+) -> UserModel:
+    from src.repositories.user import user_repository
+    target_user = await user_repository.get_by_username(db, username)
+    if not target_user:
+        raise HTTPException(status_code=404, detail=f"User {username} not found")
+
+    # Refresh roles for RBAC checks
+    await db.refresh(current_user, ["roles"])
+    await db.refresh(target_user, ["roles"])
+
+    current_roles = {role.name for role in current_user.roles}
+    target_roles = {role.name for role in target_user.roles}
+
+    # RBAC Logic
+    authorized = False
+
+    if "super_admin" in current_roles:
+        authorized = True
+    elif "admin" in current_roles:
+        if "super_admin" in target_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admins cannot edit super_admin users"
+            )
+        authorized = True
+    elif "editor" in current_roles or "user" in current_roles:
+        if current_user.id == target_user.id:
+            authorized = True
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only edit your own profile"
+            )
+
+    if not authorized:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+
+    # Email uniqueness check if email is being updated
+    if user_update.email and user_update.email != target_user.email:
+        if await user_repository.get_by_email(db, user_update.email):
+            raise HTTPException(status_code=409, detail="Email already exists")
+
+    update_data = user_update.model_dump(exclude_unset=True)
+    return await user_service.update_user(db, target_user, update_data)

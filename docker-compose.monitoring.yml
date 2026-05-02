@@ -128,7 +128,10 @@ services:
     image: oliver006/redis_exporter:v1.83.0-alpine
     command:
       - --redis.addr=redis://redis:6379
+      - --redis.password=${REDIS_PASSWORD}
     restart: unless-stopped
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     ports:
       - "9121:9121"
     depends_on:

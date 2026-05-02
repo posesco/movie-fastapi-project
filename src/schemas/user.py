@@ -36,3 +36,21 @@ class UserCreate(BaseModel):
 class UserRoleAssign(BaseModel):
     username: str
     roles: List[Literal["admin", "editor", "user"]]
+
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = Field(default=None, max_length=30)
+    surname: Optional[str] = Field(default=None, max_length=30)
+    email: Optional[EmailStr] = None
+    password: Optional[str] = Field(default=None, min_length=5, max_length=100)
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "name": "Jane",
+                "surname": "Smith",
+                "email": "janesmith@example.com",
+                "password": "newpassword123",
+            }
+        }
+    )

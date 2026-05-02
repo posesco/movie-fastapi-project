@@ -9,8 +9,7 @@ from .core.redis import init_redis, close_redis
 from .core.config import settings, tags_metadata
 from .core.observability import setup_observability
 from .middlewares.handlers import setup_exception_handlers
-from .services.metrics import custom_metrics
-import logging
+# import logging
 
 from .api.v1.router import api_router
 
@@ -34,7 +33,6 @@ app = FastAPI(
 
 # Setup Observability
 setup_observability(app)
-custom_metrics.init()
 
 # Setup Exception Handlers
 setup_exception_handlers(app)
@@ -55,22 +53,24 @@ async def _status() -> dict:
     from .core.database import engine
 
     db_status = "OK"
+    api_status = "Live"
     try:
         async with engine.connect() as conn:
             await conn.execute(select(1))
     except Exception as e:
         db_status = f"Error: {str(e)}"
+        api_status = "Dead"
 
     current_time = datetime.now(timezone.utc)
     uptime = current_time - start_time
     return JSONResponse(
         status_code=200,
         content={
-            "status": "Live",
+            "status": api_status,
             "version": app.version,
             "db_status": db_status,
             "uptime": str(uptime),
-            "server": socket.gethostname(),
+            "server": socket.gethostbyaddr(socket.gethostname()),
         },
     )
 

@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     redis_host: str = Field(default="localhost", validation_alias="REDIS_HOST")
     redis_port: int = Field(default=6379, validation_alias="REDIS_PORT")
     redis_db: int = Field(default=0, validation_alias="REDIS_DB")
+    redis_password: str | None = Field(default=None, validation_alias="REDIS_PASSWORD", repr=False)
 
     # Runtime
     running_in_docker: bool = Field(default=False, validation_alias="RUNNING_IN_DOCKER")
@@ -50,6 +51,9 @@ class Settings(BaseSettings):
     @computed_field
     @property
     def redis_url(self) -> str:
+        if self.redis_password:
+            password = quote_plus(self.redis_password)
+            return f"redis://:{password}@{self.effective_redis_host}:{self.redis_port}/{self.redis_db}"
         return f"redis://{self.effective_redis_host}:{self.redis_port}/{self.redis_db}"
 
     @computed_field
@@ -90,7 +94,7 @@ tags_metadata = [
         "description": "Operations with users. The **login** logic is also here.",
         "externalDocs": {
             "description": "Items external docs",
-            "url": "https://jesusposada.website/users",
+            "url": "https://milocal.com/users",
         },
     },
     {
@@ -98,7 +102,7 @@ tags_metadata = [
         "description": "Manage movies. So _fancy_ they have their own docs.",
         "externalDocs": {
             "description": "Movies external docs",
-            "url": "https://jesusposada.website/movies",
+            "url": "https://milocal.com/movies",
         },
     },
 ]

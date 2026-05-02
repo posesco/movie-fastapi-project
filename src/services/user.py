@@ -121,4 +121,18 @@ class UserService:
         await self._log_modification(db, db_user, "delete", details)
         return True
 
+    async def update_user(self, db: AsyncSession, db_user: User, update_data: dict) -> User:
+        if "password" in update_data and update_data["password"]:
+            update_data["password"] = pwd_context.hash(update_data["password"])
+        else:
+            # Remove password from dict if it's None or empty to avoid overwriting with None
+            update_data.pop("password", None)
+            
+        updated_user = await user_repository.update(db, db_user, update_data)
+        
+        # Log only changed fields for better audit trail
+        details = f"User updated. Fields: {list(update_data.keys())}"
+        await self._log_modification(db, updated_user, "update", details)
+        return updated_user
+
 user_service = UserService()
