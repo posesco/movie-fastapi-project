@@ -20,46 +20,54 @@ This project is a **Docker-First** application. The primary and mandatory runtim
 1. **Environment Setup:**
    Create a virtual environment:
    ```bash
-   python -m venv venv
-   source venv/bin/activate
-   ```
-2. **Install Dependencies:**
+   - **Monitoring Stack:** Prometheus v3.11, Grafana 13.0, Loki 3.6, Tempo 2.10, and **Grafana Alloy v1.16** as the OTLP collector.
+   - **Tools:** Dbgate for database administration.
+
+   ## Building and Running
+
+   ### Local Development
+   ...
+   3. **Run the Server:**
+      ```bash
+      fastapi dev src/main.py --port 8000 --host 0.0.0.0 --proxy-headers --forwarded-allow-ips='*'
+      ```
+
+   ### Docker
    ```bash
-   pip install -r requirements.txt
-   ```
-3. **Run the Server:**
-   ```bash
-   fastapi dev src/main.py --port 8000 --host 0.0.0.0
+   docker compose up -d --build
    ```
 
-### Docker
-```bash
-docker compose up -d --build
-```
+   ## Development Conventions
 
-## Development Conventions
+   - **Architecture:** Clean Architecture with separate layers:
+     - `src/api/`: Controllers and endpoint definitions (versioned).
+     - `src/core/`: Global settings, database engine, security, and **observability setup**.
+     - `src/models/`: Database entities using SQLModel.
+     - `src/repositories/`: Data access logic (Repository pattern).
+     - `src/schemas/`: Pydantic models for request/response validation.
+     - `src/services/`: Core business logic and service orchestration.
+     - `src/middlewares/`: **Idiomatic exception handlers** (replacing legacy BaseHTTPMiddleware).
 
-- **Architecture:** Clean Architecture with separate layers:
-  - `src/api/`: Controllers and endpoint definitions (versioned).
-  - `src/core/`: Global settings, database engine, security, and **observability setup**.
-  - `src/models/`: Database entities using SQLModel.
-  - `src/repositories/`: Data access logic (Repository pattern).
-  - `src/schemas/`: Pydantic models for request/response validation.
-  - `src/services/`: Core business logic and service orchestration.
-  - `src/middlewares/`: **Idiomatic exception handlers** (replacing legacy BaseHTTPMiddleware).
+   - **High Availability & Security (Nginx):**
+     - **Load Balancer:** Nginx handles **Round Robin** balancing across 4 app instances.
+     - **Proxy Configuration:** Application command includes `--proxy-headers` to trust Nginx headers.
+     - **Consistency:** `TrustedHostMiddleware` and `CORSMiddleware` are synchronized with Nginx `server_name` and proxy headers.
 
-- **Observability:** 
-  - Centralized setup in `src/core/observability.py`.
-  - All telemetry is exported via **OTLP (gRPC)** to Alloy.
-  - Metrics: Custom metrics defined in `src/services/metrics.py` (OTel Meter).
-  - Logs: Standard Python logging redirected to OTel LoggingHandler.
-  - Traces: Automatic FastAPI instrumentation via `FastAPIInstrumentor`.
-  - **Configuration:** Set `OTEL_ENABLED=True` in your `.env` file to activate the telemetry export (default is `False` for local development).
+   - **Observability:** 
+     - Centralized setup in `src/core/observability.py`.
+     - All telemetry is exported via **OTLP (gRPC)** to Alloy.
+     - Metrics: Custom metrics defined in `src/services/metrics.py` (OTel Meter).
+     - Logs: Standard Python logging redirected to OTel LoggingHandler.
+     - Traces: Automatic FastAPI instrumentation via `FastAPIInstrumentor`.
+     - **Monitoring:** Integrated Alertmanager for SRE alerting.
+     - **Configuration:** Set `OTEL_ENABLED=True` in your `.env` file to activate the telemetry export.
 
-- **Scaling & Session Management (Redis):**
-  - **Blacklisting:** Tokens are revoked via JTI stored in Redis upon logout.
-  - **Refresh Tokens:** Implemented for secure session persistence without re-authentication.
-  - **Rate Limiting:** Managed globally via Redis to prevent brute-force attacks across all instances.
+   - **Scaling & Session Management (Redis):**
+     - **Blacklisting:** Tokens are revoked via JTI stored in Redis upon logout.
+     - **Refresh Tokens:** Implemented for secure session persistence.
+     - **Rate Limiting:** Managed globally via Redis to prevent brute-force attacks.
+     - **Exporters:** Redis and Nginx metrics are exported to Prometheus.
+
 
 - **Database & Migrations:**
   - **Alembic** is used for schema versioning (async support).

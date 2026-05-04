@@ -10,10 +10,11 @@ Proyecto con **FastAPI**, en el que exploro y aprendo sobre esta potente herrami
 - **Asincronía Completa**: Operaciones de base de datos y endpoints asíncronos para mayor rendimiento.
 - **SQLModel**: Combinación de **SQLAlchemy** y **Pydantic** para modelos de datos elegantes y seguros.
 - **Auth (OAuth2 + JWT)**: Implementación de **OAuth2 (Password Flow)** con tokens **JWT** (PyJWT) para una autenticación segura y estándar.
-- **Base de Datos**: Soporte para **PostgreSQL**, **MariaDB** (v11.4 LTS) y **SQLite** mediante drivers asíncronos (`asyncpg`, `aiomysql`, `aiosqlite`).
-- **Docker Stack**: Configuración moderna con **PostgreSQL**, **Prometheus v3**, **Grafana 13**, **Loki 3.5**, **Tempo 2.10** y **Grafana Alloy v1.15**.
+- **Escalado Horizontal y Sesiones**: Balanceo de carga mediante **Nginx** (Round Robin) y gestión de estado (Blacklisting de tokens, Rate Limiting y Refresh Tokens) mediante **Redis**.
+- **Base de Datos**: Soporte para **PostgreSQL**, **MariaDB** (v11.4 LTS) y **SQLite** mediante drivers asíncronos.
+- **Docker Stack**: Configuración moderna con **PostgreSQL**, **Prometheus v3.11**, **Grafana 13.0**, **Loki 3.6**, **Tempo 2.10** y **Grafana Alloy v1.16**.
 - **Observabilidad Unificada (OpenTelemetry)**: Implementación de **Logs**, **Métricas** y **Trazabilidad Distribuida**. *Nota: Desactivado por defecto. Activar con `OTEL_ENABLED=True`.*
-- **Pgweb**: Interfaz web integrada para la administración de bases de datos en el entorno Docker.
+- **Dbgate**: Interfaz web moderna integrada para la administración de bases de datos.
 
 ## Librerías utilizadas
 
@@ -21,18 +22,17 @@ Proyecto con **FastAPI**, en el que exploro y aprendo sobre esta potente herrami
 - **SQLModel**: Para modelos de datos y ORM asíncrono.
 - **Alembic**: Herramienta de migraciones para SQLAlchemy/SQLModel.
 - **OpenTelemetry**: SDKs para instrumentación nativa de logs, trazas y métricas.
-- **python-dotenv**: Gestión de variables de entorno.
-- **Async Drivers**: `asyncpg`, `aiomysql`, `aiosqlite` para bases de datos asíncronas.
-- **Monitoring**: Grafana Alloy (agente unificado), Prometheus (Remote Write), Grafana, Loki y Tempo.
+- **Redis**: Integración para cache, rate limiting y seguridad.
+- **Monitoring**: Grafana Alloy (agente unificado), Prometheus, Grafana, Loki y Tempo.
 
 ## Instalación y Ejecución
 
-## Arquitectura Docker-First
+## Arquitectura Docker-First y Alta Disponibilidad
 
-Este proyecto está diseñado bajo una filosofía **Docker-First**. Toda la infraestructura, dependencias y el entorno de ejecución están estandarizados mediante contenedores para garantizar:
+Este proyecto está diseñado bajo una filosofía **Docker-First**. Toda la infraestructura está estandarizada mediante contenedores, configurando la aplicación con **4 réplicas** balanceadas por Nginx para garantizar:
+- **Alta Disponibilidad**: Resiliencia ante fallos de instancias individuales.
 - **Consistencia**: El mismo entorno en desarrollo, staging y producción.
 - **Aislamiento**: Dependencias del sistema (drivers de DB, librerías OTel) encapsuladas.
-- **Simplicidad**: Un solo comando para levantar todo el stack de observabilidad y persistencia.
 
 Se recomienda **no ejecutar la aplicación directamente en el host** para evitar conflictos de versiones y asegurar que las integraciones de red (como el exportador de OTel a Alloy) funcionen correctamente.
 
