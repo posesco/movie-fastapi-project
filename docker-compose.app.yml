@@ -5,7 +5,7 @@ services:
       target: dev # Use the 'dev' stage from the Dockerfile
     deploy:
       replicas: 4
-    command: bash -c "alembic upgrade head && fastapi dev src/main.py --host 0.0.0.0 --port 8000"
+    command: bash -c "alembic upgrade head && fastapi dev src/main.py --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips='*'"
     restart: unless-stopped
     expose:
       - "8000"
