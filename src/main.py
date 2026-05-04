@@ -9,7 +9,7 @@ from .core.redis import init_redis, close_redis
 from .core.config import settings, tags_metadata
 from .core.observability import setup_observability
 from .middlewares.handlers import setup_exception_handlers
-# import logging
+import logging
 
 from .api.v1.router import api_router
 
