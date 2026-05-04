@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from datetime import datetime, timezone
 from sqlalchemy import DateTime, Column
+from .actions import Action
 
 import uuid
 import json
@@ -36,6 +37,10 @@ class UserAuditLog(SQLModel, table=True):
         nullable=False
     )
 
+    # Relationships
+    user: "User" = Relationship(back_populates="audit_logs")
+    action: "Action" = Relationship()
+
 
 class User(SQLModel, table=True):
     __tablename__ = "users"
@@ -45,7 +50,7 @@ class User(SQLModel, table=True):
     surname: Optional[str] = Field(max_length=30, nullable=True)
     username: str = Field(max_length=30, unique=True, nullable=False)
     email: str = Field(max_length=100, unique=True, nullable=False)
-    password: str = Field(max_length=100, nullable=False)
+    password: str = Field(max_length=100, nullable=False, exclude=True)
     is_active: bool = Field(default=True)
     created_at: datetime = Field(
         sa_type=DateTime(timezone=True),
@@ -54,3 +59,4 @@ class User(SQLModel, table=True):
     )
 
     roles: List[Role] = Relationship(back_populates="users", link_model=UserRole)
+    audit_logs: List[UserAuditLog] = Relationship(back_populates="user")

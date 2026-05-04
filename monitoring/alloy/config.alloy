@@ -17,19 +17,35 @@ prometheus.remote_write "local" {
 	}
 }
 
-// Expose PostgreSQL metrics using the built-in postgres exporter.
+// --- METRICS SCRAPING ---
 
-//postgres.exporter.postgres "example" {
-//  data_source_names = ["postgresql://devdb_user:Nimda_20adc@postgres:5432/devdb?sslmode=disable"]
-//}
+// Scrape Nginx Exporter
+prometheus.scrape "nginx" {
+  targets = [{"__address__" = "nginx_exporter:9113"}]
+  forward_to = [prometheus.remote_write.local.receiver]
+}
 
-// Scrape the postgres exporter targets.
-// prometheus.scrape "postgres" {
-// 	targets    = prometheus.exporter.postgres.example.targets
-// 	forward_to = [prometheus.remote_write.default.receiver]
-// 	scrape_interval = "15s"
-// }
+// Scrape Redis Exporter
+prometheus.scrape "redis" {
+  targets = [{"__address__" = "redis_exporter:9121"}]
+  forward_to = [prometheus.remote_write.local.receiver]
+}
 
+// Scrape PostgreSQL using built-in exporter
+prometheus.exporter.postgres "local" {
+  data_source_names = [format("postgresql://%s:%s@postgres:5432/%s?sslmode=disable", env("POSTGRES_USER"), env("POSTGRES_PASSWORD"), env("POSTGRES_DB"))]
+}
+
+prometheus.scrape "postgres" {
+  targets    = prometheus.exporter.postgres.local.targets
+  forward_to = [prometheus.remote_write.local.receiver]
+}
+
+// Scrape Alloy itself
+prometheus.scrape "alloy" {
+  targets = [{"__address__" = "localhost:12345"}]
+  forward_to = [prometheus.remote_write.local.receiver]
+}
 
 // --- TRACING (OpenTelemetry) ---
 

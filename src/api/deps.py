@@ -5,6 +5,7 @@ import jwt
 from src.core.database import get_db
 from src.core.config import settings
 from src.core.security import oauth2_scheme
+from src.core.redis import is_token_blacklisted
 from src.models.user import User
 from src.repositories.user import user_repository
 
@@ -24,8 +25,18 @@ async def get_current_user(
             token, settings.secret_key, algorithms=[settings.algorithm]
         )
         username: str = payload.get("sub")
-        if username is None:
+        jti: str = payload.get("jti")
+        if username is None or jti is None:
             raise credentials_exception
+        
+        # Check if token is blacklisted in Redis
+        if await is_token_blacklisted(jti):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token has been revoked",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+            
     except jwt.PyJWTError:
         raise credentials_exception
     

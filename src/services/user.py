@@ -7,7 +7,7 @@ from fastapi.encoders import jsonable_encoder
 from src.models.user import User, Role, UserAuditLog
 from src.repositories.user import user_repository
 from src.repositories.action import action_repository
-from src.core.security import pwd_context, create_token
+from src.core.security import pwd_context, create_token, create_refresh_token
 
 class UserService:
     """Business logic for Users."""
@@ -36,8 +36,14 @@ class UserService:
         )
         db.add(log_entry)
 
-    async def get_token(self, user_data: dict) -> str:
-        return create_token(user_data)
+    async def get_tokens(self, user_data: dict) -> dict:
+        access_token = create_token(user_data)
+        refresh_token = create_refresh_token(user_data)
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer"
+        }
 
     async def authenticate(
         self, db: AsyncSession, username: str, password: str
@@ -111,8 +117,22 @@ class UserService:
             return False
         
         db_user.is_active = False
-        details = f"User soft-deleted. {jsonable_encoder(db_user)}"
+        details = f"User soft-deleted. ID: {db_user.id}, Username: {db_user.username}"
         await self._log_modification(db, db_user, "delete", details)
         return True
+
+    async def update_user(self, db: AsyncSession, db_user: User, update_data: dict) -> User:
+        if "password" in update_data and update_data["password"]:
+            update_data["password"] = pwd_context.hash(update_data["password"])
+        else:
+            # Remove password from dict if it's None or empty to avoid overwriting with None
+            update_data.pop("password", None)
+            
+        updated_user = await user_repository.update(db, db_user, update_data)
+        
+        # Log only changed fields for better audit trail
+        details = f"User updated. Fields: {list(update_data.keys())}"
+        await self._log_modification(db, updated_user, "update", details)
+        return updated_user
 
 user_service = UserService()

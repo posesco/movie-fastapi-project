@@ -1,0 +1,32 @@
+global:
+  smtp_smarthost: 'smtp.jesusposada.website:25'
+  smtp_from: 'alertmanager@jesusposada.website'
+  smtp_auth_username: 'TU_USUARIO'
+  smtp_auth_password: 'TU_PASSWORD'
+  smtp_require_tls: false # Al ser interno a veces no usan TLS en el 25
+
+route:
+  group_by: ['alertname', 'job']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: 'email-warnings' # Receptor por defecto
+
+#   routes:
+#     - match:
+#         severity: critical
+#       receiver: 'telegram-critical'
+
+receivers:
+- name: 'email-warnings'
+  email_configs:
+  - to: 'infra.alerts@jesusposada.website'
+    send_resolved: true
+
+# - name: 'telegram-critical'
+#   telegram_configs:
+#   - bot_token: 'TELEGRAM_BOT_TOKEN_PLACEHOLDER'
+#     chat_id: 0 # TELEGRAM_CHAT_ID_PLACEHOLDER
+#     send_resolved: true
+#     parse_mode: 'HTML'
+#     message: '🔥 <b>CRITICAL ALERT</b>\n<b>Alert:</b> {{ .GroupLabels.alertname }}\n<b>Severity:</b> {{ .CommonLabels.severity }}\n<b>Summary:</b> {{ .CommonAnnotations.summary }}\n<b>Description:</b> {{ .CommonAnnotations.description }}'

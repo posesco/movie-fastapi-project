@@ -1,0 +1,42 @@
+groups:
+  - name: SRE_Golden_Signals
+    rules:
+      # 1. Disponibilidad (Uptime) - CRITICAL
+      - alert: InstanceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instancia {{ $labels.instance }} caída"
+          description: "El servicio {{ $labels.job }} lleva más de 1 minuto sin responder."
+
+      # 2. Latencia Alta - WARNING
+      - alert: HighLatency
+        expr: http_request_duration_seconds_sum / http_request_duration_seconds_count > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latencia elevada en {{ $labels.instance }}"
+          description: "El tiempo de respuesta es > 500ms en promedio durante los últimos 5 min."
+
+      # 3. Errores HTTP 5xx - CRITICAL
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Tasa de errores 5xx alta"
+          description: "Detectados errores en el 10% de las peticiones en {{ $labels.job }}."
+
+      # 4. Consumo de Memoria - WARNING
+      - alert: ContainerHighMemory
+        expr: container_memory_usage_bytes > 1e+09 # 1GB aprox
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Uso de memoria alto"
+          description: "El contenedor {{ $labels.container }} está usando mucha memoria."

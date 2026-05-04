@@ -1,15 +1,15 @@
-# Plan: Standardize and Isolate Compose Files
+# Status: Standardized and Isolated Compose Stack (Implemented)
 
 ## Objective
-Provide consistency to the Docker Compose files (`docker-compose.app.yml` and `docker-compose.monitoring.yml`) by unifying the order of properties for each service and adding an isolated network for the project.
+The Docker Compose stack is standardized to ensure consistency across services, property ordering, and network isolation. All services are connected through a dedicated bridge network (`fastapi_net`).
 
 ## Key Files & Context
-- `compose.yml`: The isolated network declaration (`fastapi_net`) will be added.
-- `docker-compose.app.yml`: Properties will be reordered and connected to `fastapi_net`.
-- `docker-compose.monitoring.yml`: Properties will be reordered and connected to `fastapi_net`.
+- `compose.yml`: Main entry point with `fastapi_net` network declaration and service inclusion.
+- `docker-compose.app.yml`: Application core services (App replicas, Postgres, Redis, Dbgate).
+- `docker-compose.monitoring.yml`: Full observability stack (Prometheus, Grafana, Loki, Tempo, Alloy, Alertmanager, Exporters).
 
-## Proposed Structure (Standard Order)
-For each service, the following property order will be strictly followed:
+## Standardized Structure (Strict Property Order)
+Each service follows this mandatory property sequence:
 1. `container_name`
 2. `image` / `build`
 3. `command`
@@ -22,22 +22,13 @@ For each service, the following property order will be strictly followed:
 10. `healthcheck`
 11. `networks`
 
-## Implementation Steps
-1. **Define the Network:**
-   Add the custom network in `compose.yml`:
-   ```yaml
-   include:
-     - docker-compose.app.yml
-     - docker-compose.monitoring.yml
-
-   networks:
-     fastapi_net:
-       driver: bridge
-   ```
-2. **Refactor `docker-compose.app.yml`:**
-   Apply the standard order to the `app`, `postgres`, and `pgweb` services and add `networks: [fastapi_net]` to all. Declare the network at the end.
-3. **Refactor `docker-compose.monitoring.yml`:**
-   Apply the standard order to `prometheus`, `grafana`, `loki`, `tempo`, `alloy`, and `vulture` and add `networks: [fastapi_net]`. Declare the network at the end.
+## Current Service Inventory
+- **Core:** `app` (4 replicas), `postgres`, `redis`, `dbgate`.
+- **Ingress:** `nginx` (Load Balancer).
+- **Monitoring:** `prometheus`, `grafana`, `loki`, `tempo`, `alloy`, `alertmanager`, `vulture`.
+- **Exporters:** `nginx_exporter`, `redis_exporter`.
 
 ## Verification
-- Run `docker compose config` to validate that the syntax is correct and that all services are on the `fastapi_net` network.
+- Syntax validated via `docker compose config`.
+- Network isolation verified: All inter-service communication occurs within `fastapi_net`.
+- Load balancing confirmed via `X-Backend-Server` response headers.

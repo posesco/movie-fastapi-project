@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     secret_key: str = Field(default="secret", validation_alias="SECRET_KEY", repr=False)
     algorithm: str = Field(default="HS256", validation_alias="ALGORITHM")
     access_token_expire_minutes: int = Field(default=15, validation_alias="ACCESS_TOKEN_EXPIRE_MINUTES")
+    refresh_token_expire_days: int = Field(default=7, validation_alias="REFRESH_TOKEN_EXPIRE_DAYS")
 
     # PostgreSQL
     postgres_host: str = Field(default="localhost", validation_alias="POSTGRES_HOST")
@@ -31,10 +32,37 @@ class Settings(BaseSettings):
     otel_collector_endpoint: str = Field(default="http://alloy:4317", validation_alias="OTEL_COLLECTOR_ENDPOINT")
     otel_service_name: str = Field(default="fastapi-app", validation_alias="OTEL_SERVICE_NAME")
     otel_enabled: bool = Field(default=False, validation_alias="OTEL_ENABLED")
+
+    # Redis
+    redis_host: str = Field(default="localhost", validation_alias="REDIS_HOST")
+    redis_port: int = Field(default=6379, validation_alias="REDIS_PORT")
+    redis_db: int = Field(default=0, validation_alias="REDIS_DB")
+    redis_password: str | None = Field(default=None, validation_alias="REDIS_PASSWORD", repr=False)
+
+    # Security
+    backend_cors_origins: list[str] = Field(default=[], validation_alias="BACKEND_CORS_ORIGINS")
+    allowed_hosts: list[str] = Field(
+        default=["localhost", "127.0.0.1"], 
+        validation_alias="ALLOWED_HOSTS"
+    )
+
     # Runtime
     running_in_docker: bool = Field(default=False, validation_alias="RUNNING_IN_DOCKER")
 
     # Computed
+    @computed_field
+    @property
+    def effective_redis_host(self) -> str:
+        return "redis" if self.running_in_docker else self.redis_host
+
+    @computed_field
+    @property
+    def redis_url(self) -> str:
+        if self.redis_password:
+            password = quote_plus(self.redis_password)
+            return f"redis://:{password}@{self.effective_redis_host}:{self.redis_port}/{self.redis_db}"
+        return f"redis://{self.effective_redis_host}:{self.redis_port}/{self.redis_db}"
+
     @computed_field
     @property
     def effective_postgres_host(self) -> str:
@@ -73,7 +101,7 @@ tags_metadata = [
         "description": "Operations with users. The **login** logic is also here.",
         "externalDocs": {
             "description": "Items external docs",
-            "url": "https://jesusposada.website/users",
+            "url": "https://milocal.com/users",
         },
     },
     {
@@ -81,7 +109,7 @@ tags_metadata = [
         "description": "Manage movies. So _fancy_ they have their own docs.",
         "externalDocs": {
             "description": "Movies external docs",
-            "url": "https://jesusposada.website/movies",
+            "url": "https://milocal.com/movies",
         },
     },
 ]
