@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, List
 
-from src.schemas.user import UserCreate, UserRoleAssign, UserUpdate, UserRead
+from src.schemas.user import UserCreate, UserRoleAssign, UserUpdate, UserRead, UserAuditLogRead
 from src.schemas.token import Token, RefreshTokenRequest
 from src.services.user import user_service
 from src.api.deps import SessionDep, CurrentUserDep, RoleChecker
@@ -183,6 +183,57 @@ async def read_users_me(
 ) -> UserModel:
     await db.refresh(current_user, ["roles"])
     return current_user
+
+
+@router.get("/", response_model=List[UserRead], dependencies=[Depends(RoleChecker(["super_admin", "admin"]))])
+async def list_users(
+    db: SessionDep,
+    skip: int = 0,
+    limit: int = 100,
+) -> List[UserModel]:
+    """
+    List all users with pagination.
+    Accessible only by super_admin and admin roles.
+    """
+    from src.repositories.user import user_repository
+    users = await user_repository.get_multi(db, skip=skip, limit=limit)
+    
+    # Eagerly load roles for each user to avoid N+1 queries in the response model serialization
+    for user in users:
+        await db.refresh(user, ["roles"])
+    return users
+
+
+@router.get("/{username}/activity", response_model=List[UserAuditLogRead], dependencies=[Depends(RoleChecker(["super_admin", "admin"]))])
+async def get_user_activity(
+    username: str,
+    db: SessionDep,
+    skip: int = 0,
+    limit: int = 100,
+) -> List[UserAuditLogRead]:
+    """
+    Get activity logs for a specific user.
+    Accessible only by super_admin and admin roles.
+    """
+    from src.repositories.user import user_repository
+    from src.repositories.audit import audit_repository
+    
+    db_user = await user_repository.get_by_username(db, username)
+    if not db_user:
+        raise HTTPException(status_code=404, detail=f"User {username} not found")
+        
+    activity = await audit_repository.get_by_user_id(
+        db, 
+        user_id=db_user.id, 
+        skip=skip, 
+        limit=limit
+    )
+    
+    # Ensure action relationship is loaded for each log entry
+    for log in activity:
+        await db.refresh(log, ["action"])
+        
+    return [UserAuditLogRead.from_orm_with_action(log) for log in activity]
 
 
 @router.put("/{username}", response_model=UserRead)

@@ -75,3 +75,25 @@ class UserRead(BaseModel):
     roles: List[RoleRead]
     created_at: datetime
 
+
+class UserAuditLogRead(BaseModel):
+    id: int
+    user_id: uuid.UUID
+    action_id: uuid.UUID
+    action_name: Optional[str] = None
+    description: str
+    date: datetime
+
+    @classmethod
+    def from_orm_with_action(cls, obj):
+        return cls(
+            id=obj.id,
+            user_id=obj.user_id,
+            action_id=obj.action_id,
+            action_name=obj.action.name if obj.action else None,
+            description=obj.description,
+            date=obj.date
+        )
+
+    model_config = ConfigDict(from_attributes=True)
+
