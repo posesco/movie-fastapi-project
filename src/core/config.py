@@ -39,6 +39,13 @@ class Settings(BaseSettings):
     redis_db: int = Field(default=0, validation_alias="REDIS_DB")
     redis_password: str | None = Field(default=None, validation_alias="REDIS_PASSWORD", repr=False)
 
+    # Security
+    backend_cors_origins: list[str] = Field(default=[], validation_alias="BACKEND_CORS_ORIGINS")
+    allowed_hosts: list[str] = Field(
+        default=["localhost", "127.0.0.1"], 
+        validation_alias="ALLOWED_HOSTS"
+    )
+
     # Runtime
     running_in_docker: bool = Field(default=False, validation_alias="RUNNING_IN_DOCKER")
 

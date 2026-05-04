@@ -1,5 +1,7 @@
 from fastapi import FastAPI, status
 from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 import socket
@@ -29,6 +31,22 @@ app = FastAPI(
     debug=settings.project_debug_mode,
     lifespan=lifespan,
     openapi_tags=tags_metadata,
+)
+
+# Setup CORS
+if settings.backend_cors_origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[str(origin).rstrip("/") for origin in settings.backend_cors_origins],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+# Trusted Hosts
+app.add_middleware(
+    TrustedHostMiddleware, 
+    allowed_hosts=settings.allowed_hosts
 )
 
 # Setup Observability
