@@ -4,13 +4,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, List
 
-from src.schemas.user import UserCreate, UserRoleAssign, UserUpdate
+from src.schemas.user import UserCreate, UserRoleAssign, UserUpdate, UserRead
 from src.schemas.token import Token, RefreshTokenRequest
 from src.services.user import user_service
 from src.api.deps import SessionDep, CurrentUserDep, RoleChecker
 from src.models.user import User as UserModel
 from src.core.redis import blacklist_token, is_token_blacklisted
-from src.core.security import oauth2_scheme
+from src.core.security import oauth2_scheme, pwd_context
 from src.core.config import settings
 import jwt
 import datetime
@@ -176,14 +176,16 @@ async def delete_user(
 
     return {"success": f"User {username} deleted successfully"}
 
-@router.get("/me", response_model=UserModel)
+@router.get("/me", response_model=UserRead)
 async def read_users_me(
     current_user: CurrentUserDep,
+    db: SessionDep,
 ) -> UserModel:
+    await db.refresh(current_user, ["roles"])
     return current_user
 
 
-@router.put("/{username}", response_model=UserModel)
+@router.put("/{username}", response_model=UserRead)
 async def update_user(
     username: str,
     user_update: UserUpdate,
@@ -229,10 +231,28 @@ async def update_user(
             detail="Not enough permissions"
         )
 
+    # Password confirmation logic
+    if user_update.password:
+        is_privileged = any(role in current_roles for role in ["super_admin", "admin"])
+        if not is_privileged:
+            if not user_update.current_password:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Current password is required to change password"
+                )
+            if not pwd_context.verify(user_update.current_password, target_user.password):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Invalid current password"
+                )
+
     # Email uniqueness check if email is being updated
     if user_update.email and user_update.email != target_user.email:
         if await user_repository.get_by_email(db, user_update.email):
             raise HTTPException(status_code=409, detail="Email already exists")
 
     update_data = user_update.model_dump(exclude_unset=True)
-    return await user_service.update_user(db, target_user, update_data)
+    update_data.pop("current_password", None)
+    updated_user = await user_service.update_user(db, target_user, update_data)
+    await db.refresh(updated_user, ["roles"])
+    return updated_user

@@ -5,6 +5,8 @@ from pydantic import (
     Field,
 )
 from typing import Optional, List, Literal
+import uuid
+from datetime import datetime
 
 
 class UserLogin(BaseModel):
@@ -43,6 +45,7 @@ class UserUpdate(BaseModel):
     surname: Optional[str] = Field(default=None, max_length=30)
     email: Optional[EmailStr] = None
     password: Optional[str] = Field(default=None, min_length=5, max_length=100)
+    current_password: Optional[str] = Field(default=None, min_length=5, max_length=30)
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -51,6 +54,24 @@ class UserUpdate(BaseModel):
                 "surname": "Smith",
                 "email": "janesmith@example.com",
                 "password": "newpassword123",
+                "current_password": "oldpassword123",
             }
         }
     )
+
+
+class RoleRead(BaseModel):
+    id: uuid.UUID
+    name: str
+
+
+class UserRead(BaseModel):
+    id: uuid.UUID
+    name: Optional[str]
+    surname: Optional[str]
+    username: str
+    email: EmailStr
+    is_active: bool
+    roles: List[RoleRead]
+    created_at: datetime
+
