@@ -10,7 +10,6 @@ load_dotenv()
 # Configuration
 BASE_URL = "http://localhost/api/v1"
 MOVIES_FILE = "movies.json"
-BATCH_SIZE = 10
 USERNAME = os.getenv("ADMIN_USER", "admin")
 PASSWORD = os.getenv("ADMIN_PASS", "admin")
 
@@ -56,17 +55,17 @@ def populate():
     
     headers = {"Authorization": f"Bearer {res.get('access_token')}"}
     
-    # Upload in batches
+    # Upload movies individually
     total = 0
-    for i in range(0, len(movies), BATCH_SIZE):
-        batch = movies[i:i + BATCH_SIZE]
-        print(f"Uploading batch {i//BATCH_SIZE + 1}...")
-        res, code = make_request(f"{BASE_URL}/movies/", data=batch, headers=headers)
+    for movie in movies:
+        print(f"Uploading: {movie.get('title')}...")
+        res, code = make_request(f"{BASE_URL}/movies/", data=movie, headers=headers)
         if code in [200, 201]:
-            total += len(batch)
+            total += 1
             print(f"OK. Total: {total}/{len(movies)}")
         else:
-            print(f"Error ({code}): {res.get('detail')}"); break
+            print(f"Error ({code}): {res.get('detail')}")
+            # Optional: break or continue. Let's continue for other movies.
             
     print(f"\nPopulation finished! Total uploaded: {total} movies.")
 

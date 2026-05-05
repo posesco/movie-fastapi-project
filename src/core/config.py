@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     # Security
     backend_cors_origins: list[str] = Field(default=[], validation_alias="BACKEND_CORS_ORIGINS")
     allowed_hosts: list[str] = Field(
-        default=["localhost", "127.0.0.1"], 
+        default=["localhost", "127.0.0.1", "testserver"], 
         validation_alias="ALLOWED_HOSTS"
     )
 
