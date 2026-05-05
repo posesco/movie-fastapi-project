@@ -110,6 +110,7 @@ uvloop==0.22.1
 virtualenv==21.2.4
 watchfiles==1.1.1
 websockets==16.0
-wrapt==2.1.2
+wrapt==1.17.2
 zipp==3.23.1
 alembic==1.14.1
+aioboto3==15.5.0

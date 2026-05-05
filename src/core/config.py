@@ -39,6 +39,15 @@ class Settings(BaseSettings):
     redis_db: int = Field(default=0, validation_alias="REDIS_DB")
     redis_password: str | None = Field(default=None, validation_alias="REDIS_PASSWORD", repr=False)
 
+    # S3
+    s3_endpoint: str = Field(default="http://localhost:9000", validation_alias="S3_ENDPOINT")
+    s3_access_key: str = Field(default="minioadmin", validation_alias="S3_ACCESS_KEY", repr=False)
+    s3_secret_key: str = Field(default="minioadmin", validation_alias="S3_SECRET_KEY", repr=False)
+    s3_bucket_name: str = Field(default="fastapi-bucket", validation_alias="S3_BUCKET_NAME")
+    s3_region: str = Field(default="us-east-1", validation_alias="S3_REGION")
+    s3_use_ssl: bool = Field(default=False, validation_alias="S3_USE_SSL")
+    s3_public_url: str = Field(default="http://localhost:9000", validation_alias="S3_PUBLIC_URL")
+
     # Security
     backend_cors_origins: list[str] = Field(default=[], validation_alias="BACKEND_CORS_ORIGINS")
     allowed_hosts: list[str] = Field(

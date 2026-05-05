@@ -31,6 +31,7 @@ class Movie(SQLModel, table=True):
     director: str = Field(max_length=30, nullable=False)
     studio: str = Field(max_length=60, nullable=False)
     box_office: int = Field(sa_type=BigInteger, nullable=False)
+    image_url: Optional[str] = Field(default=None, max_length=255)
     created_at: datetime = Field(
         sa_type=DateTime(timezone=True),
         default_factory=lambda: datetime.now(timezone.utc),
