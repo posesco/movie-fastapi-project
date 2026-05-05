@@ -16,9 +16,8 @@ async def test_register_user_success(client):
     # The endpoint uses Form data
     response = await client.post(
         "/api/v1/user/register",
-        data=user_data
+        json=user_data
     )
-    
     assert response.status_code == status.HTTP_201_CREATED
     assert response.json() == {"success": "User created successfully"}
 
@@ -29,6 +28,6 @@ async def test_register_user_duplicate_username(client):
         "email": "unique@example.com",
         "password": "testpassword"
     }
-    response = await client.post("/api/v1/user/register", data=user_data)
+    response = await client.post("/api/v1/user/register", json=user_data)
     assert response.status_code == status.HTTP_409_CONFLICT
     assert response.json()["error"] == "Username already exists"

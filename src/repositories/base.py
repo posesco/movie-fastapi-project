@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar, Type, Optional, List, Any
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlmodel import SQLModel
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
@@ -10,6 +10,11 @@ class BaseRepository(Generic[ModelType]):
 
     def __init__(self, model: Type[ModelType]):
         self.model = model
+
+    async def count(self, db: AsyncSession) -> int:
+        """Count total records."""
+        result = await db.execute(select(func.count()).select_from(self.model))
+        return result.scalar() or 0
 
     async def get(self, db: AsyncSession, id: Any) -> Optional[ModelType]:
         """Get a single record by ID."""

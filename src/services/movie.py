@@ -9,6 +9,9 @@ class MovieService:
     async def get_movies(self, db: AsyncSession) -> List[MovieModel]:
         return await movie_repository.get_multi(db)
 
+    async def get_categories(self, db: AsyncSession) -> List[str]:
+        return await movie_repository.get_categories(db)
+
     async def get_movie(self, db: AsyncSession, id: int) -> Optional[MovieModel]:
         return await movie_repository.get(db, id)
 
@@ -17,10 +20,8 @@ class MovieService:
         result = await db.execute(select(MovieModel).where(MovieModel.category == category))
         return result.scalars().all()
 
-    async def create_movies(self, db: AsyncSession, movies_in: List[MovieModel]) -> List[MovieModel]:
-        for movie in movies_in:
-            await movie_repository.create(db, movie)
-        return movies_in
+    async def create_movie(self, db: AsyncSession, movie_in: MovieModel) -> MovieModel:
+        return await movie_repository.create(db, movie_in)
 
     async def update_movie(self, db: AsyncSession, id: int, movie_data: dict) -> Optional[MovieModel]:
         db_obj = await movie_repository.get(db, id)

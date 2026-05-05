@@ -10,7 +10,7 @@ load_dotenv()
 # Configuration
 BASE_URL = "http://localhost/api/v1"
 MOVIES_FILE = "movies.json"
-BATCH_SIZE = 10
+BATCH_SIZE = 1
 USERNAME = os.getenv("ADMIN_USER", "admin")
 PASSWORD = os.getenv("ADMIN_PASS", "admin")
 

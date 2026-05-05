@@ -22,7 +22,7 @@ async def test_assign_roles_put(client):
         "email": "roleuser@example.com",
         "password": "testpassword"
     }
-    await client.post("/api/v1/user/register", data=user_data)
+    await client.post("/api/v1/user/register", json=user_data)
 
     # 3. Assign roles using PUT (the new method)
     assign_data = {
@@ -57,7 +57,7 @@ async def test_delete_user_success(client):
         "name": "To", "surname": "Delete", "username": username,
         "email": "delete@example.com", "password": "password"
     }
-    await client.post("/api/v1/user/register", data=user_data)
+    await client.post("/api/v1/user/register", json=user_data)
 
     # 3. Delete user
     response = await client.delete(f"/api/v1/user/{username}", headers=headers)

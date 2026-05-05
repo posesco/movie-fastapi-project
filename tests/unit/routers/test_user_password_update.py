@@ -7,7 +7,7 @@ async def test_update_password_self_with_confirmation_success(client):
     # 1. Register and login
     username = "passuser"
     password = "oldpassword"
-    await client.post("/api/v1/user/register", data={
+    await client.post("/api/v1/user/register", json={
         "username": username, "email": "pass@test.com", "password": password,
         "name": "Pass", "surname": "User"
     })
@@ -35,7 +35,7 @@ async def test_update_password_self_no_confirmation_failure(client):
     # 1. Register and login
     username = "nopassuser"
     password = "oldpassword"
-    await client.post("/api/v1/user/register", data={
+    await client.post("/api/v1/user/register", json={
         "username": username, "email": "nopass@test.com", "password": password,
         "name": "No", "surname": "Pass"
     })
@@ -56,7 +56,7 @@ async def test_update_password_self_wrong_confirmation_failure(client):
     # 1. Register and login
     username = "wrongpassuser"
     password = "oldpassword"
-    await client.post("/api/v1/user/register", data={
+    await client.post("/api/v1/user/register", json={
         "username": username, "email": "wrongpass@test.com", "password": password,
         "name": "Wrong", "surname": "Pass"
     })
@@ -85,7 +85,7 @@ async def test_update_password_as_admin_no_confirmation_success(client):
     # 2. Create target user
     target_username = "targetpass"
     target_password = "targetpassword"
-    await client.post("/api/v1/user/register", data={
+    await client.post("/api/v1/user/register", json={
         "username": target_username, "email": "targetpass@test.com", "password": target_password,
         "name": "Target", "surname": "Pass"
     })

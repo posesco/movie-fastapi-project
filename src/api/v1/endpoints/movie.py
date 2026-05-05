@@ -12,11 +12,13 @@ from src.models.user import User as UserModel
 
 router = APIRouter(prefix="/movies", tags=["Movies"])
 
+@router.get("/categories", response_model=List[str])
+async def get_categories(db: SessionDep) -> List[str]:
+    return await movie_service.get_categories(db)
+
 @router.get("/", response_model=List[MovieModel])
 async def get_movies(db: SessionDep) -> List[MovieModel]:
     result = await movie_service.get_movies(db)
-    if not result:
-        raise HTTPException(status_code=404, detail="No movies found")
     return result
 
 @router.get("/{id}", response_model=MovieModel)
@@ -35,19 +37,17 @@ async def get_movie_by_category(
     category: Annotated[str, Query(min_length=3, max_length=30)],
 ) -> List[MovieModel]:
     result = await movie_service.get_movies_by_category(db, category)
-    if not result:
-        raise HTTPException(status_code=404, detail="Category not found")
     return result
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_movies(
-    movies: List[Movie], 
+async def create_movie(
+    movie: Movie, 
     db: SessionDep,
     current_user: CurrentUserDep
 ) -> dict:
-    models = [MovieModel(**movie.model_dump()) for movie in movies]
-    new_movies = await movie_service.create_movies(db, models)
-    return {"success": f"Registered {len(new_movies)} movies"}
+    model = MovieModel(**movie.model_dump())
+    new_movie = await movie_service.create_movie(db, model)
+    return {"success": f"Movie '{new_movie.title}' registered successfully"}
 
 @router.put("/{id}")
 async def update_movie(
