@@ -1,38 +1,17 @@
 services:
-  app:
-    build:
-      context: .
-      target: dev # Use the 'dev' stage from the Dockerfile
-    deploy:
-      replicas: 4
-    command: bash -c "alembic upgrade head && fastapi dev src/main.py --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips='*'"
-    restart: unless-stopped
-    expose:
-      - "8000"
-    environment:
-      RUNNING_IN_DOCKER: "true"
-    env_file:
-      - .env
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_lb
+    ports:
+      - "80:80"
     volumes:
-      - ./src:/app/src
-      - ./migrations:/app/migrations
-      - ./alembic.ini:/app/alembic.ini
-      - ./tests:/app/tests
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      postgres:
-        condition: service_healthy
-        restart: true
-      redis:
-        condition: service_started
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health-check/')"]
-      interval: 10s
-      timeout: 5s
-      start_period: 15s
-      retries: 5
+      - app
     networks:
       - fastapi_net
-
+      
   redis:
     container_name: redis
     image: redis:8.8-m03-alpine
@@ -68,26 +47,6 @@ services:
       timeout: 5s
       start_period: 10s
       retries: 5
-    networks:
-      - fastapi_net
-
-  dbgate:
-    container_name: dbgate
-    image: dbgate/dbgate:alpine
-    restart: unless-stopped
-    ports:
-      - "18581:3000"
-    environment:
-      CONNECTIONS: con1
-      LABEL_con1: "FastAPI Project"
-      SERVER_con1: postgres
-      USER_con1: ${POSTGRES_USER}
-      PASSWORD_con1: ${POSTGRES_PASSWORD}
-      PORT_con1: ${POSTGRES_PORT}
-      ENGINE_con1: postgres@dbgate-plugin-postgres
-    depends_on:
-      postgres:
-        condition: service_healthy
     networks:
       - fastapi_net
 
@@ -130,6 +89,6 @@ services:
 volumes:
   postgres_data:
   minio_data:
-
+  
 networks:
   fastapi_net:

@@ -1,0 +1,37 @@
+services:
+  app:
+    build:
+      context: .
+      target: dev # Use the 'dev' stage from the Dockerfile
+    deploy:
+      replicas: 4
+    command: bash -c "alembic upgrade head && fastapi dev src/main.py --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips='*'"
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      RUNNING_IN_DOCKER: "true"
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./migrations:/app/migrations
+      - ./alembic.ini:/app/alembic.ini
+      - ./tests:/app/tests
+    depends_on:
+      postgres:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health-check/')"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+    networks:
+      - fastapi_net
+
+networks:
+  fastapi_net:
