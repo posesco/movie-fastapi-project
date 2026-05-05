@@ -1,6 +1,6 @@
-# FastAPI Review Project (Movie API)
+# FastAPI Project (Movie API)
 
-Proyecto con **FastAPI**, en el que exploro y aprendo sobre esta potente herramienta para construir APIs modernas y de alto rendimiento. El proyecto utiliza una arquitectura **Clean Architecture** y está completamente **asincronizado**.
+Proyecto exploratorio con **FastAPI** para construir APIs modernas y de alto rendimiento. El proyecto utiliza una arquitectura **Clean Architecture** y está completamente **asincronizado**.
 
 ## Características
 
@@ -65,36 +65,11 @@ Asegúrate de tener instalado:
     docker compose up -d --build
     ```
 
-> El archivo `compose.yml` actúa como punto de entrada unificado e incluye automáticamente `docker-compose.app.yml` y `docker-compose.third-parties.yml`. Para activar el stack de monitoreo, descomenta la línea correspondiente en `compose.yml`.
+   La API estará disponible en `http://localhost`.
+   La documentación estará disponible en `http://localhost/docs` o `http://localhost/redoc`.
 
-### Instalación del entorno local (Solo para desarrollo de código)
 
-1. Crea un entorno virtual:
-
-    ```bash
-    python -m venv .venv
-    source .venv/bin/activate  # En Linux/macOS
-    .venv\Scripts\activate     # En Windows
-    ```
-
-2. Instala las dependencias del proyecto:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-### Ejecución en entorno local
-
-1. Crea un archivo `.env` en la raíz del proyecto para configurar las variables de entorno (como claves JWT, base de datos, etc.).
-
-2. Inicia el servidor de desarrollo utilizando la CLI oficial de FastAPI:
-
-    ```bash
-    fastapi dev src/main.py --port 8000 --host 0.0.0.0
-    ```
-
-   La API estará disponible en `http://localhost:8000`.
-   La documentación estará disponible en `http://localhost:8000/docs` o `http://localhost:8000/redoc`.
+> El archivo `compose.yml` actúa como punto de entrada unificado e incluye automáticamente `compose.app.yml` y `compose.required.yml`. Para activar el stack de monitoreo y las herramientas opcionales, descomenta la línea correspondiente en `compose.yml`.
 
 ## Estructura del Proyecto (Clean Architecture)
 
