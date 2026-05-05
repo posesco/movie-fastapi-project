@@ -31,14 +31,6 @@ This project is a **Docker-First** application. The primary and mandatory runtim
 
 ## Building and Running
 
-### Local Development
-
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-fastapi dev src/main.py --port 8000 --host 0.0.0.0 --proxy-headers --forwarded-allow-ips='*'
-```
-
 ### Docker (full stack)
 
 ```bash
@@ -53,15 +45,10 @@ docker compose up -d --build
 sudo sysctl -w vm.max_map_count=524288
 
 # Start SonarQube and its dedicated DB
-docker compose -f docker-compose.third-parties.yml up sonarqube sonarqube-db -d
+docker compose -f compose.monitoring.yml up sonarqube sonarqube-db -d
 
 # Manual scan (from project root, with stack running)
-docker run --rm \
-  -e SONAR_HOST_URL="http://sonarqube:9100" \
-  -e SONAR_TOKEN="<your-token>" \
-  -v "$(pwd):/usr/src" \
-  --network fastapi_net \
-  sonarsource/sonar-scanner-cli:11
+./helpers/sonar-scan.sh
 ```
 
 UI: `http://localhost:9100` (default credentials: admin/admin — change on first login).
