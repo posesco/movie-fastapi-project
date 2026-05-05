@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ENV_FILE=".env"
+ENV_FILE="../.env"
 TOKEN_KEY="SONAR_TOKEN"
 
 # Read or prompt for token
