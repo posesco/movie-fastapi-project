@@ -46,7 +46,7 @@ async def create_movie(
     current_user: CurrentUserDep
 ) -> dict:
     model = MovieModel(**movie.model_dump())
-    new_movie = await movie_service.create_movie(db, model)
+    new_movie = await movie_service.create_movie(db, model, current_user)
     return {"success": f"Movie '{new_movie.title}' registered successfully"}
 
 @router.put("/{id}")
@@ -56,7 +56,7 @@ async def update_movie(
     db: SessionDep,
     current_user: CurrentUserDep
 ) -> dict:
-    result = await movie_service.update_movie(db, id, movie.model_dump())
+    result = await movie_service.update_movie(db, id, movie.model_dump(), current_user)
     if not result:
         raise HTTPException(status_code=404, detail="Movie not found")
     return {"success": "Movie updated"}
@@ -67,7 +67,7 @@ async def delete_movie(
     db: SessionDep,
     current_user: CurrentUserDep
 ) -> dict:
-    result = await movie_service.delete_movie(db, id)
+    result = await movie_service.delete_movie(db, id, current_user)
     if not result:
         raise HTTPException(status_code=404, detail="Movie not found")
     return {"success": "Movie deleted"}

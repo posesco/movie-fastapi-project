@@ -50,6 +50,8 @@ class BaseRepository(Generic[ModelType]):
     ) -> ModelType:
         """Update an existing record."""
         for field, value in obj_in.items():
+            if field == "id":
+                continue
             setattr(db_obj, field, value)
         db.add(db_obj)
         await db.flush()
