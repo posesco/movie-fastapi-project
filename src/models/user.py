@@ -51,6 +51,9 @@ class User(SQLModel, table=True):
     username: str = Field(max_length=30, unique=True, nullable=False)
     email: str = Field(max_length=100, unique=True, nullable=False)
     password: str = Field(max_length=100, nullable=False, exclude=True)
+    phone: Optional[str] = Field(max_length=20, nullable=True)
+    address: Optional[str] = Field(max_length=200, nullable=True)
+    picture: Optional[str] = Field(max_length=255, nullable=True)
     is_active: bool = Field(default=True)
     created_at: datetime = Field(
         sa_type=DateTime(timezone=True),

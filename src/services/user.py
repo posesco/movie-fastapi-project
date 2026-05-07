@@ -1,8 +1,6 @@
-import json
 from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
-from fastapi.encoders import jsonable_encoder
 
 from src.models.user import User, Role, UserAuditLog
 from src.repositories.user import user_repository
@@ -24,15 +22,10 @@ class UserService:
             if not action:
                 return # Can't log if no actions exist
 
-        description_data = {
-            "user": user.username,
-            "action": user_action,
-            "details": details,
-        }
         log_entry = UserAuditLog(
             user_id=user.id,
             action_id=action.id,
-            description=json.dumps(description_data),
+            description=f"User {user.username} performed {user_action}: {details}",
         )
         db.add(log_entry)
 

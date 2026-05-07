@@ -21,6 +21,9 @@ class UserCreate(BaseModel):
     username: str = Field(min_length=5, max_length=30)
     email: EmailStr
     password: str = Field(min_length=5, max_length=100)
+    phone: Optional[str] = Field(default=None, max_length=20)
+    address: Optional[str] = Field(default=None, max_length=200)
+    picture: Optional[str] = Field(default=None, max_length=255)
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -30,6 +33,9 @@ class UserCreate(BaseModel):
                 "username": "johndoe",
                 "email": "johndoe@example.com",
                 "password": "password123",
+                "phone": "+123456789",
+                "address": "123 Main St, New York, NY",
+                "picture": "https://example.com/pic.jpg",
             }
         }
     )
@@ -46,6 +52,9 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     password: Optional[str] = Field(default=None, min_length=5, max_length=100)
     current_password: Optional[str] = Field(default=None, min_length=5, max_length=30)
+    phone: Optional[str] = Field(default=None, max_length=20)
+    address: Optional[str] = Field(default=None, max_length=200)
+    picture: Optional[str] = Field(default=None, max_length=255)
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -55,6 +64,9 @@ class UserUpdate(BaseModel):
                 "email": "janesmith@example.com",
                 "password": "newpassword123",
                 "current_password": "oldpassword123",
+                "phone": "+987654321",
+                "address": "456 Park Ave, London, UK",
+                "picture": "https://example.com/newpic.jpg",
             }
         }
     )
@@ -71,6 +83,9 @@ class UserRead(BaseModel):
     surname: Optional[str]
     username: str
     email: EmailStr
+    phone: Optional[str]
+    address: Optional[str]
+    picture: Optional[str]
     is_active: bool
     roles: List[RoleRead]
     created_at: datetime
