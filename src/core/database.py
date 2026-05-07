@@ -1,10 +1,9 @@
-import asyncio
 import logging
 from datetime import datetime, timezone
 
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel, select
+from sqlmodel import select
 from typing import AsyncGenerator
 
 from .config import settings
@@ -43,8 +42,8 @@ async def insert_super_user(session: AsyncSession) -> None:
 
     current_time = datetime.now(timezone.utc).replace(microsecond=0)
     user = User(
-        name="Super",
-        surname="Admin",
+        name=settings.admin_name,
+        surname=settings.admin_surname,
         username=settings.admin_user,
         email=settings.admin_email,
         password=pwd_context.hash(settings.admin_pass),
