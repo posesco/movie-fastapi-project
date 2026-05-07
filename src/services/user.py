@@ -2,32 +2,13 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 
-from src.models.user import User, Role, UserAuditLog
+from src.models.user import User, Role
 from src.repositories.user import user_repository
-from src.repositories.action import action_repository
+from src.services.audit import audit_service
 from src.core.security import pwd_context, create_token, create_refresh_token
 
 class UserService:
     """Business logic for Users."""
-
-    async def _log_modification(
-        self, db: AsyncSession, user: User, user_action: str, details: str
-    ) -> None:
-        action = await action_repository.get_by_name(db, user_action)
-        if not action:
-            # Fallback if action doesn't exist to avoid AttributeError
-            from src.models.actions import Action
-            action_result = await db.execute(select(Action).where(Action.name == "update"))
-            action = action_result.scalar_one_or_none()
-            if not action:
-                return # Can't log if no actions exist
-
-        log_entry = UserAuditLog(
-            user_id=user.id,
-            action_id=action.id,
-            description=f"User {user.username} performed {user_action}: {details}",
-        )
-        db.add(log_entry)
 
     async def get_tokens(self, user_data: dict) -> dict:
         access_token = create_token(user_data)
@@ -68,7 +49,7 @@ class UserService:
                 await db.commit()
                 await db.refresh(new_user, ["roles"])
 
-        await self._log_modification(db, new_user, "create", "New user created")
+        await audit_service.log_user_action(db, new_user, "create", "New user created")
         return new_user
 
     async def assign_roles(self, db: AsyncSession, username: str, roles: List[str]) -> bool:
@@ -86,7 +67,7 @@ class UserService:
         await db.refresh(db_user, ["roles"])
         db_user.roles = db_roles
         
-        await self._log_modification(db, db_user, "update", "Assigned roles")
+        await audit_service.log_user_action(db, db_user, "update", "Assigned roles")
         return True
 
     async def update_password(self, db: AsyncSession, username: str, new_pass: str) -> bool:
@@ -95,13 +76,13 @@ class UserService:
             return False
         
         db_user.password = pwd_context.hash(new_pass)
-        await self._log_modification(db, db_user, "update", "Password updated")
+        await audit_service.log_user_action(db, db_user, "update", "Password updated")
         return True
 
     async def set_user_state(self, db: AsyncSession, user: User, state: bool) -> User:
         user.is_active = state
         details = f'The current status is {"enabled" if state else "disabled"}'
-        await self._log_modification(db, user, "update", details)
+        await audit_service.log_user_action(db, user, "update", details)
         return user
 
     async def delete_user(self, db: AsyncSession, username: str) -> bool:
@@ -111,7 +92,7 @@ class UserService:
         
         db_user.is_active = False
         details = f"User soft-deleted. ID: {db_user.id}, Username: {db_user.username}"
-        await self._log_modification(db, db_user, "delete", details)
+        await audit_service.log_user_action(db, db_user, "delete", details)
         return True
 
     async def update_user(self, db: AsyncSession, db_user: User, update_data: dict) -> User:
@@ -125,7 +106,7 @@ class UserService:
         
         # Log only changed fields for better audit trail
         details = f"User updated. Fields: {list(update_data.keys())}"
-        await self._log_modification(db, updated_user, "update", details)
+        await audit_service.log_user_action(db, updated_user, "update", details)
         return updated_user
 
 user_service = UserService()

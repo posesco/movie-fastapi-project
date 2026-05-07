@@ -43,11 +43,3 @@ class Movie(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc),
         nullable=False
     )
-
-    def log_modification(self, session, action_id, description):
-        log_entry = MovieAuditLog(
-            movie_id=self.id,
-            action_id=action_id,
-            description=description,
-        )
-        session.add(log_entry)
