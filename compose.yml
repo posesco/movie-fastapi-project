@@ -1,28 +1,10 @@
-# Unified entry point for the development stack.
-# Usage:
-#   docker compose up -d              → complete stack
-#   docker compose --profile app up   → only app + postgres
-#
-# The fastapi_net network is created here (authoritative) and sub-files
-# reference it as external: true to avoid conflicts.
 name: fastapi_stack
 
 include:
-  - path: docker-compose.app.yml
-  - path: docker-compose.monitoring.yml
-
-services:
-  nginx:
-    image: nginx:alpine
-    container_name: nginx_lb
-    ports:
-      - "80:80"
-    volumes:
-      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - app
-    networks:
-      - fastapi_net
+  - path: compose.app.yml
+  - path: compose.required.yml
+  - path: compose.optional.yml
+  # - path: compose.monitoring.yml
 
 networks:
   fastapi_net:

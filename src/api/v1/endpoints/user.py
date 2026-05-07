@@ -116,7 +116,7 @@ async def login(
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(
-    user_in: Annotated[UserCreate, Form()],
+    user_in: UserCreate,
     db: SessionDep,
 ) -> dict:
     from src.repositories.user import user_repository
@@ -185,23 +185,34 @@ async def read_users_me(
     return current_user
 
 
-@router.get("/", response_model=List[UserRead], dependencies=[Depends(RoleChecker(["super_admin", "admin"]))])
+from src.schemas.common import PaginatedResponse
+
+...
+
+@router.get("/", response_model=PaginatedResponse[UserRead], dependencies=[Depends(RoleChecker(["super_admin", "admin"]))])
 async def list_users(
     db: SessionDep,
     skip: int = 0,
     limit: int = 100,
-) -> List[UserModel]:
+) -> PaginatedResponse[UserRead]:
     """
     List all users with pagination.
     Accessible only by super_admin and admin roles.
     """
     from src.repositories.user import user_repository
     users = await user_repository.get_multi(db, skip=skip, limit=limit)
+    total = await user_repository.count(db)
     
     # Eagerly load roles for each user to avoid N+1 queries in the response model serialization
     for user in users:
         await db.refresh(user, ["roles"])
-    return users
+        
+    return PaginatedResponse(
+        items=users,
+        total=total,
+        skip=skip,
+        limit=limit
+    )
 
 
 @router.get("/{username}/activity", response_model=List[UserAuditLogRead], dependencies=[Depends(RoleChecker(["super_admin", "admin"]))])

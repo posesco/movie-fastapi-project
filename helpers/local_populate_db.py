@@ -8,9 +8,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
-BASE_URL = "http://localhost/api/v1"
-MOVIES_FILE = "movies.json"
-BATCH_SIZE = 10
+VERSION_API = "v1"
+BASE_URL = f"http://localhost/api/{VERSION_API}"
+MOVIES_FILE = "helpers/movies.json"
+USERS_FILE = "helpers/users.json"
 USERNAME = os.getenv("ADMIN_USER", "admin")
 PASSWORD = os.getenv("ADMIN_PASS", "admin")
 
@@ -56,19 +57,46 @@ def populate():
     
     headers = {"Authorization": f"Bearer {res.get('access_token')}"}
     
-    # Upload in batches
-    total = 0
-    for i in range(0, len(movies), BATCH_SIZE):
-        batch = movies[i:i + BATCH_SIZE]
-        print(f"Uploading batch {i//BATCH_SIZE + 1}...")
-        res, code = make_request(f"{BASE_URL}/movies/", data=batch, headers=headers)
+    # Upload movies individually
+    total_movies = 0
+    for movie in movies:
+        title = movie.get('title')
+        print(f"Uploading movie: {title}...")
+        res, code = make_request(f"{BASE_URL}/movies/", data=movie, headers=headers)
+        
         if code in [200, 201]:
-            total += len(batch)
-            print(f"OK. Total: {total}/{len(movies)}")
+            total_movies += 1
+        elif code == 409 or (code == 500 and res.get('type') == 'IntegrityError'):
+            print(f"Información: La película '{title}' ya existe.")
         else:
-            print(f"Error ({code}): {res.get('detail')}"); break
-            
-    print(f"\nPopulation finished! Total uploaded: {total} movies.")
+            msg = res.get('message') or res.get('error') or res.get('detail')
+            print(f"Error ({code}): {msg}")
+    
+    # Upload users individually
+    total_users = 0
+    try:
+        with open(USERS_FILE, "r", encoding="utf-8") as f:
+            users = json.load(f)
+        print(f"Loaded {len(users)} users from {USERS_FILE}.")
+    except Exception as e:
+        print(f"Error reading {USERS_FILE}: {e}")
+        users = []
+
+    for user in users:
+        username = user.get('username')
+        print(f"Uploading user: {username}...")
+        # Register is public, but we can send headers anyway
+        res, code = make_request(f"{BASE_URL}/user/register", data=user, headers=headers)
+        
+        if code in [200, 201]:
+            total_users += 1
+        elif code == 409:
+            print(f"Información: El usuario '{username}' ya existe.")
+        else:
+            msg = res.get('message') or res.get('error') or res.get('detail')
+            print(f"Error ({code}): {msg}")
+
+    print(f"\nPopulation finished! Total uploaded: {total_movies} movies and {total_users} users.")
 
 if __name__ == "__main__":
     populate()

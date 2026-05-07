@@ -1,10 +1,8 @@
-import asyncio
 import logging
-from datetime import datetime, timezone
 
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel, select
+from sqlmodel import select
 from typing import AsyncGenerator
 
 from .config import settings
@@ -41,14 +39,12 @@ async def insert_super_user(session: AsyncSession) -> None:
     if result.scalars().first():
         return
 
-    current_time = datetime.now(timezone.utc).replace(microsecond=0)
     user = User(
-        name="Super",
-        surname="Admin",
+        name=settings.admin_name,
+        surname=settings.admin_surname,
         username=settings.admin_user,
         email=settings.admin_email,
         password=pwd_context.hash(settings.admin_pass),
-        created_at=current_time,
     )
     session.add(user)
     await session.flush()
@@ -65,7 +61,6 @@ async def insert_super_user(session: AsyncSession) -> None:
             user_id=user.id,
             action_id=action.id,
             description="Super user created",
-            date=current_time,
         ))
 
     await session.commit()
@@ -92,7 +87,6 @@ async def init_db() -> None:
         logger.info("Database connection and seed completed.")
     except Exception as e:
         logger.error("Failed to seed database: %s", e)
-        # In SRE we prefer the pod to fail if it cannot initialize correctly
         raise
 
 

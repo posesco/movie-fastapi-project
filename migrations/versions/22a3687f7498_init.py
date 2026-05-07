@@ -1,8 +1,8 @@
-"""Initial migration
+"""init
 
-Revision ID: a9aa2af8e791
+Revision ID: 22a3687f7498
 Revises: 
-Create Date: 2026-05-01 05:41:58.534125
+Create Date: 2026-05-05 07:45:06.963196
 
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'a9aa2af8e791'
+revision: str = '22a3687f7498'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -38,6 +38,7 @@ def upgrade() -> None:
     sa.Column('director', sqlmodel.sql.sqltypes.AutoString(length=30), nullable=False),
     sa.Column('studio', sqlmodel.sql.sqltypes.AutoString(length=60), nullable=False),
     sa.Column('box_office', sa.BigInteger(), nullable=False),
+    sa.Column('image_url', sqlmodel.sql.sqltypes.AutoString(length=255), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('title')
@@ -68,7 +69,7 @@ def upgrade() -> None:
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(length=300), nullable=True),
     sa.Column('date', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['action_id'], ['actions.id'], ),
-    sa.ForeignKeyConstraint(['movie_id'], ['movies.id'], ),
+    sa.ForeignKeyConstraint(['movie_id'], ['movies.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user_audit_logs',

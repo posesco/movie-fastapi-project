@@ -1,0 +1,24 @@
+services:
+
+  dbgate:
+    container_name: dbgate
+    image: dbgate/dbgate:alpine
+    restart: unless-stopped
+    ports:
+      - "18581:3000"
+    environment:
+      CONNECTIONS: con1
+      LABEL_con1: "FastAPI Project"
+      SERVER_con1: postgres
+      USER_con1: ${POSTGRES_USER}
+      PASSWORD_con1: ${POSTGRES_PASSWORD}
+      PORT_con1: ${POSTGRES_PORT}
+      ENGINE_con1: postgres@dbgate-plugin-postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - fastapi_net
+
+networks:
+  fastapi_net:

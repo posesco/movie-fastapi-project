@@ -13,7 +13,7 @@ async def test_update_user_self_success(client):
         "email": "self@example.com",
         "password": "testpassword"
     }
-    await client.post("/api/v1/user/register", data=user_data)
+    await client.post("/api/v1/user/register", json=user_data)
 
     # 2. Login as that user
     login_data = {"username": username, "password": "testpassword"}
@@ -31,13 +31,13 @@ async def test_update_user_self_success(client):
 @pytest.mark.asyncio
 async def test_update_other_user_as_user_forbidden(client):
     # 1. Register user A
-    await client.post("/api/v1/user/register", data={
+    await client.post("/api/v1/user/register", json={
         "name": "User", "surname": "A", "username": "usera",
         "email": "usera@example.com", "password": "password"
     })
 
     # 2. Register user B
-    await client.post("/api/v1/user/register", data={
+    await client.post("/api/v1/user/register", json={
         "name": "User", "surname": "B", "username": "userb",
         "email": "userb@example.com", "password": "password"
     })
@@ -61,7 +61,7 @@ async def test_update_user_as_admin_success(client):
     sa_headers = {"Authorization": f"Bearer {sa_token}"}
 
     # Create user to become admin
-    await client.post("/api/v1/user/register", data={
+    await client.post("/api/v1/user/register", json={
         "name": "Admin", "surname": "User", "username": "adminuser",
         "email": "admin@test.com", "password": "password"
     })
@@ -70,7 +70,7 @@ async def test_update_user_as_admin_success(client):
     await client.put("/api/v1/user/assign-roles", json={"username": "adminuser", "roles": ["admin"]}, headers=sa_headers)
 
     # 2. Create a normal target user
-    await client.post("/api/v1/user/register", data={
+    await client.post("/api/v1/user/register", json={
         "name": "Target", "surname": "User", "username": "targetuser",
         "email": "target@test.com", "password": "password"
     })
@@ -93,7 +93,7 @@ async def test_admin_cannot_update_super_admin(client):
     sa_token = admin_login.json()["access_token"]
     sa_headers = {"Authorization": f"Bearer {sa_token}"}
 
-    await client.post("/api/v1/user/register", data={
+    await client.post("/api/v1/user/register", json={
         "name": "Admin", "surname": "X", "username": "adminx",
         "email": "adminx@test.com", "password": "password"
     })
@@ -118,7 +118,7 @@ async def test_super_admin_can_update_anyone(client):
     headers = {"Authorization": f"Bearer {token}"}
 
     # 2. Register some user
-    await client.post("/api/v1/user/register", data={
+    await client.post("/api/v1/user/register", json={
         "name": "Any", "surname": "Body", "username": "anybody",
         "email": "anybody@test.com", "password": "password"
     })

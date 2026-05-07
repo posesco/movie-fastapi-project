@@ -17,6 +17,7 @@ class Movie(BaseModel):
     director: str = Field(min_length=3, max_length=30)
     studio: str = Field(min_length=3, max_length=60)
     box_office: int = Field(default_factory=0)
+    image_url: Optional[str] = None
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -25,10 +26,12 @@ class Movie(BaseModel):
                 "overview": "Este es un resumen de la peli",
                 "year": 2024,
                 "rating": 8.8,
-                "category": "Una Categoria X:X",
+                "category": "Una Categoria X",
                 "director": "Director X",
                 "studio": "Studio X",
                 "box_office": 1046132472,
+                "image_url": "http://example.com/image.jpg(optional)"
+
             }
         }
     )

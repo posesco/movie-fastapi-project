@@ -1,6 +1,6 @@
-# FastAPI Review Project (Movie API)
+# FastAPI Project (Movie API)
 
-Proyecto con **FastAPI**, en el que exploro y aprendo sobre esta potente herramienta para construir APIs modernas y de alto rendimiento. El proyecto utiliza una arquitectura **Clean Architecture** y está completamente **asincronizado**.
+Proyecto exploratorio con **FastAPI** para construir APIs modernas y de alto rendimiento. El proyecto utiliza una arquitectura **Clean Architecture** y está completamente **asincronizado**.
 
 ## Características
 
@@ -14,6 +14,8 @@ Proyecto con **FastAPI**, en el que exploro y aprendo sobre esta potente herrami
 - **Base de Datos**: Soporte para **PostgreSQL**, **MariaDB** (v11.4 LTS) y **SQLite** mediante drivers asíncronos.
 - **Docker Stack**: Configuración moderna con **PostgreSQL**, **Prometheus v3.11**, **Grafana 13.0**, **Loki 3.6**, **Tempo 2.10** y **Grafana Alloy v1.16**.
 - **Observabilidad Unificada (OpenTelemetry)**: Implementación de **Logs**, **Métricas** y **Trazabilidad Distribuida**. *Nota: Desactivado por defecto. Activar con `OTEL_ENABLED=True`.*
+- **Almacenamiento de Objetos**: **MinIO** como almacenamiento S3-compatible para archivos y assets.
+- **Análisis Estático**: **SonarQube Community** con quality gates, historial de issues y cobertura integrada. Complementado con **Ruff**, **Bandit** y **Safety** en CI.
 - **Dbgate**: Interfaz web moderna integrada para la administración de bases de datos.
 
 ## Librerías utilizadas
@@ -24,8 +26,7 @@ Proyecto con **FastAPI**, en el que exploro y aprendo sobre esta potente herrami
 - **OpenTelemetry**: SDKs para instrumentación nativa de logs, trazas y métricas.
 - **Redis**: Integración para cache, rate limiting y seguridad.
 - **Monitoring**: Grafana Alloy (agente unificado), Prometheus, Grafana, Loki y Tempo.
-
-## Instalación y Ejecución
+- **MinIO**: Almacenamiento de objetos compatible con S3.
 
 ## Arquitectura Docker-First y Alta Disponibilidad
 
@@ -53,71 +54,38 @@ Asegúrate de tener instalado:
     ```
 
 2. Configura tu entorno:
+
     ```bash
     cp .env.example .env
     ```
 
 3. Levanta el stack completo:
+
     ```bash
     docker compose up -d --build
     ```
 
-### Instalación del entorno local (Solo para desarrollo de código)
+   La API estará disponible en `http://localhost`.
+   La documentación estará disponible en `http://localhost/docs` o `http://localhost/redoc`.
 
-1. Crea un entorno virtual:
 
-    ```bash
-    python -m venv .venv
-    source .venv/bin/activate  # En Linux/macOS
-    .venv\Scripts\activate     # En Windows
-    ```
-
-3. Instala las dependencias del proyecto:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-### Ejecución en entorno local
-
-1. Crea un archivo `.env` en la raíz del proyecto para configurar las variables de entorno (como claves JWT, base de datos, etc.).
-
-2. Inicia el servidor de desarrollo utilizando la CLI oficial de FastAPI:
-
-    ```bash
-    fastapi dev src/main.py --port 8000 --host 0.0.0.0
-    ```
-
-   La API estará disponible en `http://localhost:8000`.
-   La documentación estará disponible en `http://localhost:8000/docs` o `http://localhost:8000/redoc`.
-
-### Ejecución con Docker
-
-El proyecto está completamente preparado para ser ejecutado en contenedores Docker con **PostgreSQL** como base de datos por defecto y un stack de monitoreo completo.
-
-1. Asegúrate de tener Docker y Docker Compose instalados.
-2. Modifica el archivo `.env` con las configuraciones necesarias.
-3. Construye y levanta los contenedores:
-
-    ```bash
-    docker compose -f compose.yml -f docker-compose.app.yml -f docker-compose.monitoring.yml up -d --build
-    ```
+> El archivo `compose.yml` actúa como punto de entrada unificado e incluye automáticamente `compose.app.yml` y `compose.required.yml`. Para activar el stack de monitoreo y las herramientas opcionales, descomenta la línea correspondiente en `compose.yml`.
 
 ## Estructura del Proyecto (Clean Architecture)
 
-    ```bash
-    src/
-    ├── api/             # Capa de entrada (Controladores/Endpoints)
-    │   ├── deps.py      # Dependencias compartidas (Auth, DB)
-    │   └── v1/          # Versionado de API
-    ├── core/            # Configuración global y seguridad (Settings, DB Engine)
-    ├── models/          # Entidades de Base de Datos (SQLModel)
-    ├── repositories/    # Capa de Acceso a Datos (Patrón Repository)
-    ├── schemas/         # Modelos Pydantic para validación y DTOs
-    ├── services/        # Lógica de Negocio, Orquestación y Métricas Custom
-    ├── middlewares/     # Middlewares de FastAPI (Error handler)
-    └── main.py          # Punto de entrada de la aplicación e init de OTel
-    ```
+```
+src/
+├── api/             # Capa de entrada (Controladores/Endpoints)
+│   ├── deps.py      # Dependencias compartidas (Auth, DB)
+│   └── v1/          # Versionado de API
+├── core/            # Configuración global y seguridad (Settings, DB Engine)
+├── models/          # Entidades de Base de Datos (SQLModel)
+├── repositories/    # Capa de Acceso a Datos (Patrón Repository)
+├── schemas/         # Modelos Pydantic para validación y DTOs
+├── services/        # Lógica de Negocio, Orquestación y Métricas Custom
+├── middlewares/     # Middlewares de FastAPI (Error handler)
+└── main.py          # Punto de entrada de la aplicación e init de OTel
+```
 
 ## Licencia
 
@@ -126,4 +94,3 @@ Este proyecto está licenciado bajo los términos de la [GNU General Public Lice
 ---
 
 ¡Gracias por revisar mi proyecto! Estoy aprendiendo y abierto a sugerencias y contribuciones.
- abierto a sugerencias y contribuciones.

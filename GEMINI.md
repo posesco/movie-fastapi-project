@@ -1,90 +1,118 @@
 # Project Overview
 
-This project is a **Docker-First** application. The primary and mandatory runtime environment for all integrations (especially observability and database) is **Docker Compose**.
+This project is a **Docker-First** application. The primary and mandatory runtime environment for all integrations (observability, database, static analysis) is **Docker Compose**.
 
-**Key Technologies:**
+## Key Technologies
+
 - **Framework:** FastAPI (0.135.3)
-- **Language:** Python 3.12 (Standardized via Dockerfile)
+- **Language:** Python 3.12 (standardized via Dockerfile)
 - **Data Validation & ORM:** SQLModel (SQLAlchemy + Pydantic)
-- **Database:** Support for MariaDB (v11.4 LTS), PostgreSQL, and SQLite via async drivers.
-- **Authentication:** **OAuth2 (Password Flow)** for the security scheme and **JWT** (PyJWT) for the token content.
-- **Containerization:** Docker and Docker Compose (Rootless setups enabled in Dockerfile).
-- **Horizontal Scaling:** Load balanced via **Nginx** (Round Robin) with state shared via **Redis**.
-- **Full Observability (OTel):** Unified implementation of **Logs**, **Metrics**, and **Tracing** using **OpenTelemetry SDK**.
-- **Monitoring Stack:** Prometheus v3, Grafana 13, Loki 3.5, Tempo 2.10, and **Grafana Alloy v1.15** as the OTLP collector.
-- **Tools:** pgweb for database administration.
+- **Database:** PostgreSQL (primary), MariaDB v11.4 LTS, SQLite — all via async drivers
+- **Authentication:** OAuth2 Password Flow + JWT (PyJWT)
+- **Containerization:** Docker and Docker Compose (rootless-compatible Dockerfile)
+- **Horizontal Scaling:** Nginx Round Robin across 4 app replicas; shared state via Redis
+- **Observability:** OpenTelemetry SDK — Logs, Metrics, Tracing. Activate with `OTEL_ENABLED=True`
+- **Monitoring Stack:** Prometheus v3.11, Grafana 13.0, Loki 3.6, Tempo 2.10, Grafana Alloy v1.16
+- **Storage:** MinIO (S3-compatible object storage, port 9000; console port 9001)
+- **Static Analysis:** SonarQube Community 25.4 (port 9100), Ruff, Bandit, Safety
+- **Tools:** Dbgate (DB admin UI, port 18581)
+
+## Port Map
+
+| Service       | Host Port |
+|---------------|-----------|
+| App (via Nginx)| 80       |
+| PostgreSQL    | 5432      |
+| Redis         | 6379      |
+| MinIO API     | 9000      |
+| MinIO Console | 9001      |
+| SonarQube     | 9100      |
+| Dbgate        | 18581     |
 
 ## Building and Running
 
-### Local Development
-1. **Environment Setup:**
-   Create a virtual environment:
-   ```bash
-   - **Monitoring Stack:** Prometheus v3.11, Grafana 13.0, Loki 3.6, Tempo 2.10, and **Grafana Alloy v1.16** as the OTLP collector.
-   - **Tools:** Dbgate for database administration.
+### Docker (full stack)
 
-   ## Building and Running
+```bash
+cp .env.example .env
+docker compose up -d --build
+```
 
-   ### Local Development
-   ...
-   3. **Run the Server:**
-      ```bash
-      fastapi dev src/main.py --port 8000 --host 0.0.0.0 --proxy-headers --forwarded-allow-ips='*'
-      ```
+### SonarQube (local)
 
-   ### Docker
-   ```bash
-   docker compose up -d --build
-   ```
+```bash
+# Required kernel setting (run once per boot)
+sudo sysctl -w vm.max_map_count=524288
 
-   ## Development Conventions
+# Start SonarQube and its dedicated DB
+docker compose -f compose.monitoring.yml up sonarqube sonarqube-db -d
 
-   - **Architecture:** Clean Architecture with separate layers:
-     - `src/api/`: Controllers and endpoint definitions (versioned).
-     - `src/core/`: Global settings, database engine, security, and **observability setup**.
-     - `src/models/`: Database entities using SQLModel.
-     - `src/repositories/`: Data access logic (Repository pattern).
-     - `src/schemas/`: Pydantic models for request/response validation.
-     - `src/services/`: Core business logic and service orchestration.
-     - `src/middlewares/`: **Idiomatic exception handlers** (replacing legacy BaseHTTPMiddleware).
+# Manual scan (from project root, with stack running)
+./helpers/sonar-scan.sh
+```
 
-   - **High Availability & Security (Nginx):**
-     - **Load Balancer:** Nginx handles **Round Robin** balancing across 4 app instances.
-     - **Proxy Configuration:** Application command includes `--proxy-headers` to trust Nginx headers.
-     - **Consistency:** `TrustedHostMiddleware` and `CORSMiddleware` are synchronized with Nginx `server_name` and proxy headers.
+UI: `http://localhost:9100` (default credentials: admin/admin — change on first login).
+Token: My Account → Security → Generate Token.
 
-   - **Observability:** 
-     - Centralized setup in `src/core/observability.py`.
-     - All telemetry is exported via **OTLP (gRPC)** to Alloy.
-     - Metrics: Custom metrics defined in `src/services/metrics.py` (OTel Meter).
-     - Logs: Standard Python logging redirected to OTel LoggingHandler.
-     - Traces: Automatic FastAPI instrumentation via `FastAPIInstrumentor`.
-     - **Monitoring:** Integrated Alertmanager for SRE alerting.
-     - **Configuration:** Set `OTEL_ENABLED=True` in your `.env` file to activate the telemetry export.
+## Development Conventions
 
-   - **Scaling & Session Management (Redis):**
-     - **Blacklisting:** Tokens are revoked via JTI stored in Redis upon logout.
-     - **Refresh Tokens:** Implemented for secure session persistence.
-     - **Rate Limiting:** Managed globally via Redis to prevent brute-force attacks.
-     - **Exporters:** Redis and Nginx metrics are exported to Prometheus.
+### Architecture (Clean Architecture)
 
+- `src/api/`: Controllers and endpoint definitions (versioned under `v1/`)
+- `src/core/`: Global settings, DB engine, security, observability setup
+- `src/models/`: Database entities (SQLModel)
+- `src/repositories/`: Data access layer (Repository pattern)
+- `src/schemas/`: Pydantic models for request/response validation
+- `src/services/`: Business logic and service orchestration
+- `src/middlewares/`: Idiomatic exception handlers (no BaseHTTPMiddleware)
 
-- **Database & Migrations:**
-  - **Alembic** is used for schema versioning (async support).
-  - Schema creation is decoupled from API startup.
-  - Migrations live in `migrations/`.
+### High Availability (Nginx)
 
-- **Quality & Security:** 
-  - `ruff` for linting and formatting. 
-  - **Bandit** and **Safety** integrated into CI for security auditing.
-  - `pytest` with `pytest-asyncio` and **coverage reporting**.
-  - **Language:** All code (comments, docstrings, variable names) and technical documentation (excluding `README.md`) MUST be in **English**.
+- Round Robin load balancing across 4 app instances
+- App started with `--proxy-headers` to trust Nginx headers
+- `TrustedHostMiddleware` and `CORSMiddleware` synchronized with Nginx config
+
+### Observability
+
+- Centralized in `src/core/observability.py`
+- All telemetry exported via OTLP (gRPC) to Grafana Alloy
+- Custom metrics in `src/services/` (OTel Meter)
+- Logs: Python `logging` → OTel LoggingHandler
+- Traces: Auto-instrumented via `FastAPIInstrumentor`
+- Alerting: Alertmanager integrated with Prometheus rules
+
+### Session Management (Redis)
+
+- Token blacklisting via JTI on logout
+- Refresh token rotation
+- Global rate limiting (brute-force protection)
+- Redis and Nginx metrics exported to Prometheus
+
+### Database & Migrations
+
+- Alembic for schema versioning (async)
+- Schema creation decoupled from app startup
+- Migrations in `migrations/`
+
+### Quality & Security
+
+- **Ruff**: linting and formatting
+- **Bandit**: SAST for Python security issues
+- **Safety**: dependency vulnerability scanning
+- **SonarQube**: static analysis with quality gates, coverage tracking, and issue history
+  - Config: `sonar-project.properties`
+  - Coverage fed from `coverage.xml` (generated by pytest)
+  - CI secrets required: `SONAR_TOKEN`, `SONAR_HOST_URL`
+- **pytest** + `pytest-asyncio` + coverage reporting (`--cov=src --cov-report=xml`)
+- All code, comments, docstrings, and technical docs (except `README.md`) **must be in English**
 
 ## Git & Release Management
 
-This project strictly follows the **GitFlow** development strategy and **SemVer** semantic versioning.
+Follows **GitFlow** + **SemVer** strictly.
 
-- **Workflow:** Always refer to `conductor/workflow.md` for branch management (`feat/*`, `release/*`, `hotfix/*`).
-- **Main Branches:** `master` for production and `develop` for integration.
-- **Versioning:** Versions are tagged on `master` following the `vMAJOR.MINOR.PATCH` format.
-- **Commits:** The use of *Conventional Commits* (`feat:`, `fix:`, `docs:`, etc.) is mandatory.
+- `master`: production-ready code only
+- `develop`: integration branch
+- Feature branches: `feat/*`, `release/*`, `hotfix/*`
+- Commits: Conventional Commits format (`feat:`, `fix:`, `docs:`, `chore:`, etc.)
+- Tags: `vMAJOR.MINOR.PATCH` on `master`
+- See `conductor/workflow.md` for full branch management rules
