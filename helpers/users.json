@@ -4,34 +4,44 @@
         "name": "John",
         "password": "password123",
         "surname": "Doe",
-        "username": "johndoe"
+        "username": "johndoe",
+        "phone": "+1234567890",
+        "address": "123 Main St, Anytown, USA"
     },
     {
         "email": "marco.aurelio@gmail.com",
         "name": "Marco",
         "password": "password456",
         "surname": "Aurelio",
-        "username": "marcoaurelio"
+        "username": "marcoaurelio",
+        "phone": "+9876543210",
+        "address": "456 Elm St, Anytown, USA"
     },
     {
         "email": "ryanholiday@gmail.com",
         "name": "Ryan",
         "password": "password789",
         "surname": "Holiday",
-        "username": "ryanholiday"
+        "username": "ryanholiday",
+        "phone": "+1111111111",
+        "address": "789 Oak St, Anytown, USA"
     },
     {
         "email": "jamesclear@gmail.com",
         "name": "James",
         "password": "passwordabc",
         "surname": "Clear",
-        "username": "jamesclear"
+        "username": "jamesclear",
+        "phone": "+2222222222",
+        "address": "101 Pine St, Anytown, USA"
     },
     {
         "email": "walterriso@gmail.com",
         "name": "Walter",
         "password": "passworddef",
         "surname": "Riso",
-        "username": "walterriso"
+        "username": "walterriso",
+        "phone": "+3333333333",
+        "address": "202 Maple St, Anytown, USA"
     }
 ]

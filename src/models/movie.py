@@ -16,6 +16,7 @@ class MovieAuditLog(SQLModel, table=True):
             nullable=False
         )
     )
+    actor_id: Optional[uuid.UUID] = Field(sa_column=Column(ForeignKey("users.id"), nullable=True))
     action_id: uuid.UUID = Field(foreign_key="actions.id", nullable=False)
     description: Optional[str] = Field(default=None, max_length=300)
     date: datetime = Field(
@@ -43,11 +44,3 @@ class Movie(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc),
         nullable=False
     )
-
-    def log_modification(self, session, action_id, description):
-        log_entry = MovieAuditLog(
-            movie_id=self.id,
-            action_id=action_id,
-            description=description,
-        )
-        session.add(log_entry)

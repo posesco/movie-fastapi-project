@@ -20,6 +20,7 @@ class Movie(BaseModel):
     image_url: Optional[str] = None
 
     model_config = ConfigDict(
+        extra="forbid",
         json_schema_extra={
             "example": {
                 "title": "Mi Pelicula",
