@@ -13,8 +13,9 @@ This project is a **Docker-First** application. The primary and mandatory runtim
 - **Horizontal Scaling:** Nginx Round Robin across 4 app replicas; shared state via Redis
 - **Observability:** OpenTelemetry SDK — Logs, Metrics, Tracing. Activate with `OTEL_ENABLED=True`
 - **Monitoring Stack:** Prometheus v3.11, Grafana 13.0, Loki 3.6, Tempo 2.10, Grafana Alloy v1.16
-- **Storage:** MinIO (S3-compatible object storage, port 9000; console port 9001)
+- **Storage:** Hybrid (S3-compatible via MinIO or Local Filesystem). Configure via `STORAGE_BACKEND`.
 - **Static Analysis:** SonarQube Community 25.4 (port 9100), Ruff, Bandit, Safety
+- **Design Principles:** 100% SOLID compliant (DIP, SRP, ISP, OCP, LSP).
 - **Tools:** Dbgate (DB admin UI, port 18581)
 
 ## Port Map
@@ -56,15 +57,15 @@ Token: My Account → Security → Generate Token.
 
 ## Development Conventions
 
-### Architecture (Clean Architecture)
+### Architecture (SOLID & Clean Architecture)
 
-- `src/api/`: Controllers and endpoint definitions (versioned under `v1/`)
-- `src/core/`: Global settings, DB engine, security, observability setup
-- `src/models/`: Database entities (SQLModel)
-- `src/repositories/`: Data access layer (Repository pattern)
-- `src/schemas/`: Pydantic models for request/response validation
-- `src/services/`: Business logic and service orchestration
-- `src/middlewares/`: Idiomatic exception handlers (no BaseHTTPMiddleware)
+- `src/api/`: Controllers and endpoint definitions (versioned under `v1/`). Uses **Dependency Injection** (`Depends`).
+- `src/core/`: Global settings, DB engine, security, observability setup.
+- `src/models/`: Database entities (SQLModel).
+- `src/repositories/`: Data access layer. Uses **Mixins** for granular interface segregation (ISP).
+- `src/schemas/`: Pydantic models for request/response validation.
+- `src/services/`: Business logic. Separated by responsibility (e.g., `AuthService` vs `UserService` - SRP).
+- `src/middlewares/`: Idiomatic exception handlers.
 
 ### High Availability (Nginx)
 

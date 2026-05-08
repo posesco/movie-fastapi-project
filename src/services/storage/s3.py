@@ -1,9 +1,8 @@
 import aioboto3
+from .base import StorageProvider
 from src.core.config import settings
-from typing import Optional
 
-
-class StorageService:
+class S3StorageProvider(StorageProvider):
     def __init__(self):
         self.session = aioboto3.Session()
         self.bucket_name = settings.s3_bucket_name
@@ -17,12 +16,9 @@ class StorageService:
     async def upload_file(
         self, 
         file_bytes: bytes, 
-        filename: str, 
-        content_type: str, 
-        folder: Optional[str] = None
+        key: str, 
+        content_type: str
     ) -> str:
-        key = f"{folder}/{filename}" if folder else filename
-        
         async with self.session.client(
             "s3",
             endpoint_url=self.endpoint_url,
@@ -37,8 +33,15 @@ class StorageService:
                 Body=file_bytes,
                 ContentType=content_type
             )
-            
         return f"{self.public_url}/{self.bucket_name}/{key}"
 
-
-storage_service = StorageService()
+    async def delete_file(self, key: str) -> None:
+        async with self.session.client(
+            "s3",
+            endpoint_url=self.endpoint_url,
+            aws_access_key_id=self.access_key,
+            aws_secret_access_key=self.secret_key,
+            region_name=self.region_name,
+            use_ssl=self.use_ssl,
+        ) as s3:
+            await s3.delete_object(Bucket=self.bucket_name, Key=key)

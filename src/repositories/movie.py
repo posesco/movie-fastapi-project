@@ -11,5 +11,3 @@ class MovieRepository(BaseRepository[Movie]):
         """Get all unique categories."""
         result = await db.execute(select(Movie.category).distinct())
         return result.scalars().all()
-
-movie_repository = MovieRepository(Movie)

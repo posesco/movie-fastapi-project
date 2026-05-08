@@ -3,6 +3,7 @@ import json
 import urllib.request
 import urllib.parse
 import time
+import requests
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -45,7 +46,7 @@ def make_request(url, data=None, headers=None, method="POST", is_form=False):
         return {"detail": str(e)}, 500
 
 def get_auth_token():
-    print("🔑 Authenticating with local API...")
+    print("Authenticating with local API...")
     res, code = make_request(
         f"{BASE_URL}/user/login", 
         data={"username": ADMIN_USER, "password": ADMIN_PASS}, 
@@ -55,6 +56,38 @@ def get_auth_token():
         return res.get("access_token")
     print(f" Login failed: {res}")
     return None
+
+def upload_from_url(external_url, token, folder=None):
+    if not external_url:
+        return None
+    try:
+        # Download
+        response = requests.get(external_url, timeout=10)
+        if response.status_code != 200:
+            print(f"Failed to download image from {external_url}")
+            return external_url
+        
+        # Determine filename
+        filename = os.path.basename(urllib.parse.urlparse(external_url).path)
+        if not filename or "." not in filename:
+            filename = f"upload_{int(time.time())}.jpg"
+            
+        # Upload using the internal endpoint
+        upload_url = f"{BASE_URL}/upload/"
+        params = {"folder": folder} if folder else {}
+        files = {"file": (filename, response.content, response.headers.get('Content-Type', 'image/jpeg'))}
+        headers = {"Authorization": f"Bearer {token}"}
+        
+        up_res = requests.post(upload_url, params=params, files=files, headers=headers, timeout=20)
+        if up_res.status_code == 201:
+            new_url = up_res.json().get("url")
+            return new_url
+        else:
+            print(f"Failed to upload image: {up_res.text}")
+            return external_url
+    except Exception as e:
+        print(f"Error in upload_from_url: {e}")
+        return external_url
 
 def fetch_external_users(count=10):
     print(f"Fetching {count} random users from RandomUser.me...")
@@ -66,12 +99,17 @@ def fetch_external_users(count=10):
     
     users = []
     for u in res.get("results", []):
+        street = u["location"]["street"]
+        address = f"{street['number']} {street['name']}, {u['location']['city']}, {u['location']['country']}"
         users.append({
             "name": u["name"]["first"],
             "surname": u["name"]["last"],
             "username": u["login"]["username"],
             "email": u["email"],
-            "password": "Password123!" # Standardized for LAB
+            "password": "Password123!", # Standardized for LAB
+            "phone": u["phone"],
+            "address": address,
+            "picture": u["picture"]["large"]
         })
     return users
 
@@ -80,7 +118,7 @@ def fetch_external_movies(count=NUM_MOVIES):
         print("TMDB_API_KEY not found in .env. Skipping movie fetching.")
         return []
 
-    print(f"🎬 Fetching {count} trending movies from TMDB...")
+    print(f"Fetching {count} trending movies from TMDB...")
     trending_url = f"{TMDB_BASE_URL}/trending/movie/day?api_key={TMDB_API_KEY}"
     res, code = make_request(trending_url, method="GET")
     if code != 200:
@@ -129,6 +167,10 @@ def smart_populate():
     users = fetch_external_users(NUM_USERS)
     time.sleep(0.5)
     for user in users:
+        print(f"Processing user: {user['username']}...")
+        if user.get("picture"):
+            user["picture"] = upload_from_url(user["picture"], token, folder="profiles")
+        
         print(f"Registering: {user['username']}...")
         res, code = make_request(f"{BASE_URL}/user/register", data=user)
         if code in [200, 201]:
@@ -140,6 +182,10 @@ def smart_populate():
     movies = fetch_external_movies(NUM_MOVIES)
     time.sleep(0.5)
     for movie in movies:
+        print(f"Processing movie: {movie['title']}...")
+        if movie.get("image_url"):
+            movie["image_url"] = upload_from_url(movie["image_url"], token, folder="movies")
+
         print(f"Uploading: {movie['title']}...")
         res, code = make_request(f"{BASE_URL}/movies/", data=movie, headers=headers)
         if code in [200, 201]:
@@ -147,7 +193,8 @@ def smart_populate():
         else:
             print(f"{movie['title']}: {res.get('detail', 'Error or exists')}")
 
-    print("\n🚀 Smart Population complete!")
+    print("\n Smart Population complete!")
 
 if __name__ == "__main__":
     smart_populate()
+

@@ -1,29 +1,31 @@
 from fastapi import Depends, HTTPException, Path, Query, APIRouter, status
-from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Annotated
 
-from src.api.deps import SessionDep, CurrentUserDep
-from src.services.movie import movie_service
+from src.api.deps import SessionDep, CurrentUserDep, MovieServiceDep
 from src.schemas.movie import Movie
 from src.models.movie import Movie as MovieModel
-from src.models.user import User as UserModel
 
 router = APIRouter(prefix="/movies", tags=["Movies"])
 
 @router.get("/categories", response_model=List[str])
-async def get_categories(db: SessionDep) -> List[str]:
+async def get_categories(
+    db: SessionDep, 
+    movie_service: MovieServiceDep
+) -> List[str]:
     return await movie_service.get_categories(db)
 
 @router.get("/", response_model=List[MovieModel])
-async def get_movies(db: SessionDep) -> List[MovieModel]:
+async def get_movies(
+    db: SessionDep, 
+    movie_service: MovieServiceDep
+) -> List[MovieModel]:
     result = await movie_service.get_movies(db)
     return result
 
 @router.get("/{id}", response_model=MovieModel)
 async def get_movie(
     db: SessionDep, 
+    movie_service: MovieServiceDep,
     id: Annotated[int, Path(ge=1, le=2000)]
 ) -> MovieModel:
     result = await movie_service.get_movie(db, id)
@@ -34,6 +36,7 @@ async def get_movie(
 @router.get("/category/", response_model=List[MovieModel])
 async def get_movie_by_category(
     db: SessionDep,
+    movie_service: MovieServiceDep,
     category: Annotated[str, Query(min_length=3, max_length=30)],
 ) -> List[MovieModel]:
     result = await movie_service.get_movies_by_category(db, category)
@@ -43,6 +46,7 @@ async def get_movie_by_category(
 async def create_movie(
     movie: Movie, 
     db: SessionDep,
+    movie_service: MovieServiceDep,
     current_user: CurrentUserDep
 ) -> dict:
     model = MovieModel(**movie.model_dump())
@@ -54,6 +58,7 @@ async def update_movie(
     id: Annotated[int, Path(ge=1)], 
     movie: Movie, 
     db: SessionDep,
+    movie_service: MovieServiceDep,
     current_user: CurrentUserDep
 ) -> dict:
     result = await movie_service.update_movie(db, id, movie.model_dump(), current_user)
@@ -65,6 +70,7 @@ async def update_movie(
 async def delete_movie(
     id: Annotated[int, Path(ge=1)], 
     db: SessionDep,
+    movie_service: MovieServiceDep,
     current_user: CurrentUserDep
 ) -> dict:
     result = await movie_service.delete_movie(db, id, current_user)

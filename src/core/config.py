@@ -50,6 +50,10 @@ class Settings(BaseSettings):
     s3_use_ssl: bool = Field(default=False, validation_alias="S3_USE_SSL")
     s3_public_url: str = Field(default="http://localhost:9000", validation_alias="S3_PUBLIC_URL")
 
+    # Storage
+    storage_backend: str = Field(default="s3", validation_alias="STORAGE_BACKEND")
+    local_storage_path: str = Field(default="uploads", validation_alias="LOCAL_STORAGE_PATH")
+
     # Security
     backend_cors_origins: list[str] = Field(default=[], validation_alias="BACKEND_CORS_ORIGINS")
     allowed_hosts: list[str] = Field(

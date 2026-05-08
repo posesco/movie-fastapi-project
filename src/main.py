@@ -11,9 +11,9 @@ from .core.redis import init_redis, close_redis
 from .core.config import settings, tags_metadata
 from .core.observability import setup_observability
 from .middlewares.handlers import setup_exception_handlers
-import logging
 
 from .api.v1.router import api_router
+from fastapi.staticfiles import StaticFiles
 
 
 @asynccontextmanager
@@ -54,6 +54,12 @@ setup_observability(app)
 
 # Setup Exception Handlers
 setup_exception_handlers(app)
+
+# Mount local storage if enabled (OCP)
+if settings.storage_backend == "local":
+    import os
+    os.makedirs(settings.local_storage_path, exist_ok=True)
+    app.mount("/static", StaticFiles(directory=settings.local_storage_path), name="static")
 
 app.include_router(api_router, prefix="/api/v1")
 
