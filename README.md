@@ -1,21 +1,21 @@
 # FastAPI Project (Movie API)
 
-Proyecto exploratorio con **FastAPI** para construir APIs modernas y de alto rendimiento. El proyecto utiliza una arquitectura **Clean Architecture** y está completamente **asincronizado**.
+Proyecto exploratorio con **FastAPI** para construir APIs modernas y de alto rendimiento. El proyecto utiliza una arquitectura **Clean Architecture** bajo principios **SOLID** y está completamente **asincronizado**.
 
 ## Características
 
 - **FastAPI**: Marco web moderno y rápido para construir APIs basado en estándares abiertos (OpenAPI y JSON Schema). Actualizado a la versión **0.135.3**.
 - **Python 3.12+**: Proyecto optimizado para las versiones más recientes de Python.
-- **Clean Architecture**: Separación de responsabilidades en capas (API, Services, Repositories, Core, Models, Schemas).
+- **SOLID Compliance**: Refactorización completa aplicando DIP, SRP, ISP, OCP y LSP para un código desacoplado y altamente testeable.
 - **Asincronía Completa**: Operaciones de base de datos y endpoints asíncronos para mayor rendimiento.
 - **SQLModel**: Combinación de **SQLAlchemy** y **Pydantic** para modelos de datos elegantes y seguros.
-- **Auth (OAuth2 + JWT)**: Implementación de **OAuth2 (Password Flow)** con tokens **JWT** (PyJWT) para una autenticación segura y estándar.
-- **Escalado Horizontal y Sesiones**: Balanceo de carga mediante **Nginx** (Round Robin) y gestión de estado (Blacklisting de tokens, Rate Limiting y Refresh Tokens) mediante **Redis**.
+- **Auth (OAuth2 + JWT)**: Implementación de **OAuth2 (Password Flow)** con tokens **JWT** (PyJWT) gestionados por un `AuthService` dedicado.
+- **Escalado Horizontal y Sesiones**: Balanceo de carga mediante **Nginx** (Round Robin) y gestión de estado mediante **Redis**.
 - **Base de Datos**: Soporte para **PostgreSQL**, **MariaDB** (v11.4 LTS) y **SQLite** mediante drivers asíncronos.
-- **Docker Stack**: Configuración moderna con **PostgreSQL**, **Prometheus v3.11**, **Grafana 13.0**, **Loki 3.6**, **Tempo 2.10** y **Grafana Alloy v1.16**.
-- **Observabilidad Unificada (OpenTelemetry)**: Implementación de **Logs**, **Métricas** y **Trazabilidad Distribuida**. *Nota: Desactivado por defecto. Activar con `OTEL_ENABLED=True`.*
-- **Almacenamiento de Objetos**: **MinIO** como almacenamiento S3-compatible para archivos y assets.
-- **Análisis Estático**: **SonarQube Community** con quality gates, historial de issues y cobertura integrada. Complementado con **Ruff**, **Bandit** y **Safety** en CI.
+- **Docker Stack**: Configuración moderna con **PostgreSQL**, **Prometheus**, **Grafana**, **Loki**, **Tempo** y **Grafana Alloy**.
+- **Observabilidad Unificada (OpenTelemetry)**: Implementación de **Logs**, **Métricas** y **Trazabilidad Distribuida**.
+- **Almacenamiento Híbrido**: Soporte para **MinIO** (S3) y **Sistema de Archivos Local**. Intercambiable mediante configuración.
+- **Análisis Estático**: **SonarQube Community** con quality gates y cobertura integrada.
 - **Dbgate**: Interfaz web moderna integrada para la administración de bases de datos.
 
 ## Librerías utilizadas
@@ -75,16 +75,16 @@ Asegúrate de tener instalado:
 
 ```
 src/
-├── api/             # Capa de entrada (Controladores/Endpoints)
-│   ├── deps.py      # Dependencias compartidas (Auth, DB)
+├── api/             # Capa de entrada (Controladores/Endpoints con DI)
+│   ├── deps.py      # Proveedores de dependencias (DIP)
 │   └── v1/          # Versionado de API
-├── core/            # Configuración global y seguridad (Settings, DB Engine)
+├── core/            # Configuración global, DB engine y seguridad
 ├── models/          # Entidades de Base de Datos (SQLModel)
-├── repositories/    # Capa de Acceso a Datos (Patrón Repository)
+├── repositories/    # Capa de Acceso a Datos (Mixins e ISP)
 ├── schemas/         # Modelos Pydantic para validación y DTOs
-├── services/        # Lógica de Negocio, Orquestación y Métricas Custom
-├── middlewares/     # Middlewares de FastAPI (Error handler)
-└── main.py          # Punto de entrada de la aplicación e init de OTel
+├── services/        # Lógica de Negocio segregada (SRP: Auth, User, Movie)
+├── middlewares/     # Middlewares de FastAPI e instrumentación
+└── main.py          # Punto de entrada e init de la aplicación
 ```
 
 ## Licencia

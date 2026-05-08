@@ -2,11 +2,11 @@ from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from src.models.user import UserAuditLog
-from src.repositories.base import BaseRepository
+from src.repositories.base import ReadRepositoryMixin, CreateRepositoryMixin
 import uuid
 
-class AuditRepository(BaseRepository[UserAuditLog]):
-    """Audit Log specific repository."""
+class AuditRepository(ReadRepositoryMixin[UserAuditLog], CreateRepositoryMixin[UserAuditLog]):
+    """Audit Log specific repository (Read & Create only)."""
     
     async def get_by_user_id(
         self, 
@@ -24,5 +24,3 @@ class AuditRepository(BaseRepository[UserAuditLog]):
             .limit(limit)
         )
         return result.scalars().all()
-
-audit_repository = AuditRepository(UserAuditLog)

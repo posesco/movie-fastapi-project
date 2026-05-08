@@ -1,9 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, Query, HTTPException, status
-from typing import Optional
 import uuid
 
-from src.api.deps import CurrentUserDep
-from src.services.storage import storage_service
+from src.api.deps import CurrentUserDep, StorageProviderDep
 from src.services.storage.strategies import UploadContext, resolve_path
 
 router = APIRouter(prefix="/upload", tags=["Upload"])
@@ -13,6 +11,7 @@ ALLOWED_CONTENT_TYPES = ["image/jpeg", "image/png", "image/webp"]
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def upload_file(
     current_user: CurrentUserDep,
+    storage_service: StorageProviderDep,
     file: UploadFile = File(...),
     context: UploadContext = Query(
         UploadContext.GENERAL, 

@@ -3,14 +3,18 @@ from sqlmodel import select
 from src.models.user import UserAuditLog, User
 from src.models.movie import MovieAuditLog, Movie
 from src.models.actions import Action
-from src.repositories.audit import audit_repository
-from src.repositories.action import action_repository
+from src.repositories.audit import AuditRepository
+from src.repositories.action import ActionRepository
 
 class AuditService:
     """Service to handle business auditing logic."""
     
+    def __init__(self, action_repo: ActionRepository, audit_repo: AuditRepository):
+        self.action_repo = action_repo
+        self.audit_repo = audit_repo
+    
     async def _get_action(self, db: AsyncSession, action_name: str) -> Action:
-        action = await action_repository.get_by_name(db, action_name)
+        action = await self.action_repo.get_by_name(db, action_name)
         if not action:
             # Fallback to 'update' if specific action not found
             action_result = await db.execute(select(Action).where(Action.name == "update"))
@@ -61,5 +65,3 @@ class AuditService:
                 description=f"User {user.username} {action_name} movie '{movie.title}' (ID: {movie.id})"
             )
             db.add(user_log)
-
-audit_service = AuditService()

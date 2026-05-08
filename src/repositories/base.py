@@ -5,12 +5,13 @@ from sqlmodel import SQLModel
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 
-class BaseRepository(Generic[ModelType]):
-    """Base repository for CRUD operations using SQLModel and AsyncSession."""
-
+class Repository(Generic[ModelType]):
+    """Common base for all repositories to hold the model type."""
     def __init__(self, model: Type[ModelType]):
         self.model = model
 
+class ReadRepositoryMixin(Repository[ModelType]):
+    """Mixin for read operations."""
     async def count(self, db: AsyncSession) -> int:
         """Count total records."""
         result = await db.execute(select(func.count()).select_from(self.model))
@@ -35,6 +36,8 @@ class BaseRepository(Generic[ModelType]):
         )
         return result.scalars().all()
 
+class CreateRepositoryMixin(Repository[ModelType]):
+    """Mixin for create operations."""
     async def create(self, db: AsyncSession, obj_in: ModelType) -> ModelType:
         """Create a new record."""
         db.add(obj_in)
@@ -42,6 +45,8 @@ class BaseRepository(Generic[ModelType]):
         await db.refresh(obj_in)
         return obj_in
 
+class UpdateRepositoryMixin(Repository[ModelType]):
+    """Mixin for update operations."""
     async def update(
         self, 
         db: AsyncSession, 
@@ -58,10 +63,28 @@ class BaseRepository(Generic[ModelType]):
         await db.refresh(db_obj)
         return db_obj
 
+class DeleteRepositoryMixin(Repository[ModelType]):
+    """Mixin for delete operations."""
     async def delete(self, db: AsyncSession, id: Any) -> bool:
         """Delete a record by ID."""
-        obj = await self.get(db, id)
+        # Note: This uses 'get' which is in ReadRepositoryMixin. 
+        # If a repo only has Delete but not Read, this will fail.
+        # Usually Delete implies Read access or we can use a direct delete query.
+        # For simplicity in this project, we assume Delete repositories also have Read.
+        result = await db.execute(
+            select(self.model).where(self.model.id == id)
+        )
+        obj = result.scalars().first()
         if obj:
             await db.delete(obj)
             return True
         return False
+
+class BaseRepository(
+    ReadRepositoryMixin[ModelType],
+    CreateRepositoryMixin[ModelType],
+    UpdateRepositoryMixin[ModelType],
+    DeleteRepositoryMixin[ModelType]
+):
+    """Full CRUD repository."""
+    pass

@@ -1,57 +1,41 @@
 import asyncio
 import httpx
-import sys
+from src.core.config import settings
 
-async def test_upload():
-    # URL de la API (asumiendo que corre en el puerto 80 según GEMINI.md)
-    base_url = "http://localhost/api/v1"
-    
-    # 1. Obtener token (necesitamos un usuario)
-    # Asumiendo credenciales por defecto del admin según GEMINI.md
-    print("--- Obteniendo Token ---")
-    async with httpx.AsyncClient() as client:
-        try:
-            login_res = await client.post(
-                f"{base_url}/login/access-token",
-                data={
-                    "username": "admin@example.com",
-                    "password": "admin"
-                }
-            )
-            login_res.raise_for_status()
-            token = login_res.json()["access_token"]
-            headers = {"Authorization": f"Bearer {token}"}
-            print("Token obtenido con éxito.")
-        except Exception as e:
-            print(f"Error login: {e}")
+async def verify_local_upload():
+    # 1. Login
+    async with httpx.AsyncClient(base_url="http://localhost:8000") as client:
+        login_res = await client.post(
+            "/api/v1/user/login",
+            data={"username": settings.admin_user, "password": settings.admin_pass},
+        )
+        if login_res.status_code != 200:
+            print(f"Login failed: {login_res.text}")
             return
+        
+        token = login_res.json()["access_token"]
+        headers = {"Authorization": f"Bearer {token}"}
 
-        # 2. Probar subida con contexto MOVIE_POSTER
-        print("\n--- Probando Subida (Contexto: posters) ---")
-        files = {"file": ("test_image.png", b"fake-image-content", "image/png")}
-        try:
-            upload_res = await client.post(
-                f"{base_url}/upload/",
-                params={"context": "posters"},
-                files=files,
-                headers=headers
-            )
-            upload_res.raise_for_status()
-            data = upload_res.json()
-            print("Respuesta Exitosa:")
-            print(f"  URL: {data['url']}")
-            print(f"  Path: {data['path']}")
-            print(f"  Context: {data['context']}")
+        # 2. Upload file
+        files = {"file": ("test.png", b"fake image data", "image/png")}
+        upload_res = await client.post("/api/v1/upload/", files=files, headers=headers)
+        
+        if upload_res.status_code == 201:
+            print("Upload successful!")
+            print(f"Response: {upload_res.json()}")
+            url = upload_res.json()["url"]
             
-            if "posters/user_" in data["path"]:
-                print("\n✅ VALIDACIÓN EXITOSA: La ruta sigue el patrón SOLID esperado.")
+            # 3. Check if file is accessible
+            # Note: We use localhost:80 (Nginx) which should route to app
+            # But the URL returned is /static/...
+            static_res = await client.get(url)
+            if static_res.status_code == 200:
+                print("Static file accessible!")
             else:
-                print("\n❌ FALLO: La ruta no coincide con el patrón esperado.")
-                
-        except Exception as e:
-            print(f"Error upload: {e}")
-            if hasattr(e, 'response'):
-                print(f"Response: {e.response.text}")
+                print(f"Static file NOT accessible: {static_res.status_code}")
+        else:
+            print(f"Upload failed: {upload_res.status_code} - {upload_res.text}")
 
 if __name__ == "__main__":
-    asyncio.run(test_upload())
+    # Ensure STORAGE_BACKEND is set to local before running this if testing local
+    asyncio.run(verify_local_upload())
