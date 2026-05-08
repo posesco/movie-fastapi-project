@@ -6,7 +6,7 @@ from urllib.parse import quote_plus
 class Settings(BaseSettings):
     # Project
     project_title: str = Field(default="Fast API", validation_alias="PROJECT_TITLE")
-    project_version: str = Field(default="0.1.0", validation_alias="PROJECT_VERSION")
+    project_version: str = Field(default="1.2.1", validation_alias="PROJECT_VERSION")
     project_desc: str = Field(default="API built with FastAPI", validation_alias="PROJECT_DESC")
     project_debug_mode: bool = Field(default=False, validation_alias="PROJECT_DEBUG_MODE")
 
