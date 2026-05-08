@@ -10,7 +10,7 @@ class AuthService:
     def __init__(self, user_repo: UserRepository):
         self.user_repo = user_repo
 
-    async def get_tokens(self, user_data: dict) -> dict:
+    def get_tokens(self, user_data: dict) -> dict:
         """Generate access and refresh tokens for a user payload."""
         access_token = create_token(user_data)
         refresh_token = create_refresh_token(user_data)

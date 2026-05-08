@@ -15,7 +15,7 @@ def get_request_details(request: Request) -> Dict[str, Any]:
         "query_params": dict(request.query_params),
     }
 
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
+def validation_exception_handler(request: Request, exc: RequestValidationError):
     details = get_request_details(request)
     logger.error(
         f"Validation Error: {exc.errors()}",
@@ -31,7 +31,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         },
     )
 
-async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+def http_exception_handler(request: Request, exc: StarletteHTTPException):
     details = get_request_details(request)
     # Sanitize detail for response
     safe_detail = exc.detail if isinstance(exc.detail, str) else "An error occurred"
@@ -49,7 +49,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
         },
     )
 
-async def generic_exception_handler(request: Request, exc: Exception):
+def generic_exception_handler(request: Request, exc: Exception):
     details = get_request_details(request)
     logger.error(
         f"Unhandled Exception: {type(exc).__name__} - {str(exc)}",

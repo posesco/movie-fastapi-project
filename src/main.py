@@ -33,6 +33,12 @@ app = FastAPI(
     openapi_tags=tags_metadata,
 )
 
+# Trusted Hosts
+app.add_middleware(
+    TrustedHostMiddleware, 
+    allowed_hosts=settings.allowed_hosts
+)
+
 # Setup CORS
 if settings.backend_cors_origins:
     app.add_middleware(
@@ -42,12 +48,6 @@ if settings.backend_cors_origins:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-# Trusted Hosts
-app.add_middleware(
-    TrustedHostMiddleware, 
-    allowed_hosts=settings.allowed_hosts
-)
 
 # Setup Observability
 setup_observability(app)
@@ -72,7 +72,7 @@ async def redirect_to_status() -> RedirectResponse:
 
 
 @app.get("/_status/", tags=["health"], status_code=200)
-async def _status() -> dict:
+async def _status() -> JSONResponse:
     from sqlmodel import select
     from .core.database import engine
 

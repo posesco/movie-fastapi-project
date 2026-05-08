@@ -14,9 +14,9 @@ class ErrorHandler(BaseHTTPMiddleware):
         try:
             return await call_next(request)
         except Exception as exc:
-            return await self.handle_exception(request, exc)
+            return self.handle_exception(request, exc)
 
-    async def handle_exception(self, request: Request, exc: Exception) -> JSONResponse:
+    def handle_exception(self, request: Request, exc: Exception) -> JSONResponse:
         request_details = self.get_request_details(request)
         error_response = self.format_error_response(exc, request_details)
 

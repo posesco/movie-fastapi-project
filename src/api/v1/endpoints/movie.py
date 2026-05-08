@@ -4,17 +4,20 @@ from typing import List, Annotated
 from src.api.deps import SessionDep, CurrentUserDep, MovieServiceDep
 from src.schemas.movie import Movie
 from src.models.movie import Movie as MovieModel
+from src.schemas.common import ErrorResponse
 
 router = APIRouter(prefix="/movies", tags=["Movies"])
 
-@router.get("/categories", response_model=List[str])
+MOVIE_NOT_FOUND = "Movie not found"
+
+@router.get("/categories")
 async def get_categories(
     db: SessionDep, 
     movie_service: MovieServiceDep
 ) -> List[str]:
     return await movie_service.get_categories(db)
 
-@router.get("/", response_model=List[MovieModel])
+@router.get("/")
 async def get_movies(
     db: SessionDep, 
     movie_service: MovieServiceDep
@@ -22,7 +25,12 @@ async def get_movies(
     result = await movie_service.get_movies(db)
     return result
 
-@router.get("/{id}", response_model=MovieModel)
+@router.get(
+    "/{id}", 
+    responses={
+        404: {"model": ErrorResponse, "description": MOVIE_NOT_FOUND}
+    }
+)
 async def get_movie(
     db: SessionDep, 
     movie_service: MovieServiceDep,
@@ -30,10 +38,10 @@ async def get_movie(
 ) -> MovieModel:
     result = await movie_service.get_movie(db, id)
     if not result:
-        raise HTTPException(status_code=404, detail="Movie not found")
+        raise HTTPException(status_code=404, detail=MOVIE_NOT_FOUND)
     return result
 
-@router.get("/category/", response_model=List[MovieModel])
+@router.get("/category/")
 async def get_movie_by_category(
     db: SessionDep,
     movie_service: MovieServiceDep,
@@ -42,7 +50,14 @@ async def get_movie_by_category(
     result = await movie_service.get_movies_by_category(db, category)
     return result
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/", 
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        401: {"model": ErrorResponse, "description": "Unauthorized"},
+        400: {"model": ErrorResponse, "description": "Bad Request"}
+    }
+)
 async def create_movie(
     movie: Movie, 
     db: SessionDep,
@@ -53,7 +68,14 @@ async def create_movie(
     new_movie = await movie_service.create_movie(db, model, current_user)
     return {"success": f"Movie '{new_movie.title}' registered successfully"}
 
-@router.put("/{id}")
+@router.put(
+    "/{id}",
+    responses={
+        401: {"model": ErrorResponse, "description": "Unauthorized"},
+        404: {"model": ErrorResponse, "description": MOVIE_NOT_FOUND},
+        400: {"model": ErrorResponse, "description": "Bad Request"}
+    }
+)
 async def update_movie(
     id: Annotated[int, Path(ge=1)], 
     movie: Movie, 
@@ -63,10 +85,17 @@ async def update_movie(
 ) -> dict:
     result = await movie_service.update_movie(db, id, movie.model_dump(), current_user)
     if not result:
-        raise HTTPException(status_code=404, detail="Movie not found")
+        raise HTTPException(status_code=404, detail=MOVIE_NOT_FOUND)
     return {"success": "Movie updated"}
 
-@router.delete("/{id}")
+@router.delete(
+    "/{id}",
+    responses={
+        401: {"model": ErrorResponse, "description": "Unauthorized"},
+        404: {"model": ErrorResponse, "description": MOVIE_NOT_FOUND},
+        400: {"model": ErrorResponse, "description": "Bad Request"}
+    }
+)
 async def delete_movie(
     id: Annotated[int, Path(ge=1)], 
     db: SessionDep,
@@ -75,5 +104,5 @@ async def delete_movie(
 ) -> dict:
     result = await movie_service.delete_movie(db, id, current_user)
     if not result:
-        raise HTTPException(status_code=404, detail="Movie not found")
+        raise HTTPException(status_code=404, detail=MOVIE_NOT_FOUND)
     return {"success": "Movie deleted"}
