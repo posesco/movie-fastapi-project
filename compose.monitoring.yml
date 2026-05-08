@@ -9,7 +9,7 @@ services:
       ports:
         - "9093:9093"
       volumes:
-        - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+        - ./config/monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
       networks:
         - fastapi_net
 
@@ -27,8 +27,8 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro 
+      - ./config/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./config/monitoring/prometheus/rules:/etc/prometheus/rules:ro 
       - prometheus_data:/prometheus
     networks:
       - fastapi_net
@@ -47,9 +47,9 @@ services:
       GF_AUTH_DISABLE_SIGNOUT_MENU: "true"
       GF_FEATURE_TOGGLES_ENABLE: traceqlEditor metricsSummary
     volumes:
-      - ./monitoring/grafana/dashboards/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
-      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./config/monitoring/grafana/dashboards/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+      - ./config/monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./config/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
       - grafana_data:/var/lib/grafana
     networks:
       - fastapi_net
@@ -63,7 +63,7 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - ./monitoring/loki/local-config.yaml:/etc/loki/local-config.yaml:ro
+      - ./config/monitoring/loki/local-config.yaml:/etc/loki/local-config.yaml:ro
       - loki_data:/loki
     networks:
       - fastapi_net
@@ -79,7 +79,7 @@ services:
     environment:
       OTEL_EXPORTER_OTLP_ENDPOINT: http://alloy:4318
     volumes:
-      - ./monitoring/tempo/tempo.yaml:/etc/tempo.yaml:ro
+      - ./config/monitoring/tempo/tempo.yaml:/etc/tempo.yaml:ro
       - tempo_data:/var/tempo
     networks:
       - fastapi_net
@@ -107,7 +107,7 @@ services:
       TEMPO_HOST: tempo:4317
       ALLOY_OTLP_UPSTREAM: tempo:4317
     volumes:
-      - ./monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - ./config/monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
     networks:
       - fastapi_net
 
