@@ -9,21 +9,20 @@ from sqlmodel import SQLModel
 from src.main import app
 from src.core.database import get_db, insert_super_user
 from src.core.redis import init_redis, close_redis
+from src.core.config import settings
 import src.core.database as db_module
 
-# Use an in-memory SQLite for testing to avoid loop conflicts with real Postgres
-TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
+from sqlalchemy.pool import NullPool
 
-@pytest_asyncio.fixture(scope="session")
-def event_loop():
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+# Use real Postgres from settings for Docker-First consistency
+# No longer using SQLite in-memory to match standardized environment
+TEST_DATABASE_URL = settings.async_database_url
 
 @pytest_asyncio.fixture(scope="session")
 async def test_engine():
-    # Independent engine for tests
-    engine = create_async_engine(TEST_DATABASE_URL, echo=False)
+    # Independent engine for tests using Postgres
+    # NullPool helps avoiding loop/concurrency issues with asyncpg in tests
+    engine = create_async_engine(TEST_DATABASE_URL, echo=False, poolclass=NullPool)
     
     # IMPORTANT: Initialize the database module so AsyncSessionLocal is not None
     db_module.engine = engine
@@ -32,6 +31,8 @@ async def test_engine():
     )
     
     async with engine.begin() as conn:
+        # Ensure clean state for session-scoped tests
+        await conn.run_sync(SQLModel.metadata.drop_all)
         await conn.run_sync(SQLModel.metadata.create_all)
     
     # Initialize default roles and actions
@@ -71,7 +72,6 @@ async def client(db_session):
     app.dependency_overrides[get_db] = override_get_db
     
     # Desactivar OTel para tests para evitar errores de conexión a alloy
-    from src.core.config import settings
     settings.otel_enabled = False
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://localhost") as client:

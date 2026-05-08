@@ -1,16 +1,15 @@
-from typing import Generic, TypeVar, Type, Optional, List, Any
+from typing import Type, Optional, List, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlmodel import SQLModel
 
-ModelType = TypeVar("ModelType", bound=SQLModel)
 
-class Repository(Generic[ModelType]):
+class Repository[ModelType: SQLModel]:
     """Common base for all repositories to hold the model type."""
     def __init__(self, model: Type[ModelType]):
         self.model = model
 
-class ReadRepositoryMixin(Repository[ModelType]):
+class ReadRepositoryMixin[ModelType: SQLModel](Repository[ModelType]):
     """Mixin for read operations."""
     async def count(self, db: AsyncSession) -> int:
         """Count total records."""
@@ -36,7 +35,7 @@ class ReadRepositoryMixin(Repository[ModelType]):
         )
         return result.scalars().all()
 
-class CreateRepositoryMixin(Repository[ModelType]):
+class CreateRepositoryMixin[ModelType: SQLModel](Repository[ModelType]):
     """Mixin for create operations."""
     async def create(self, db: AsyncSession, obj_in: ModelType) -> ModelType:
         """Create a new record."""
@@ -45,7 +44,7 @@ class CreateRepositoryMixin(Repository[ModelType]):
         await db.refresh(obj_in)
         return obj_in
 
-class UpdateRepositoryMixin(Repository[ModelType]):
+class UpdateRepositoryMixin[ModelType: SQLModel](Repository[ModelType]):
     """Mixin for update operations."""
     async def update(
         self, 
@@ -63,14 +62,10 @@ class UpdateRepositoryMixin(Repository[ModelType]):
         await db.refresh(db_obj)
         return db_obj
 
-class DeleteRepositoryMixin(Repository[ModelType]):
+class DeleteRepositoryMixin[ModelType: SQLModel](Repository[ModelType]):
     """Mixin for delete operations."""
     async def delete(self, db: AsyncSession, id: Any) -> bool:
         """Delete a record by ID."""
-        # Note: This uses 'get' which is in ReadRepositoryMixin. 
-        # If a repo only has Delete but not Read, this will fail.
-        # Usually Delete implies Read access or we can use a direct delete query.
-        # For simplicity in this project, we assume Delete repositories also have Read.
         result = await db.execute(
             select(self.model).where(self.model.id == id)
         )
@@ -80,7 +75,7 @@ class DeleteRepositoryMixin(Repository[ModelType]):
             return True
         return False
 
-class BaseRepository(
+class BaseRepository[ModelType: SQLModel](
     ReadRepositoryMixin[ModelType],
     CreateRepositoryMixin[ModelType],
     UpdateRepositoryMixin[ModelType],

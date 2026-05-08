@@ -82,13 +82,13 @@ class RoleRead(BaseModel):
 
 class UserRead(BaseModel):
     id: uuid.UUID
-    name: Optional[str]
-    surname: Optional[str]
+    name: Optional[str] = Field(default=None)
+    surname: Optional[str] = Field(default=None)
     username: str
     email: EmailStr
-    phone: Optional[str]
-    address: Optional[str]
-    picture: Optional[str]
+    phone: Optional[str] = Field(default=None)
+    address: Optional[str] = Field(default=None)
+    picture: Optional[str] = Field(default=None)
     is_active: bool
     roles: List[RoleRead]
     created_at: datetime
