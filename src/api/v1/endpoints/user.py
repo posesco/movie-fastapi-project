@@ -140,8 +140,8 @@ async def assign_user_roles(
     user_repo: UserRepository = Depends(get_user_repository)
 ) -> dict:
     db_user = await user_repo.get_by_username(db, data.username)
-    if not db_user:
-        raise HTTPException(status_code=404, detail=f"User {data.username} not found")
+    if not db_user or not db_user.is_active:
+        raise HTTPException(status_code=404, detail=f"User {data.username} not found or inactive")
     
     success = await user_service.assign_roles(db, data.username, data.roles)
     if not success:

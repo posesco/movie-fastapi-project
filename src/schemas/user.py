@@ -12,7 +12,7 @@ from datetime import datetime
 class UserLogin(BaseModel):
     username: str = Field(min_length=5, max_length=30)
     password: str = Field(min_length=5, max_length=30)
-    model_config = {"extra": "forbid"}
+    model_config = ConfigDict(extra="forbid")
 
 
 class UserCreate(BaseModel):
@@ -26,6 +26,7 @@ class UserCreate(BaseModel):
     picture: Optional[str] = Field(default=None, max_length=255)
 
     model_config = ConfigDict(
+        extra="forbid",
         json_schema_extra={
             "example": {
                 "name": "John",
@@ -44,6 +45,7 @@ class UserCreate(BaseModel):
 class UserRoleAssign(BaseModel):
     username: str
     roles: List[Literal["admin", "editor", "user"]]
+    model_config = ConfigDict(extra="forbid")
 
 
 class UserUpdate(BaseModel):
@@ -57,6 +59,7 @@ class UserUpdate(BaseModel):
     picture: Optional[str] = Field(default=None, max_length=255)
 
     model_config = ConfigDict(
+        extra="forbid",
         json_schema_extra={
             "example": {
                 "name": "Jane",

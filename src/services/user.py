@@ -39,7 +39,7 @@ class UserService:
 
     async def assign_roles(self, db: AsyncSession, username: str, roles: List[str]) -> bool:
         db_user = await self.user_repo.get_by_username(db, username)
-        if not db_user:
+        if not db_user or not db_user.is_active:
             return False
         
         result = await db.execute(select(Role).where(Role.name.in_(roles)))

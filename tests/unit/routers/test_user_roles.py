@@ -65,6 +65,39 @@ async def test_delete_user_success(client):
     assert "deleted successfully" in response.json()["success"]
 
 @pytest.mark.asyncio
+async def test_assign_roles_to_inactive_user_fails(client):
+    # 1. Login as admin
+    login_data = {"username": settings.admin_user, "password": settings.admin_pass}
+    login_res = await client.post("/api/v1/user/login", data=login_data)
+    token = login_res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # 2. Create user
+    username = "inactive_role_test"
+    user_data = {
+        "name": "Inactive", "surname": "Test", "username": username,
+        "email": "inactive@example.com", "password": "password"
+    }
+    await client.post("/api/v1/user/register", json=user_data)
+
+    # 3. Soft-delete user
+    await client.delete(f"/api/v1/user/{username}", headers=headers)
+
+    # 4. Try to assign roles
+    assign_data = {
+        "username": username,
+        "roles": ["user"]
+    }
+    response = await client.put(
+        "/api/v1/user/assign-roles",
+        json=assign_data,
+        headers=headers
+    )
+    
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert "not found or inactive" in response.json()["error"]
+
+@pytest.mark.asyncio
 async def test_delete_super_admin_forbidden(client):
     # 1. Login as super_admin
     login_data = {"username": settings.admin_user, "password": settings.admin_pass}
