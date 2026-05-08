@@ -218,4 +218,4 @@ migrations/*.pyc
 
 # End of https://www.toptal.com/developers/gitignore/api/python,linux,visualstudiocode
 .agents/
-skills-lock.json
+skills-lock.jsonuploads/
