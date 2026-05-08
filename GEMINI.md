@@ -107,6 +107,36 @@ Token: My Account → Security → Generate Token.
 - **pytest** + `pytest-asyncio` + coverage reporting (`--cov=src --cov-report=xml`)
 - All code, comments, docstrings, and technical docs (except `README.md`) **must be in English**
 
+## Performance Testing (K6)
+
+Tests located in `tests/performance/`. Requires the full stack running (`docker compose up -d`).
+
+Run using an ephemeral container attached to the project network:
+
+```bash
+# Single test
+docker run --rm -i \
+  --network fastapi_net \
+  -v "$(pwd)/tests/performance:/tests" \
+  grafana/k6:1.7.1 run \
+  -e BASE_URL=http://nginx:80 \
+  /tests/get_movies.js
+
+# All tests sequentially
+for f in tests/performance/*.js; do
+  docker run --rm -i \
+    --network fastapi_net \
+    -v "$(pwd)/tests/performance:/tests" \
+    grafana/k6:1.7.1 run \
+    -e BASE_URL=http://nginx:80 \
+    "/tests/$(basename $f)"
+done
+```
+
+- `BASE_URL` defaults to `http://localhost:8000` (for local runs without Docker network).
+- Thresholds: `p95 < 500ms`, `error rate < 1%`.
+- Load profile: ramp-up to 20 VUs over 30s → hold 1m → ramp-down 10s.
+
 ## Git & Release Management
 
 Follows **GitFlow** + **SemVer** strictly.
