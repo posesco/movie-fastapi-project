@@ -4,7 +4,7 @@ include:
   - path: compose.app.yml
   - path: compose.required.yml
   - path: compose.optional.yml
-  # - path: compose.monitoring.yml
+  - path: compose.monitoring.yml
 
 networks:
   fastapi_net:

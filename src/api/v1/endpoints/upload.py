@@ -1,22 +1,30 @@
 from fastapi import APIRouter, UploadFile, File, Query, HTTPException, status
+from typing import Annotated
 import uuid
 
 from src.api.deps import CurrentUserDep, StorageProviderDep
 from src.services.storage.strategies import UploadContext, resolve_path
+from src.schemas.common import ErrorResponse
 
 router = APIRouter(prefix="/upload", tags=["Upload"])
 
 ALLOWED_CONTENT_TYPES = ["image/jpeg", "image/png", "image/webp"]
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/", 
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        400: {"model": ErrorResponse, "description": "Bad Request"},
+        401: {"model": ErrorResponse, "description": "Unauthorized"}
+    }
+)
 async def upload_file(
     current_user: CurrentUserDep,
     storage_service: StorageProviderDep,
-    file: UploadFile = File(...),
-    context: UploadContext = Query(
-        UploadContext.GENERAL, 
+    file: Annotated[UploadFile, File()],
+    context: Annotated[UploadContext, Query(
         description="Business context for the upload"
-    )
+    )] = UploadContext.GENERAL
 ) -> dict:
     if file.content_type not in ALLOWED_CONTENT_TYPES:
         raise HTTPException(

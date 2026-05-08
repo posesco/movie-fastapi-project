@@ -7,11 +7,13 @@ from .actions import Action
 import uuid
 import json
 
+USERS_ID_FOREIGN_KEY = "users.id"
+
 
 class UserRole(SQLModel, table=True):
     __tablename__ = "user_roles"
 
-    user_id: uuid.UUID = Field(foreign_key="users.id", primary_key=True)
+    user_id: uuid.UUID = Field(foreign_key=USERS_ID_FOREIGN_KEY, primary_key=True)
     role_id: uuid.UUID = Field(foreign_key="roles.id", primary_key=True)
 
 
@@ -28,8 +30,8 @@ class UserAuditLog(SQLModel, table=True):
     __tablename__ = "user_audit_logs"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: uuid.UUID = Field(foreign_key="users.id", nullable=False)  # Target user
-    actor_id: Optional[uuid.UUID] = Field(foreign_key="users.id", nullable=True)  # Who did it
+    user_id: uuid.UUID = Field(foreign_key=USERS_ID_FOREIGN_KEY, nullable=False)  # Target user
+    actor_id: Optional[uuid.UUID] = Field(foreign_key=USERS_ID_FOREIGN_KEY, nullable=True)  # Who did it
     action_id: uuid.UUID = Field(foreign_key="actions.id", nullable=False)
     description: str = Field(nullable=False)
     date: datetime = Field(

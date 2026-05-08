@@ -31,7 +31,7 @@ class Movie(BaseModel):
                 "director": "Director X",
                 "studio": "Studio X",
                 "box_office": 1046132472,
-                "image_url": "http://example.com/image.jpg(optional)"
+                "image_url": "https://example.com/image.jpg"
 
             }
         }

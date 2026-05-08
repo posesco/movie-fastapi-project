@@ -87,6 +87,41 @@ src/
 └── main.py          # Punto de entrada e init de la aplicación
 ```
 
+## Performance Testing (K6)
+
+Tests de carga en `tests/performance/` para los endpoints principales de la Movie API.
+
+Requiere el stack levantado (`docker compose up -d`). Usa un contenedor efímero conectado a la red del proyecto:
+
+```bash
+# Un test específico
+docker run --rm -i \
+  --network fastapi_net \
+  -v "$(pwd)/tests/performance:/tests" \
+  grafana/k6:1.7.1 run \
+  -e BASE_URL=http://nginx:80 \
+  /tests/get_movies.js
+
+# Todos los tests secuencialmente
+for f in tests/performance/*.js; do
+  docker run --rm -i \
+    --network fastapi_net \
+    -v "$(pwd)/tests/performance:/tests" \
+    grafana/k6:1.7.1 run \
+    -e BASE_URL=http://nginx:80 \
+    "/tests/$(basename $f)"
+done
+```
+
+| Test | Endpoint |
+|------|----------|
+| `get_categories.js` | `GET /api/v1/movies/categories` |
+| `get_movies.js` | `GET /api/v1/movies/` |
+| `get_movie_by_id.js` | `GET /api/v1/movies/{id}` |
+| `get_movies_by_category.js` | `GET /api/v1/movies/category/` |
+
+**Thresholds:** `p95 < 500ms` · `error rate < 1%` · Ramp-up a 20 VUs durante 1m30s.
+
 ## Licencia
 
 Este proyecto está licenciado bajo los términos de la [GNU General Public License v3.0](./LICENSE).

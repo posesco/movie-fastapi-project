@@ -13,7 +13,7 @@ async def test_register_extra_params_fails(client):
         "extra_field": "should_fail"
     }
     response = await client.post("/api/v1/user/register", json=user_data)
-    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
     # Custom response uses "message" for validation errors
     assert "extra_field" in str(response.json()["message"])
 
@@ -31,5 +31,5 @@ async def test_update_user_extra_params_fails(client):
         "unknown_field": "hacker"
     }
     response = await client.put(f"/api/v1/user/{settings.admin_user}", json=update_data, headers=headers)
-    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
     assert "unknown_field" in str(response.json()["message"])

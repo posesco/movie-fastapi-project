@@ -35,27 +35,33 @@ def get_action_repository() -> ActionRepository:
 def get_audit_repository() -> AuditRepository:
     return AuditRepository(UserAuditLog)
 
+# Annotated Repository Dependencies
+UserRepoDep = Annotated[UserRepository, Depends(get_user_repository)]
+MovieRepoDep = Annotated[MovieRepository, Depends(get_movie_repository)]
+ActionRepoDep = Annotated[ActionRepository, Depends(get_action_repository)]
+AuditRepoDep = Annotated[AuditRepository, Depends(get_audit_repository)]
+
 # Service Providers
 def get_audit_service(
-    action_repo: ActionRepository = Depends(get_action_repository),
-    audit_repo: AuditRepository = Depends(get_audit_repository)
+    action_repo: ActionRepoDep,
+    audit_repo: AuditRepoDep
 ) -> AuditService:
     return AuditService(action_repo, audit_repo)
 
 def get_user_service(
-    user_repo: UserRepository = Depends(get_user_repository),
-    audit_service: AuditService = Depends(get_audit_service)
+    user_repo: UserRepoDep,
+    audit_service: Annotated[AuditService, Depends(get_audit_service)]
 ) -> UserService:
     return UserService(user_repo, audit_service)
 
 def get_movie_service(
-    movie_repo: MovieRepository = Depends(get_movie_repository),
-    audit_service: AuditService = Depends(get_audit_service)
+    movie_repo: MovieRepoDep,
+    audit_service: Annotated[AuditService, Depends(get_audit_service)]
 ) -> MovieService:
     return MovieService(movie_repo, audit_service)
 
 def get_auth_service(
-    user_repo: UserRepository = Depends(get_user_repository)
+    user_repo: UserRepoDep
 ) -> AuthService:
     return AuthService(user_repo)
 
@@ -75,7 +81,7 @@ StorageProviderDep = Annotated[StorageProvider, Depends(get_storage_provider)]
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)], 
     db: SessionDep,
-    user_repo: UserRepository = Depends(get_user_repository)
+    user_repo: UserRepoDep
 ) -> UserModel:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -107,7 +113,7 @@ async def get_current_user(
         raise credentials_exception
     return user
 
-async def get_current_active_user(
+def get_current_active_user(
     current_user: Annotated[UserModel, Depends(get_current_user)],
 ) -> UserModel:
     if not current_user.is_active:
