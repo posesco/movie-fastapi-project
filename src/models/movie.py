@@ -16,6 +16,7 @@ class MovieAuditLog(SQLModel, table=True):
             nullable=False
         )
     )
+    actor_id: Optional[uuid.UUID] = Field(sa_column=Column(ForeignKey("users.id"), nullable=True))
     action_id: uuid.UUID = Field(foreign_key="actions.id", nullable=False)
     description: Optional[str] = Field(default=None, max_length=300)
     date: datetime = Field(

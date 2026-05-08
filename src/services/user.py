@@ -37,7 +37,7 @@ class UserService:
         await self.audit_service.log_user_action(db, new_user, "create", "New user created")
         return new_user
 
-    async def assign_roles(self, db: AsyncSession, username: str, roles: List[str]) -> bool:
+    async def assign_roles(self, db: AsyncSession, username: str, roles: List[str], actor: User) -> bool:
         db_user = await self.user_repo.get_by_username(db, username)
         if not db_user or not db_user.is_active:
             return False
@@ -52,36 +52,36 @@ class UserService:
         await db.refresh(db_user, ["roles"])
         db_user.roles = db_roles
         
-        await self.audit_service.log_user_action(db, db_user, "update", "Assigned roles")
+        await self.audit_service.log_user_action(db, db_user, "update", "Assigned roles", actor=actor)
         return True
 
-    async def update_password(self, db: AsyncSession, username: str, new_pass: str) -> bool:
+    async def update_password(self, db: AsyncSession, username: str, new_pass: str, actor: User) -> bool:
         db_user = await self.user_repo.get_by_username(db, username)
         if not db_user:
             return False
         
         from src.core.security import pwd_context
         db_user.password = pwd_context.hash(new_pass)
-        await self.audit_service.log_user_action(db, db_user, "update", "Password updated")
+        await self.audit_service.log_user_action(db, db_user, "update", "Password updated", actor=actor)
         return True
 
-    async def set_user_state(self, db: AsyncSession, user: User, state: bool) -> User:
+    async def set_user_state(self, db: AsyncSession, user: User, state: bool, actor: User) -> User:
         user.is_active = state
         details = f'The current status is {"enabled" if state else "disabled"}'
-        await self.audit_service.log_user_action(db, user, "update", details)
+        await self.audit_service.log_user_action(db, user, "update", details, actor=actor)
         return user
 
-    async def delete_user(self, db: AsyncSession, username: str) -> bool:
+    async def delete_user(self, db: AsyncSession, username: str, actor: User) -> bool:
         db_user = await self.user_repo.get_by_username(db, username)
         if not db_user:
             return False
         
         db_user.is_active = False
         details = f"User soft-deleted. ID: {db_user.id}, Username: {db_user.username}"
-        await self.audit_service.log_user_action(db, db_user, "delete", details)
+        await self.audit_service.log_user_action(db, db_user, "delete", details, actor=actor)
         return True
 
-    async def update_user(self, db: AsyncSession, db_user: User, update_data: dict) -> User:
+    async def update_user(self, db: AsyncSession, db_user: User, update_data: dict, actor: User) -> User:
         if "password" in update_data and update_data["password"]:
             from src.core.security import pwd_context
             update_data["password"] = pwd_context.hash(update_data["password"])
@@ -93,5 +93,5 @@ class UserService:
         
         # Log only changed fields for better audit trail
         details = f"User updated. Fields: {list(update_data.keys())}"
-        await self.audit_service.log_user_action(db, updated_user, "update", details)
+        await self.audit_service.log_user_action(db, updated_user, "update", details, actor=actor)
         return updated_user

@@ -137,13 +137,14 @@ async def assign_user_roles(
     data: UserRoleAssign,
     db: SessionDep,
     user_service: UserServiceDep,
+    current_user: CurrentUserDep,
     user_repo: UserRepository = Depends(get_user_repository)
 ) -> dict:
     db_user = await user_repo.get_by_username(db, data.username)
     if not db_user or not db_user.is_active:
         raise HTTPException(status_code=404, detail=f"User {data.username} not found or inactive")
     
-    success = await user_service.assign_roles(db, data.username, data.roles)
+    success = await user_service.assign_roles(db, data.username, data.roles, actor=current_user)
     if not success:
         raise HTTPException(status_code=400, detail="One or more roles do not exist in database")
         
@@ -154,6 +155,7 @@ async def delete_user(
     username: str,
     db: SessionDep,
     user_service: UserServiceDep,
+    current_user: CurrentUserDep,
     user_repo: UserRepository = Depends(get_user_repository)
 ) -> dict:
     if username == settings.admin_user:
@@ -173,7 +175,7 @@ async def delete_user(
             detail="Cannot delete a user with super_admin role"
         )
 
-    success = await user_service.delete_user(db, username)
+    success = await user_service.delete_user(db, username, actor=current_user)
     if not success:
         raise HTTPException(status_code=400, detail="Failed to delete user")
 
@@ -267,6 +269,6 @@ async def update_user(
 
     update_data = user_update.model_dump(exclude_unset=True)
     update_data.pop("current_password", None)
-    updated_user = await user_service.update_user(db, target_user, update_data)
+    updated_user = await user_service.update_user(db, target_user, update_data, actor=current_user)
     await db.refresh(updated_user, ["roles"])
     return updated_user

@@ -63,12 +63,13 @@ class MovieService:
         
         movie_title = db_obj.title
         
-        # User audit log for movie deletion
-        await self.audit_service.log_user_action(
+        # Movie audit log for deletion
+        await self.audit_service.log_movie_action(
             db, 
-            user, 
+            db_obj, 
             "delete", 
-            f"User deleted movie '{movie_title}' (ID: {id})"
+            f"Movie '{movie_title}' (ID: {id}) deleted",
+            user=user
         )
             
         return await self.movie_repo.delete(db, id)

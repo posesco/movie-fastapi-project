@@ -1,3 +1,4 @@
+from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from src.models.user import UserAuditLog, User
@@ -26,15 +27,17 @@ class AuditService:
         db: AsyncSession, 
         user: User, 
         action_name: str, 
-        details: str
+        details: str,
+        actor: Optional[User] = None
     ) -> None:
         action = await self._get_action(db, action_name)
         if not action: return
 
         log_entry = UserAuditLog(
             user_id=user.id,
+            actor_id=actor.id if actor else None,
             action_id=action.id,
-            description=f"User {user.username} performed {action_name}: {details}",
+            description=f"Action '{action_name}' on user {user.username}: {details}",
         )
         db.add(log_entry)
 
@@ -44,7 +47,7 @@ class AuditService:
         movie: Movie,
         action_name: str,
         details: str,
-        user: User = None
+        user: Optional[User] = None
     ) -> None:
         action = await self._get_action(db, action_name)
         if not action: return
@@ -52,16 +55,8 @@ class AuditService:
         # Movie audit
         movie_log = MovieAuditLog(
             movie_id=movie.id,
+            actor_id=user.id if user else None,
             action_id=action.id,
             description=details,
         )
         db.add(movie_log)
-
-        # Optional: Log which user performed the action on the movie
-        if user:
-            user_log = UserAuditLog(
-                user_id=user.id,
-                action_id=action.id,
-                description=f"User {user.username} {action_name} movie '{movie.title}' (ID: {movie.id})"
-            )
-            db.add(user_log)
