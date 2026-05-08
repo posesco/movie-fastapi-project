@@ -38,6 +38,12 @@ class UserService:
         return new_user
 
     async def assign_roles(self, db: AsyncSession, username: str, roles: List[str], actor: User) -> bool:
+        from src.core.config import settings
+        
+        # Safeguard: Primary admin must always have super_admin role
+        if username == settings.admin_user and "super_admin" not in roles:
+            return False
+
         db_user = await self.user_repo.get_by_username(db, username)
         if not db_user or not db_user.is_active:
             return False

@@ -111,3 +111,25 @@ async def test_delete_super_admin_forbidden(client):
     assert response.status_code == status.HTTP_403_FORBIDDEN
     # The project uses "error" key for HTTPException details
     assert response.json()["error"] == "Cannot delete the primary super_admin account"
+
+@pytest.mark.asyncio
+async def test_cannot_demote_primary_admin(client):
+    # 1. Login as admin
+    login_data = {"username": settings.admin_user, "password": settings.admin_pass}
+    login_res = await client.post("/api/v1/user/login", data=login_data)
+    token = login_res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # 2. Try to demote self (remove super_admin role)
+    assign_data = {
+        "username": settings.admin_user,
+        "roles": ["admin"] # Missing super_admin
+    }
+    response = await client.put(
+        "/api/v1/user/assign-roles",
+        json=assign_data,
+        headers=headers
+    )
+    
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "roles do not exist" in response.json()["error"] or response.status_code == 400
